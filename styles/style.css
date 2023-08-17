@@ -194,3 +194,7 @@ hr {
   background-color: DodgerBlue !important;
   color: #ffffff;
 }
+
+#cargando:hover{
+box-shadow: 0 0 15px rgba(240, 229, 89, 0.8);   
+}
