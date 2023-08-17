@@ -1,20 +1,35 @@
 var dataManager={};
 
-dataManager.CambiaModoKPI=function(){
+    dataManager.CambiaModoKPI=function(modo){
 
-    if(store.map_var==kpiExpert_FR){
-   
-        store.map_var=kpiExpert_OOS;
-    
-    }else if(store.map_var==kpiExpert_OOS){
-      
-        store.map_var=kpiExpert_FR;
-      
+        $("#iconFR").attr("src","images/mode_1.png");
+        $("#iconOOSF").attr("src","images/mode_2.png");
+        $("#iconOOSF").attr("src","images/mode_3.png");
+
+        if(modo =="FR"){
+
+            store.map_var=kpiExpert_FR;
+            $("#iconFR").attr("src","images/mode1_.png");
+            $("#logo").attr("src","images/logo1.png");
+            dataManager.ClusterObjects();
+
+        }else if(modo =="OOS F"){
+
+            store.map_var=kpiExpert_OOS;
+            $("#iconOOSF").attr("src","images/mode2_.png");
+            $("#logo").attr("src","images/logo2.png");
+            dataManager.ClusterObjects();
+
+        }else if(modo =="Venta"){
+
+            $("#iconVenta").attr("src","images/mode3_.png");
+            $("#logo").attr("src","images/logo3.png");
+
+        }
+
+       
+
     }
-
-    dataManager.ClusterObjects();
-
-}
 
 //PROCESO QUE AGRUPA ELEMENTOS SEGUN EL NIVEL AL Q SE ENCUENTRA
 var entities;
@@ -31,23 +46,13 @@ dataManager.ClusterObjects=function(){
         svgRadar.selectAll(".radarElement").data([]).exit().remove();       
     }      
 
-    /// se asgeura de que se muestre la flecha de Regresar solo si hubi un cmabio en el nivel
-    if(backInfoNav.entity){
-
-        for(var j=0; j < store.niveles.length; j++){
-                       
-                if( String(store.niveles[j].id) ==  String($("#nivel_cb").val()) ){
-
-                    if(store.niveles[j].coordinatesSource != backInfoNav.catlog ){
-
-                        $("#back_btn").css("visibility","visible");
-
-                    }
-                }
-            
-        }
+    
+    if(backInfoNav.length > 0){
+        $("#back_btn").css("visibility","visible");
        
-    }   
+    } else{
+        $("#back_btn").css("visibility","hidden");
+    }  
 
     var agrupador="";
 
@@ -136,6 +141,8 @@ dataManager.CalculateKPIs=function(entities_){
     }, 500);    
     
     
+   
+
     // 2   
     if(calculateKpiExpert_OOS){
 
@@ -151,9 +158,7 @@ dataManager.CalculateKPIs=function(entities_){
 
         }, 500);   
 
-    }    
-
-    
+    }  
 
     
     // 3
@@ -173,7 +178,7 @@ dataManager.CalculateKPIs=function(entities_){
 
         } 
     }
-    
+
    
     // 4
     if(calculateKpiExpert_Ventas){
@@ -203,7 +208,6 @@ dataManager.CalculateKPIs=function(entities_){
         }, 500);
     }     
 
-
     if(store.map_var==kpiExpert_FR){
 
             // 6
@@ -231,6 +235,8 @@ dataManager.CalculateKPIs=function(entities_){
             }  
 
     }
+
+    
     
 
     // 8
@@ -245,6 +251,7 @@ dataManager.CalculateKPIs=function(entities_){
                                                              });
         }, 500);
     } 
+    
     
 
 }
@@ -315,6 +322,8 @@ dataManager.getTooltipText=function(entity){
             
         }
 
+        
+
         if(calculateKpiExpert_Pendientes.getTooltipDetail){
 
             if(calculateKpiExpert_Pendientes.getTooltipDetail(entity.key)!=undefined){
@@ -324,6 +333,7 @@ dataManager.getTooltipText=function(entity){
 
         }
 
+        
         if(calculateKpiExpert_Mas.getTooltipDetail){
 
             if(calculateKpiExpert_Mas.getTooltipDetail(entity.key)!=undefined){
@@ -368,6 +378,8 @@ dataManager.getTooltipText=function(entity){
             }
 
         } 
+
+        
 
         return text;
 

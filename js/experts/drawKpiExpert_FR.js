@@ -11,8 +11,13 @@ kpiExpert_FR.DrawElement=function(entity,i){
                     length : altura1,
                     topRadius : entity.radio*.9,
                     bottomRadius : entity.radio*.9,
+<<<<<<< HEAD
                     material : Cesium.Color.fromCssColorString("#12F900").withAlpha(1)
 
+=======
+                    material : Cesium.Color.fromCssColorString("#006CFF").withAlpha(1)              
+                    
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
                 }
         });
 
@@ -564,12 +569,18 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 
     kpiExpert_FR.DrawMainHeader=function(){
 
-                kpiExpert_FR.ancho=windowWidth*.35;
+                kpiExpert_FR.ancho=windowWidth*.7;
 
+<<<<<<< HEAD
                 kpiExpert_FR.offSetLeft=(windowWidth*.32)+150+30;
                 kpiExpert_FR.offSetTop=10;
+=======
+                kpiExpert_FR.offSetLeft=168;
+                kpiExpert_FR.offSetLeft2=350;
+                kpiExpert_FR.offSetTop=46;              
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
 
-                kpiExpert_FR.altura=45;
+                kpiExpert_FR.altura=35;
 
                 var ancho=kpiExpert_FR.ancho;
                 var offSetLeft=kpiExpert_FR.offSetLeft;
@@ -584,20 +595,39 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 
                 svgLines
 			.append("rect")
-			.attr("fill","#292929")
+			.attr("fill","none")
 			.style("stroke","#cccccc")
 			.attr("filter","url(#glow)")
                         .attr("class","encabezado")
 			.style("stroke-width",1)
 			.style("stroke-opacity",.7)
 			.style("opacity",.6 )
-                        .attr("rx",10)
+                        .attr("rx",5)
 			.attr("width",ancho )
 			.attr("height",altura )
 			.attr("x",offSetLeft)
 			.attr("y",offSetTop)
 			;
 
+<<<<<<< HEAD
+=======
+                svgLines														
+			.append("rect")
+			.attr("fill","#000000")
+			.style("stroke","#cccccc")			
+                        .attr("class","encabezado")
+			.style("stroke-width",1)
+			.style("stroke-opacity",.5)
+			.style("opacity",.6 )
+                        .attr("rx",5)
+			.attr("width",ancho-355 )
+			.attr("height",altura-10 )
+			.attr("x",offSetLeft+kpiExpert_FR.offSetLeft2)
+			.attr("y",offSetTop+5)
+			;
+
+               
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
 
 
                 svgLines.append("text")
@@ -611,7 +641,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 			.style("font-size",13*escalaTextos)
 			.style("text-anchor","start")
 			.attr("x",offSetLeft+10)
-			.attr("y", offSetTop+17 )
+			.attr("y", offSetTop+20 )
 			.text(function(){
 
 				return "Nacional Entregado: "+Math.round((totalCanEnt_ref/totalCanSol_ref)*100)+"%, "+formatNumber(Math.round(totalCanEnt_ref/1000) )+" k  ";
@@ -631,7 +661,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 			.style("font-size",12*escalaTextos)
 			.style("text-anchor","start")
 			.attr("x",offSetLeft+(200*escalaTextos)+10 )
-			.attr("y", offSetTop+17 )
+			.attr("y", offSetTop+20 )
 			.text(function(){
 
 				return "Solicitado: "+formatNumber(Math.round(totalCanSol_ref/1000) )+" k ";
@@ -663,9 +693,14 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                 por2_filtered=0;
                 por3_filtered=0;
 
+<<<<<<< HEAD
 
                 for(var k=0;  k < store.dataToDraw.length; k++){
 
+=======
+                for(var k=0;  k < store.dataToDraw.length; k++){      
+                        
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
                         totalCanSol_filtered+=Number(store.dataToDraw[k][campoTotalSolicitado]);
 
                         totalCanEnt_filtered+=Number(store.dataToDraw[k][campoDeVolumenFR]);
@@ -703,8 +738,8 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .attr("rx",4)
                         .attr("width",1 )
                         .attr("height",(altura*.4) )
-                        .attr("x",kpiExpert_FR.offSetLeft+6)
-                        .attr("y",kpiExpert_FR.offSetTop+5+(altura*.4))
+                        .attr("x",kpiExpert_FR.offSetLeft+6+kpiExpert_FR.offSetLeft2)
+                        .attr("y",kpiExpert_FR.offSetTop+5+(altura*.18))
                         .transition().delay(0).duration(1000)
                         .style("width",ancho2-3 )
                         ;
@@ -730,8 +765,8 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .attr("rx",4)
                         .attr("width",1 )
                         .attr("height",(altura*.4) )
-                        .attr("x",kpiExpert_FR.offSetLeft+ancho2+6 )
-                        .attr("y",kpiExpert_FR.offSetTop+5+(altura*.4))
+                        .attr("x",kpiExpert_FR.offSetLeft+ancho2+6+kpiExpert_FR.offSetLeft2 )
+                        .attr("y",kpiExpert_FR.offSetTop+5+(altura*.18))
                         .transition().delay(1000).duration(1000)
                         .attr("width",ancho3-3 )
                         ;
@@ -755,8 +790,8 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .attr("rx",4)
                         .attr("width",1 )
                         .attr("height",(altura*.4) )
-                        .attr("x",kpiExpert_FR.offSetLeft+ancho2+ancho3+6)
-                        .attr("y",kpiExpert_FR.offSetTop+5+(altura*.4))
+                        .attr("x",kpiExpert_FR.offSetLeft+ancho2+ancho3+6+kpiExpert_FR.offSetLeft2)
+                        .attr("y",kpiExpert_FR.offSetTop+5+(altura*.18))
                         .transition().delay(2000).duration(1000)
                         .attr("width",ancho4-3 )
                         ;
@@ -767,8 +802,13 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .append("circle")
                         .attr("class","encabezadoFiltered")
                         .attr("fill","#ffffff")
+<<<<<<< HEAD
                         .attr("cx",kpiExpert_FR.offSetLeft+ancho2+ancho3+ancho4+6 )
                         .attr("cy",kpiExpert_FR.offSetTop+15+(altura*.4))
+=======
+                        .attr("cx",kpiExpert_FR.offSetLeft+ancho2+ancho3+ancho4+3+kpiExpert_FR.offSetLeft2 )
+                        .attr("cy",kpiExpert_FR.offSetTop+11+(altura*.18))                   
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
                         .attr("r",3);
                 /*
                 svgLines.append("line")
@@ -792,10 +832,17 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .style("opacity",0)
                         .style("font-family","Cabin")
                         .style("font-weight","normal")
+<<<<<<< HEAD
                         .style("font-size",12*escalaTextos)
                         .style("text-anchor","start")
                         .attr("x", kpiExpert_FR.offSetLeft+ancho2+ancho3+ancho4+14)
                         .attr("y", kpiExpert_FR.offSetTop+15+(altura*.5))
+=======
+                        .style("font-size",12*escalaTextos)						
+                        .style("text-anchor","middle")
+                        .attr("x", kpiExpert_FR.offSetLeft+ancho2+ancho3+ancho4+44+kpiExpert_FR.offSetLeft2)
+                        .attr("y", kpiExpert_FR.offSetTop+35+(altura*.5))  
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
                         .text(function(){
 
                                 //return "Muestra Solicitado: "+formatNumber(Math.round(totalCanSol_filtered/1000) )+" k Ton - Entregado: "+formatNumber(Math.round(totalCanEnt_filtered/1000) )+" k Ton ("+ Math.round((totalCanEnt_filtered/totalCanSol_filtered)*100) +"%)";
@@ -814,10 +861,17 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .style("opacity",0)
                         .style("font-family","Cabin")
                         .style("font-weight","normal")
+<<<<<<< HEAD
                         .style("font-size",13*escalaTextos)
                         .style("text-anchor","start")
                         .attr("x", kpiExpert_FR.offSetLeft  )
                         .attr("y", kpiExpert_FR.offSetTop+45+(altura*.5))
+=======
+                        .style("font-size",12*escalaTextos)						
+                        .style("text-anchor","start")
+                        .attr("x", kpiExpert_FR.offSetLeft+ancho2+ancho3+ancho4-3+kpiExpert_FR.offSetLeft2 -(7*(escalaTextos*13) ))
+                        .attr("y", kpiExpert_FR.offSetTop+50+(altura*.5))  
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
                         .text(function(){
 
                                 return "A tiempo: "+por1_filtered+"%";
@@ -834,10 +888,17 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .style("opacity",0)
                         .style("font-family","Cabin")
                         .style("font-weight","normal")
+<<<<<<< HEAD
                         .style("font-size",13*escalaTextos)
                         .style("text-anchor","start")
                         .attr("x", kpiExpert_FR.offSetLeft +(7*(escalaTextos*13) ))
                         .attr("y", kpiExpert_FR.offSetTop+45+(altura*.5))
+=======
+                        .style("font-size",12*escalaTextos)						
+                        .style("text-anchor","start")
+                        .attr("x", kpiExpert_FR.offSetLeft+ancho2+ancho3+ancho4+kpiExpert_FR.offSetLeft2)
+                        .attr("y", kpiExpert_FR.offSetTop+50+(altura*.5))  
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
                         .text(function(){
 
                                 return "1 a 2 días: "+por2_filtered+"%";
@@ -854,10 +915,17 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .style("opacity",0)
                         .style("font-family","Cabin")
                         .style("font-weight","normal")
+<<<<<<< HEAD
                         .style("font-size",13*escalaTextos)
                         .style("text-anchor","start")
                         .attr("x", kpiExpert_FR.offSetLeft +(14*(escalaTextos*13) ))
                         .attr("y", kpiExpert_FR.offSetTop+45+(altura*.5))
+=======
+                        .style("font-size",12*escalaTextos)						
+                        .style("text-anchor","start")
+                        .attr("x", kpiExpert_FR.offSetLeft+ancho2+ancho3+ancho4+3+kpiExpert_FR.offSetLeft2+(7*(escalaTextos*13) ))
+                        .attr("y", kpiExpert_FR.offSetTop+50+(altura*.5))  
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
                         .text(function(){
 
                                 return "3 Días o mas: "+por3_filtered+"%";

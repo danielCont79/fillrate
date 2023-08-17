@@ -32,16 +32,24 @@ kpiExpert_PROD.DrawTooltipDetail=function(entity){
 
             arr[i].VolVenta_Real=0;
             arr[i].VolVenta_Plan=0;
+<<<<<<< HEAD
 
             arr[i].Peso=0;
+=======
+    
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
 
             for(var j=0; j < arr[i].values.length; j++ ){
 
 
                 arr[i].VolVenta_Real+=Number(arr[i].values[j].VolVenta_Real);
                 arr[i].VolVenta_Plan+=Number(arr[i].values[j].VolVenta_Plan);
+<<<<<<< HEAD
 
                 arr[i].Peso+=Number(arr[i].values[j].Peso);
+=======
+                
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
 
             }
 
@@ -51,10 +59,17 @@ kpiExpert_PROD.DrawTooltipDetail=function(entity){
             }else{
                 arr[i].Dif=0;
                 arr[i].DifPer=0;
+<<<<<<< HEAD
             }
 
             if(maximo < arr[i].Peso){
                 maximo = arr[i].Peso;
+=======
+            }  
+            
+            if(maximo < arr[i].VolVenta_Real){
+                maximo = arr[i].VolVenta_Real;
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
             }
 
             if(maximo2 < arr[i].DifPer*1000){
@@ -172,6 +187,7 @@ kpiExpert_PROD.DrawTooltipDetail=function(entity){
         .style("text-anchor","start")
         .style("opacity",1 )
         .attr("transform"," translate("+String( svgTooltipWidth*.9  )+","+String( altura*caso+(tamanioFuente)   )+")  rotate("+(0)+") ")
+<<<<<<< HEAD
         .text("Peso")
         .transition().delay(0).duration(i*50);
 
@@ -183,6 +199,19 @@ kpiExpert_PROD.DrawTooltipDetail=function(entity){
             var ancho=GetValorRangos( arr[i].Peso,1, maximo ,1,svgTooltipWidth*.11 );
 
             d3.select("#svgTooltip").append("rect")
+=======
+        .text("Volumen Real")
+        .transition().delay(0).duration(i*50);    
+     
+        for(var i=0; i < arr.length; i++ ){
+
+            if(arr[i].VolVenta_Real==0)
+                continue;
+        
+            var ancho=GetValorRangos( arr[i].VolVenta_Real,1, maximo ,1,svgTooltipWidth*.11 );
+         
+            d3.select("#svgTooltip").append("rect")		    		
+>>>>>>> 3f03e42dc60777374d1cbade3068a5dfdccb3a38
     					.attr("width",1 )
                         .attr("class","abasDetail")
     					.attr("x",svgTooltipWidth*.9   )
@@ -323,7 +352,7 @@ kpiExpert_PROD.DrawTooltipDetail=function(entity){
                             }
 
                         });
-    ;
+    
 
                         caso++;
 
