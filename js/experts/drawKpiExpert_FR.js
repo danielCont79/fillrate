@@ -1,9 +1,9 @@
 var kpiExpert_FR={};
 
-kpiExpert_FR.DrawElement=function(entity,i){      
-      
+kpiExpert_FR.DrawElement=function(entity,i){
+
         var altura1=GetValorRangos(entity.fillRate.por1,1 ,100 ,1 ,entity.altura );
-   
+
         var geometry1= viewer.entities.add({
                 name : '',
                 position: Cesium.Cartesian3.fromDegrees( entity.lng , entity.lat , (altura1/2)  ),
@@ -11,13 +11,13 @@ kpiExpert_FR.DrawElement=function(entity,i){
                     length : altura1,
                     topRadius : entity.radio*.9,
                     bottomRadius : entity.radio*.9,
-                    material : Cesium.Color.fromCssColorString("#12F900").withAlpha(1)              
-                    
+                    material : Cesium.Color.fromCssColorString("#12F900").withAlpha(1)
+
                 }
         });
 
 
-        mapElementsArr.push(geometry1);						
+        mapElementsArr.push(geometry1);
 
         var altura2=GetValorRangos(entity.fillRate.por2,1 ,100 ,1 ,entity.altura );
 
@@ -28,8 +28,8 @@ kpiExpert_FR.DrawElement=function(entity,i){
                     length : altura2,
                     topRadius : entity.radio*.9,
                     bottomRadius : entity.radio*.9,
-                    material : Cesium.Color.fromCssColorString("#FFF117").withAlpha(1)              
-                    
+                    material : Cesium.Color.fromCssColorString("#FFF117").withAlpha(1)
+
                 }
         });
 
@@ -45,8 +45,8 @@ kpiExpert_FR.DrawElement=function(entity,i){
                     length : altura3,
                     topRadius : entity.radio*.9,
                     bottomRadius : entity.radio*.9,
-                    material : Cesium.Color.fromCssColorString("#FF0018").withAlpha(1)              
-                    
+                    material : Cesium.Color.fromCssColorString("#FF0018").withAlpha(1)
+
                 }
         });
 
@@ -62,11 +62,11 @@ kpiExpert_FR.DrawElement=function(entity,i){
                                 length : entity.altura+(entity.altura*.04),
                                 topRadius : entity.radio,
                                 bottomRadius : entity.radio,
-                                material : Cesium.Color.fromCssColorString("#ffffff").withAlpha(.2)              
-                                
+                                material : Cesium.Color.fromCssColorString("#ffffff").withAlpha(.2)
+
                         }
                         });
-                
+
                 entity.geometries=[geometry1,geometry2,geometry3,geometryExt];
                 mapElementsArr.push(geometryExt);
                 mapElements[geometryExt.id]=entity;
@@ -75,7 +75,7 @@ kpiExpert_FR.DrawElement=function(entity,i){
 
                 entity.geometries=[geometry1,geometry2,geometry3];
 
-                if(altura1 > 100){              
+                if(altura1 > 100){
                         mapElementsArr.push(geometry1);
                         mapElements[geometry1.id]=entity;
                 }else if(altura2 > 100){
@@ -86,47 +86,47 @@ kpiExpert_FR.DrawElement=function(entity,i){
                         mapElements[geometry3.id]=entity;
                 }
 
-        }  
-        
+        }
+
         if(i < 100){
 
-                entity.labelSVG=svgLines.append("text")                            
+                entity.labelSVG=svgLines.append("text")
                         .attr("x",0 )
                         .attr("y", 0   )
                         .style("fill","#FFFFFF")
                         .attr("filter","url(#dropshadowText)")
-                        .attr("class","entityLabel")                                    
+                        .attr("class","entityLabel")
                         .style("font-family","Cabin")
                         .style("text-anchor","middle")
                         .style("font-weight","normal")
-                        .style("font-size",12)                                
+                        .style("font-size",12)
                         .text( function(d){
-                            
+
                         return entity.fillRate.por1+"%";
-                        
+
                         });
 
         }
 
-        if(Stage.labelsInterval)        
+        if(Stage.labelsInterval)
                 clearInterval(Stage.labelsInterval);
-       
+
         Stage.labelsInterval = setInterval(function(){ Stage.DrawFRLabels(); }, 50);
 }
 
-kpiExpert_FR.eraseChart=function(){ 
+kpiExpert_FR.eraseChart=function(){
 
         d3.select("#svgTooltip").selectAll(".frDetail").data([]).exit().remove();
         d3.select("#svgTooltip3").selectAll(".frDetail").data([]).exit().remove();
 
         $("#toolTip2").css("visibility","hidden");
         $("#toolTip3").css("visibility","hidden");
-       
-       
+
+
 }
 
 
-kpiExpert_FR.DrawTooltipDetail=function(entity){   
+kpiExpert_FR.DrawTooltipDetail=function(entity){
 
         d3.select("#svgTooltip").selectAll(".frDetail").data([]).exit().remove();
         d3.select("#svgTooltip3").selectAll(".frDetail").data([]).exit().remove();
@@ -134,20 +134,20 @@ kpiExpert_FR.DrawTooltipDetail=function(entity){
         kpiExpert_FR.DrawTooltipDetail_Estado(entity);
         kpiExpert_FR.DrawTooltipDetail_ByDay(entity);
 
-       
+
 
 }
 
-kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){ 
+kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){
 
         var maximo=0;
 
         var arr=d3.nest()
             .key(function(d) { return d.EstadoZTDem; })
-            .entries(entity.values);  
+            .entries(entity.values);
 
         for(var i=0; i < arr.length; i++ ){
-                
+
                 arr[i].CantEntfinal=0;
                 arr[i].fecha=arr[i].values[0].fecha.getTime();
                 arr[i].totalSolicitado=0;
@@ -171,103 +171,104 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){
                                 arr[i].vol2+=Number(arr[i].values[j][campoDeVolumenFR]);
                         }else if(arr[i].values[j][campoDeATiempo] == "3 o más días Tarde"){
                                 arr[i].vol3+=Number(arr[i].values[j][campoDeVolumenFR]);
-                        } 
-                        
+                        }
+
                 }
 
                 if(maximo < arr[i].CantEntfinal){
                         maximo=arr[i].CantEntfinal;
-                } 
-                
+                }
+
                 arr[i].por1=Math.round((arr[i].vol1/arr[i].totalSolicitado)*100);
                 arr[i].por2=Math.round((arr[i].vol2/arr[i].totalSolicitado)*100);
-                arr[i].por3=Math.round((arr[i].vol3/arr[i].totalSolicitado)*100);      
+                arr[i].por3=Math.round((arr[i].vol3/arr[i].totalSolicitado)*100);
 
         }
 
-        arr = arr.sort((a, b) => {                
-                return b.CantEntfinal - a.CantEntfinal;                                    
+        arr = arr.sort((a, b) => {
+                return b.CantEntfinal - a.CantEntfinal;
 
-        }); 
+        });
 
         arr=arr.reverse();
 
         var altura=30;
         var caso=0;
-       
+
         var svgTooltipHeight=arr.length*altura;
-    
+
         if(svgTooltipHeight<100)
             svgTooltipHeight=100;
-    
-    
+
+
         var svgTooltipWidth=600;
         var marginLeft=svgTooltipWidth*.2;
         var tamanioFuente=altura*.4;
         var marginTop=35;
 
-        $("#toolTip3").css("visibility","visible");            
-        $("#toolTip3").css("right",20+"px");
+        $("#toolTip3").css("visibility","visible");
+        $("#toolTip2").css("top",15+"%");
+        $("#toolTip2").css("left",64+"%");
 
 
 
 
-        /* 
+        /*
 
         VIX_TT  : Prepara datos para el tool tip
 
         */
 
 
-    // DATOS 
+    // DATOS
 
     var data = arr.map(function(item) {
         return {
           key: item.key,
-          "por1": item.por1,      
+          "por1": item.por1,
           "cant": item.CantEntfinal
         };
         });
-    
-    
+
+
         // DEFINE COLUMNAS
-      
+
       var columns = [
         { key: "key", header: "Estado", sortable: true, width: "100px" },
-        { key: "por1", header: "Fill Rate", sortable: true, width: "200px" },    
+        { key: "por1", header: "Fill Rate", sortable: true, width: "200px" },
         { key: "cant", header: "Vol. Entregado", sortable: true, width: "200px" },
         ];
-    
-    
+
+
        // DEFINE VISITORS PARA CADA COLUMNA
-    
-    
+
+
       var columnVisitors = {
         key: function(value,i) {
             return `<div class="key-selector" onclick="filterControls.lookForEntity('${value}')">${value}
             </div>`;
           },
-    
+
         por1: function(value,i) {
 
-          var p1 = arr[i].por1;  
-          var p2 =  arr[i].por2;  
-          var p3 =  arr[i].por3;  
-          var svgWidth = 150;  
-          var svgHeight = 15;  
-          
+          var p1 = arr[i].por1;
+          var p2 =  arr[i].por2;
+          var p3 =  arr[i].por3;
+          var svgWidth = 150;
+          var svgHeight = 15;
+
           var svgString = createBar(p1, p2, p3, svgWidth, svgHeight, p1+"%");
-          
-           
+
+
           return '<div class="bar-container">' +svgString +'</div>';
 
         },
-        
+
         cant: function(value,i) {
                 var ancho=GetValorRangos( arr[i].CantEntfinal,1, maximo ,1,svgTooltipHeight*.4);
                 var barValue = Math.round((arr[i].CantEntfinal/1000)*100)/100 +"k";
-               
-              
+
+
 
                 return '<div class="bar-container">' +
                 '<svg width="100%" height="10"><rect class="bar-rect" width="' + ancho + '" height="10" style="fill: white;"></rect></svg>' +
@@ -276,60 +277,60 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){
 
 
 
-                
+
         }
       };
 
       // COLUMNAS CON TOTALES :
 
-      var columnsWithTotals = ['cant']; 
+      var columnsWithTotals = ['cant'];
       var totalsColumnVisitors = {
-                'cant': function(value) { 
+                'cant': function(value) {
                         var v = Math.round((value/1000)*100)/100 +"k";
-             
-                        return v; 
+
+                        return v;
                 },
                 //'column2': function(value) { return '$' + value.toFixed(2); }
                 };
 
-    
-    
+
+
       // FORMATEA DIV :
-    
+
       vix_tt_formatToolTip("#toolTip3","FillRate por Estado",600);
-    
+
       // CREA TABLA USANDO DATOS
-    
+
       vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip3", columnsWithTotals );
-      
-      
-      // APLICA TRANSICIONES 
-    
+
+
+      // APLICA TRANSICIONES
+
       vix_tt_transitionRectWidth("toolTip3");
-      
+
 
 
 }
-    
-kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){    
-    
-        console.log(entity);  
-       
+
+kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
+
+        console.log(entity);
+
         var maximo=0;
 
         var arr=d3.nest()
-                .key(function(d) { 
+                .key(function(d) {
 
                         if(d.fecha){
-                                return d.fecha.getTime(); 
-                        }else{                       
+                                return d.fecha.getTime();
+                        }else{
                                 return 0;
-                        }                        
-        
+                        }
+
                 })
                 .entries(entity.values);
 
-        
+
         for(var i=0; i < arr.length; i++ ){
 
                         arr[i].CantEntfinal=0;
@@ -355,48 +356,49 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                         arr[i].vol2+=Number(arr[i].values[j][campoDeVolumenFR]);
                                 }else if(arr[i].values[j][campoDeATiempo] == "3 o más días Tarde"){
                                         arr[i].vol3+=Number(arr[i].values[j][campoDeVolumenFR]);
-                                } 
-                                
+                                }
+
                         }
 
                         if(maximo < arr[i].CantEntfinal){
                                 maximo=arr[i].CantEntfinal;
-                        } 
-                        
+                        }
+
                         arr[i].por1=Math.round((arr[i].vol1/arr[i].totalSolicitado)*100);
                         arr[i].por2=Math.round((arr[i].vol2/arr[i].totalSolicitado)*100);
-                        arr[i].por3=Math.round((arr[i].vol3/arr[i].totalSolicitado)*100);            
+                        arr[i].por3=Math.round((arr[i].vol3/arr[i].totalSolicitado)*100);
 
-        } 
-        
-        arr = arr.sort((a, b) => {                
-                        return b.fecha - a.fecha;                                    
-        
-        }); 
-        
+        }
+
+        arr = arr.sort((a, b) => {
+                        return b.fecha - a.fecha;
+
+        });
+
         arr=arr.reverse();
 
         var ancho=20;
         var caso=0;
-       
-        
+
+
         var svgTooltipWidth=arr.length*ancho;
         if(svgTooltipWidth < 80)
         svgTooltipWidth=80;
-    
+
         var svgTooltipHeight=500;
         var marginBottom=svgTooltipHeight*.11;
-        var tamanioFuente=ancho*.8;   
-    
-        $("#toolTip2").css("visibility","visible");            
-        $("#toolTip2").css("left",(mouse_x+300)+"px");
-           
-      
+        var tamanioFuente=ancho*.8;
+
+        $("#toolTip2").css("visibility","visible");
+        $("#toolTip2").css("top",15+"%");
+        $("#toolTip2").css("left",24+"%");
+
+
         // ADD ON PARA USAR EL FORMATEADOR DE TOOLTIPS ---------------------------------------------------
 
 
         // FORMATEA TOOL TIP :
-    
+
         vix_tt_formatToolTip("#toolTip2","Detalle de Días de FR de "+entity.key,svgTooltipWidth);
 
         // Agrega un div con un elemento svg :
@@ -409,8 +411,8 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 
         // -------------------------------------------------------------------------------------------------
 
-    
-        d3.select("#svgTooltip")                     
+
+        d3.select("#svgTooltip")
                     .style("width", svgTooltipWidth )
                     .style("height", svgTooltipHeight )
                     ;
@@ -422,23 +424,23 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 
         var posY=mouse_y-50;
 
-        
+
 
         if( posY < 0 ){
                 posY=50;
         }
 
-      
-       
-        for(var i=0; i < arr.length; i++ ){        
-                
+
+
+        for(var i=0; i < arr.length; i++ ){
+
                 var altura=svgTooltipHeight*.3;
                 var altura1=GetValorRangos( arr[i].por1,1, 100 ,1,altura);
                 var altura2=GetValorRangos( arr[i].por2,1, 100 ,1,altura);
                 var altura3=GetValorRangos( arr[i].por3,1, 100 ,1,altura);
-              
-          
-                d3.select("#svgTooltip").append("rect")		    		
+
+
+                d3.select("#svgTooltip").append("rect")
                                             .attr("width",ancho )
                                             .attr("class","frDetail")
                                             .attr("x",ancho*caso  )
@@ -448,10 +450,10 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                             .style("stroke-width",1)
                                             .style("stroke-color","#ffffff")
                                             .transition().delay(0).duration(i*50)
-                                            .style("height",altura )	
+                                            .style("height",altura )
                                             ;
 
-                d3.select("#svgTooltip").append("rect")		    		
+                d3.select("#svgTooltip").append("rect")
                                             .attr("width",ancho*.6 )
                                             .attr("class","frDetail")
                                             .attr("x",(ancho*caso)+(ancho*.1)  )
@@ -459,10 +461,10 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                             .attr("height",1)
                                             .attr("fill","#00A8FF")
                                             .transition().delay(0).duration(i*50)
-                                            .style("height",altura1 )	
+                                            .style("height",altura1 )
                                             ;
 
-                d3.select("#svgTooltip").append("rect")		    		
+                d3.select("#svgTooltip").append("rect")
                                             .attr("width",ancho*.6 )
                                             .attr("class","frDetail")
                                             .attr("x",(ancho*caso)+(ancho*.1)  )
@@ -470,10 +472,10 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                             .attr("height",1)
                                             .attr("fill","#EAFF00")
                                             .transition().delay(0).duration(i*50)
-                                            .style("height",altura2 )	
+                                            .style("height",altura2 )
                                             ;
 
-                 d3.select("#svgTooltip").append("rect")		    		
+                 d3.select("#svgTooltip").append("rect")
                                             .attr("width",ancho*.6 )
                                             .attr("class","frDetail")
                                             .attr("x",(ancho*caso)+(ancho*.1)  )
@@ -481,83 +483,83 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                             .attr("height",1)
                                             .attr("fill","#FF0000")
                                             .transition().delay(0).duration(i*50)
-                                            .style("height",altura3 )	
+                                            .style("height",altura3 )
                                             ;
 
 
                 var alturaVolumen=GetValorRangos( arr[i].CantEntfinal,1, maximo ,1,svgTooltipHeight*.3);
 
-                d3.select("#svgTooltip").append("rect")		    		
+                d3.select("#svgTooltip").append("rect")
                                         .attr("width",(ancho*.7) )
                                         .attr("class","frDetail")
                                         .attr("x", ancho*caso  )
                                         .attr("y", (svgTooltipHeight*.5)-alturaVolumen-3  )
                                         .attr("height",alturaVolumen)
-                                        .attr("fill","#FFFFFF")                                     
+                                        .attr("fill","#FFFFFF")
                                         .transition().delay(0).duration(i*50)
-                                        .style("height",alturaVolumen )	
+                                        .style("height",alturaVolumen )
                                         ;
 
-        
-    
+
+
                 d3.select("#svgTooltip")
-                        .append("text")						
+                        .append("text")
                         .attr("class","frDetail")
-                        .style("fill","#ffffff")		
+                        .style("fill","#ffffff")
                         .style("font-family","Cabin")
                         .style("font-weight","bold")
-                        .style("font-size",tamanioFuente*.8)						
+                        .style("font-size",tamanioFuente*.8)
                         .style("text-anchor","start")
                         .style("opacity",0 )
                         .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.7)+3  )+","+String( ((svgTooltipHeight*.6))-marginBottom-alturaVolumen  )+")  rotate("+(-90)+") ")
                         .text(function(){
-                        
+
                             return  Math.round((arr[i].CantEntfinal/1000)*100)/100 +"k";
-    
+
                         })
                         .transition().delay(0).duration(i*50)
                                             .style("opacity",1 )
                       ;
 
                 d3.select("#svgTooltip")
-                      .append("text")						
+                      .append("text")
                       .attr("class","frDetail")
-                      .style("fill","#FFFFFF")		
+                      .style("fill","#FFFFFF")
                       .style("font-family","Cabin")
                       .style("font-weight","bold")
-                      .style("font-size",tamanioFuente*.84)						
+                      .style("font-size",tamanioFuente*.84)
                       .style("text-anchor","start")
                       .style("opacity",0 )
                       .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.8)+1  )+","+String( (svgTooltipHeight-50)-marginBottom )+")  rotate("+(-90)+") ")
                       .text(function(){
-                      
+
                           return  arr[i].por1+"%";
-  
+
                       })
                       .transition().delay(0).duration(i*50)
                                           .style("opacity",1 )
                     ;
-    
+
                 d3.select("#svgTooltip")
-                                .append("text")						
+                                .append("text")
                                 .attr("class","frDetail")
-                                .style("fill","#ffffff")		
+                                .style("fill","#ffffff")
                                 .style("font-family","Cabin")
                                 .style("font-weight","bold")
-                                .style("font-size",tamanioFuente*.7)	
+                                .style("font-size",tamanioFuente*.7)
                                 .style("text-anchor","end")
                                 .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.7)  )+","+String( (svgTooltipHeight)-marginBottom+10  )+")  rotate("+(-90)+") ")
                                 .text(function(){
-                                        
+
                                 var date=new Date( Number(arr[i].key) );
 
                                 return  date.getDate()+" "+getMes(date.getMonth());
-        
+
                                 });
-    
-                        caso++;            
-        }         
-    
+
+                        caso++;
+        }
+
     }
 
     kpiExpert_FR.DrawMainHeader=function(){
@@ -565,7 +567,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                 kpiExpert_FR.ancho=windowWidth*.35;
 
                 kpiExpert_FR.offSetLeft=(windowWidth*.32)+150+30;
-                kpiExpert_FR.offSetTop=10;              
+                kpiExpert_FR.offSetTop=10;
 
                 kpiExpert_FR.altura=45;
 
@@ -575,12 +577,12 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                 ancho=kpiExpert_FR.ancho;
 
                 var altura=kpiExpert_FR.altura;
-                
+
                 svgLines.selectAll(".encabezado").data([]).exit().remove();
 
                 // SOLICITADO **********
 
-                svgLines														
+                svgLines
 			.append("rect")
 			.attr("fill","#292929")
 			.style("stroke","#cccccc")
@@ -596,17 +598,17 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 			.attr("y",offSetTop)
 			;
 
-               
 
-                svgLines.append("text")							
+
+                svgLines.append("text")
 			//.attr("x",20 )
 			//.attr("y", (alturaPorPeriodo*i)+margenSuperior+30  )
-			.style("fill","white")		
-                        .attr("class","encabezado")					
+			.style("fill","white")
+                        .attr("class","encabezado")
 			.style("opacity",0)
 			.style("font-family","Cabin")
 			.style("font-weight","normal")
-			.style("font-size",13*escalaTextos)						
+			.style("font-size",13*escalaTextos)
 			.style("text-anchor","start")
 			.attr("x",offSetLeft+10)
 			.attr("y", offSetTop+17 )
@@ -620,13 +622,13 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 
 
 
-                svgLines.append("text")							
-			.style("fill","white")		
-                        .attr("class","encabezado")					
+                svgLines.append("text")
+			.style("fill","white")
+                        .attr("class","encabezado")
 			.style("opacity",0)
 			.style("font-family","Cabin")
 			.style("font-weight","normal")
-			.style("font-size",12*escalaTextos)						
+			.style("font-size",12*escalaTextos)
 			.style("text-anchor","start")
 			.attr("x",offSetLeft+(200*escalaTextos)+10 )
 			.attr("y", offSetTop+17 )
@@ -662,28 +664,28 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                 por3_filtered=0;
 
 
-                for(var k=0;  k < store.dataToDraw.length; k++){      
-                        
+                for(var k=0;  k < store.dataToDraw.length; k++){
+
                         totalCanSol_filtered+=Number(store.dataToDraw[k][campoTotalSolicitado]);
-                        
+
                         totalCanEnt_filtered+=Number(store.dataToDraw[k][campoDeVolumenFR]);
-                        
+
                         if(store.dataToDraw[k][campoDeATiempo] == "A Tiempo"){
                                 vol1_filtered+=Number(store.dataToDraw[k][campoDeVolumenFR]);
                         }else if(store.dataToDraw[k][campoDeATiempo] == "1 a 2 días Tarde"){
                                 vol2_filtered+=Number(store.dataToDraw[k][campoDeVolumenFR]);
                         }else if(store.dataToDraw[k][campoDeATiempo] == "3 o más días Tarde"){
                                 vol3_filtered+=Number(store.dataToDraw[k][campoDeVolumenFR]);
-                        }                 
+                        }
                 }
-                
+
 
                 por1_filtered=Math.round((vol1_filtered/totalCanSol_filtered)*100);
                 por2_filtered=Math.round((vol2_filtered/totalCanSol_filtered)*100);
-                por3_filtered=Math.round((vol3_filtered/totalCanSol_filtered)*100);          
+                por3_filtered=Math.round((vol3_filtered/totalCanSol_filtered)*100);
 
                 // AZUL **********
-                
+
                 var ancho2 = GetValorRangos( vol1_filtered ,1, totalCanSol_ref , 1,kpiExpert_FR.ancho);
 
                 if(!ancho2)
@@ -691,12 +693,12 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 
                 if(ancho2 < 1)
                 ancho2=1;
-                
-                svgLines														
+
+                svgLines
                         .append("rect")
-                        .attr("fill","#00A8FF")			
+                        .attr("fill","#00A8FF")
                         .attr("filter","url(#glow)")
-                        .attr("class","encabezadoFiltered")			
+                        .attr("class","encabezadoFiltered")
                         .style("opacity",1 )
                         .attr("rx",4)
                         .attr("width",1 )
@@ -707,9 +709,9 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .style("width",ancho2-3 )
                         ;
 
-                        
-                
-                // AMARILLO        
+
+
+                // AMARILLO
 
                 var ancho3 = GetValorRangos( vol2_filtered ,1, totalCanSol_ref , 1,kpiExpert_FR.ancho);
 
@@ -719,11 +721,11 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                 if(ancho3 < 1)
                 ancho3=1;
 
-                svgLines														
+                svgLines
                         .append("rect")
-                        .attr("fill","#FCFF00")                        
+                        .attr("fill","#FCFF00")
                         .attr("filter","url(#glow)")
-                        .attr("class","encabezadoFiltered")                       
+                        .attr("class","encabezadoFiltered")
                         .style("opacity",1 )
                         .attr("rx",4)
                         .attr("width",1 )
@@ -732,7 +734,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .attr("y",kpiExpert_FR.offSetTop+5+(altura*.4))
                         .transition().delay(1000).duration(1000)
                         .attr("width",ancho3-3 )
-                        ;        
+                        ;
 
                 // ROJO
 
@@ -744,11 +746,11 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                 if(ancho4 < 1)
                 ancho4=1;
 
-                svgLines														
+                svgLines
                         .append("rect")
-                        .attr("fill","#FF0000")                        
+                        .attr("fill","#FF0000")
                         .attr("filter","url(#glow)")
-                        .attr("class","encabezadoFiltered")                        
+                        .attr("class","encabezadoFiltered")
                         .style("opacity",1 )
                         .attr("rx",4)
                         .attr("width",1 )
@@ -758,15 +760,15 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .transition().delay(2000).duration(1000)
                         .attr("width",ancho4-3 )
                         ;
-                
+
                 //CIRCULO Y LIENA
 
-                svgLines				
+                svgLines
                         .append("circle")
                         .attr("class","encabezadoFiltered")
                         .attr("fill","#ffffff")
                         .attr("cx",kpiExpert_FR.offSetLeft+ancho2+ancho3+ancho4+6 )
-                        .attr("cy",kpiExpert_FR.offSetTop+15+(altura*.4))                   
+                        .attr("cy",kpiExpert_FR.offSetTop+15+(altura*.4))
                         .attr("r",3);
                 /*
                 svgLines.append("line")
@@ -781,21 +783,21 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 */
 
                 // ENTREGADO **********
-        
-                svgLines.append("text")							
+
+                svgLines.append("text")
                         //.attr("x",20 )
                         //.attr("y", (alturaPorPeriodo*i)+margenSuperior+30  )
-                        .style("fill","white")		
-                        .attr("class","encabezadoFiltered")					
+                        .style("fill","white")
+                        .attr("class","encabezadoFiltered")
                         .style("opacity",0)
                         .style("font-family","Cabin")
                         .style("font-weight","normal")
-                        .style("font-size",12*escalaTextos)						
+                        .style("font-size",12*escalaTextos)
                         .style("text-anchor","start")
                         .attr("x", kpiExpert_FR.offSetLeft+ancho2+ancho3+ancho4+14)
-                        .attr("y", kpiExpert_FR.offSetTop+15+(altura*.5))  
+                        .attr("y", kpiExpert_FR.offSetTop+15+(altura*.5))
                         .text(function(){
-                                
+
                                 //return "Muestra Solicitado: "+formatNumber(Math.round(totalCanSol_filtered/1000) )+" k Ton - Entregado: "+formatNumber(Math.round(totalCanEnt_filtered/1000) )+" k Ton ("+ Math.round((totalCanEnt_filtered/totalCanSol_filtered)*100) +"%)";
                                 return "Muestra Entregado: "+Math.round((totalCanEnt_filtered/totalCanSol_filtered)*100)+"% , "+formatNumber(Math.round(totalCanEnt_filtered/1000) )+" k  - Solictidado: "+formatNumber(Math.round(totalCanSol_filtered/1000) )+" k  ";
 
@@ -803,21 +805,21 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .transition().delay(0).duration(1000)
                         .style("opacity",1 );
 
-                
+
                 // TEXTO AZUL
 
-                svgLines.append("text")							
-                        .style("fill","#00A8FF")		
-                        .attr("class","encabezadoFiltered")					
+                svgLines.append("text")
+                        .style("fill","#00A8FF")
+                        .attr("class","encabezadoFiltered")
                         .style("opacity",0)
                         .style("font-family","Cabin")
                         .style("font-weight","normal")
-                        .style("font-size",13*escalaTextos)						
+                        .style("font-size",13*escalaTextos)
                         .style("text-anchor","start")
                         .attr("x", kpiExpert_FR.offSetLeft  )
-                        .attr("y", kpiExpert_FR.offSetTop+45+(altura*.5))  
+                        .attr("y", kpiExpert_FR.offSetTop+45+(altura*.5))
                         .text(function(){
-                                
+
                                 return "A tiempo: "+por1_filtered+"%";
 
                         })
@@ -826,18 +828,18 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 
                 // TEXTO AMARILLO
 
-                svgLines.append("text")							
-                        .style("fill","#FCFF00")		
-                        .attr("class","encabezadoFiltered")					
+                svgLines.append("text")
+                        .style("fill","#FCFF00")
+                        .attr("class","encabezadoFiltered")
                         .style("opacity",0)
                         .style("font-family","Cabin")
                         .style("font-weight","normal")
-                        .style("font-size",13*escalaTextos)						
+                        .style("font-size",13*escalaTextos)
                         .style("text-anchor","start")
                         .attr("x", kpiExpert_FR.offSetLeft +(7*(escalaTextos*13) ))
-                        .attr("y", kpiExpert_FR.offSetTop+45+(altura*.5))  
+                        .attr("y", kpiExpert_FR.offSetTop+45+(altura*.5))
                         .text(function(){
-                                
+
                                 return "1 a 2 días: "+por2_filtered+"%";
 
                         })
@@ -846,24 +848,23 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
 
                 // TEXTO ROJO
 
-                svgLines.append("text")							
-                        .style("fill","#FF0000")		
-                        .attr("class","encabezadoFiltered")					
+                svgLines.append("text")
+                        .style("fill","#FF0000")
+                        .attr("class","encabezadoFiltered")
                         .style("opacity",0)
                         .style("font-family","Cabin")
                         .style("font-weight","normal")
-                        .style("font-size",13*escalaTextos)						
+                        .style("font-size",13*escalaTextos)
                         .style("text-anchor","start")
                         .attr("x", kpiExpert_FR.offSetLeft +(14*(escalaTextos*13) ))
-                        .attr("y", kpiExpert_FR.offSetTop+45+(altura*.5))  
+                        .attr("y", kpiExpert_FR.offSetTop+45+(altura*.5))
                         .text(function(){
-                                
+
                                 return "3 Días o mas: "+por3_filtered+"%";
 
                         })
                         .transition().delay(0).duration(1000)
                         .style("opacity",1 );
-                        
+
 
  }
-    

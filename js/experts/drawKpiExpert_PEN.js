@@ -1,8 +1,8 @@
 var kpiExpert_PENDIENTES={};
 
-kpiExpert_PENDIENTES.eraseChart=function(){ 
+kpiExpert_PENDIENTES.eraseChart=function(){
 
-    d3.select("#svgTooltip").selectAll(".prodDetail").data([]).exit().remove();   
+    d3.select("#svgTooltip").selectAll(".prodDetail").data([]).exit().remove();
     d3.select("#svgTooltip3").selectAll(".penDetail").data([]).exit().remove();
     $("#toolTip2").css("visibility","hidden");
     $("#toolTip3").css("visibility","hidden");
@@ -10,33 +10,33 @@ kpiExpert_PENDIENTES.eraseChart=function(){
 }
 
 
-kpiExpert_PENDIENTES.DrawTooltipDetail=function(entity){   
-    
+kpiExpert_PENDIENTES.DrawTooltipDetail=function(entity){
+
     d3.select("#svgTooltip").selectAll(".penDetail").data([]).exit().remove();
     d3.select("#svgTooltip3").selectAll(".penDetail").data([]).exit().remove();
 
-    kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo(entity);  
-    kpiExpert_PENDIENTES.DrawTooltipDetail_Dia(entity);  
+    kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo(entity);
+    kpiExpert_PENDIENTES.DrawTooltipDetail_Dia(entity);
 
 }
 
-kpiExpert_PENDIENTES.DrawTooltipDetail_Dia=function(entity){    
+kpiExpert_PENDIENTES.DrawTooltipDetail_Dia=function(entity){
 
     var maximo=0;
 
     var arr=d3.nest()
-            .key(function(d) { 
+            .key(function(d) {
 
                     if(d.fecha){
-                            return d.fecha.getTime(); 
-                    }else{                       
+                            return d.fecha.getTime();
+                    }else{
                             return 0;
-                    }                        
-    
+                    }
+
             })
             .entries(entity.pendientes.allRecords);
 
-            
+
 
     for(var i=0; i < arr.length; i++ ){
 
@@ -59,31 +59,32 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Dia=function(entity){
 
     }
 
-    arr = arr.sort((a, b) => {                
-        return b.fecha - a.fecha;                                    
+    arr = arr.sort((a, b) => {
+        return b.fecha - a.fecha;
 
-    }); 
+    });
 
     arr=arr.reverse();
 
     var ancho=20;
 
-    
+
     var svgTooltipWidth=arr.length*ancho;
 
     if(svgTooltipWidth < 80)
     svgTooltipWidth=80;
 
     var svgTooltipHeight=500;
-    var tamanioFuente=ancho*.8;   
+    var tamanioFuente=ancho*.8;
 
     var marginBottom=svgTooltipHeight*.11;
 
 
-    $("#toolTip3").css("visibility","visible");            
-    $("#toolTip3").css("right",(svgTooltipWidth+10)+"px");
+    $("#toolTip3").css("visibility","visible");
+    $("#toolTip3").css("top",15+"%");
+    $("#toolTip3").css("left",64+"%");
 
-
+/*
     var posY=mouse_y-50;
 
     if( $("#toolTip3").height()+mouse_y+50 > windowHeight ){
@@ -95,10 +96,10 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Dia=function(entity){
     }
 
     $("#toolTip3").css("top",posY);
-
+*/
 
     // FORMATEA TOOL TIP :
-    
+
     vix_tt_formatToolTip("#toolTip3","Retrasados por Día de "+entity.key,svgTooltipWidth);
 
     // Agrega un div con un elemento svg :
@@ -106,19 +107,19 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Dia=function(entity){
     var svgElement = "<svg id='svgTooltip3' style='pointer-events:none;'></svg>";
     d3.select("#toolTip3").append("div").html(svgElement);
 
-    d3.select("#svgTooltip3")                     
+    d3.select("#svgTooltip3")
         .style("width", svgTooltipWidth )
         .style("height", (svgTooltipHeight)+50 )
                     ;
 
-    for(var i=0; i < arr.length; i++ ){   
+    for(var i=0; i < arr.length; i++ ){
 
         var altura=svgTooltipHeight*.7;
         var altura1=GetValorRangos( arr[i].Libre_Pendiente_Hoy,1, maximo ,1,altura);
         var altura2=GetValorRangos( arr[i].Libre_Retrasado,1, maximo ,1,altura);
 
-       
-        d3.select("#svgTooltip3").append("rect")		    		
+
+        d3.select("#svgTooltip3").append("rect")
                                             .attr("width",ancho*.8 )
                                             .attr("class","penDetail")
                                             .attr("x",(ancho*i)  )
@@ -127,9 +128,9 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Dia=function(entity){
                                             .attr("fill","#00A8FF")
                                             .style("pointer-events","auto")
                                             .append('title')
-                                            .text("Libre Pendiente Hoy: "+formatNumber(arr[i].Libre_Pendiente_Hoy));	
+                                            .text("Libre Pendiente Hoy: "+formatNumber(arr[i].Libre_Pendiente_Hoy));
 
-        d3.select("#svgTooltip3").append("rect")		    		
+        d3.select("#svgTooltip3").append("rect")
                                     .attr("width",ancho*.8 )
                                     .attr("class","penDetail")
                                     .attr("x",(ancho*i)  )
@@ -138,47 +139,47 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Dia=function(entity){
                                     .attr("fill","#EAFF00")
                                     .style("pointer-events","auto")
                                     .append('title')
-                                    .text("Libre Retrasado: "+formatNumber(arr[i].Libre_Retrasado));	
+                                    .text("Libre Retrasado: "+formatNumber(arr[i].Libre_Retrasado));
                                     ;
-                
+
         d3.select("#svgTooltip3")
-                .append("text")						
+                .append("text")
                 .attr("class","penDetail")
-                .style("fill","#ffffff")		
+                .style("fill","#ffffff")
                 .style("font-family","Cabin")
                 .style("font-weight","bold")
-                .style("font-size",tamanioFuente)	
+                .style("font-size",tamanioFuente)
                 .style("text-anchor","start")
                 .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight)-altura1-altura2-marginBottom-9   )+")  rotate("+(-90)+") ")
                 .text(function(){
-                
+
                     return  formatNumber(arr[i].Total) ;
 
                 });
 
         d3.select("#svgTooltip3")
-                .append("text")						
+                .append("text")
                 .attr("class","penDetail")
-                .style("fill","#ffffff")		
+                .style("fill","#ffffff")
                 .style("font-family","Cabin")
                 .style("font-weight","bold")
-                .style("font-size",tamanioFuente)	
+                .style("font-size",tamanioFuente)
                 .style("text-anchor","end")
                 .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight)-marginBottom+10   )+")  rotate("+(-90)+") ")
                 .text(function(){
-                
+
                     var date=new Date( Number(arr[i].key) );
 
                     return  date.getDate()+" "+getMes(date.getMonth());
 
                 });
-                
+
     }
 
 }
 
 
-kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo=function(entity){    
+kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo=function(entity){
 
     var maximo=0;
 
@@ -191,7 +192,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo=function(entity){
         console.log(Number(dataElement[campos[i]]));
         if(maximo < Number(dataElement[campos[i]]) ){
             maximo = Number(dataElement[campos[i]]);
-        } 
+        }
     }
 
     var altura=50;
@@ -203,16 +204,17 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo=function(entity){
     var tamanioFuente=altura*.4;
     var marginTop=svgTooltipHeight*.1;
 
-    $("#toolTip2").css("visibility","visible");            
-    $("#toolTip2").css("left",(200)+"px");
-   
+    $("#toolTip2").css("visibility","visible");
+    $("#toolTip2").css("top",15+"%");
+    $("#toolTip2").css("left",24+"%");
 
+/*
     if( (mouse_y-100)+(campos.length*altura) > windowHeight  )
         $("#toolTip2").css("top",(windowHeight-(campos.length*altura)-150)+"px");
-        
-  
 
-    d3.select("#svgTooltip")                     
+
+
+    d3.select("#svgTooltip")
                 .style("height", svgTooltipHeight+50 )
                 ;
 
@@ -227,13 +229,13 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo=function(entity){
 
     }
     $("#toolTip2").css("top",posY);
-
+*/
     vix_tt_formatToolTip("#toolTip2","Retrasados por Tipo de "+entity.key,svgTooltipWidth);
 
     var svgElement = "<svg id='svgTooltip' style='pointer-events:none;'></svg>";
     d3.select("#toolTip2").append("div").html(svgElement);
 
-    d3.select("#svgTooltip")                     
+    d3.select("#svgTooltip")
         .style("width", svgTooltipWidth )
         .style("height", (svgTooltipHeight)+50 )
                     ;
@@ -245,17 +247,17 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo=function(entity){
         if( !dataElement[campos[i]] ){
 
             d3.select("#svgTooltip")
-                        .append("text")						
+                        .append("text")
                         .attr("class","penDetail")
-                        .style("fill",colores[caso])		
+                        .style("fill",colores[caso])
                         .style("font-family","Cabin")
                         .style("font-weight","bold")
-                        .style("font-size",tamanioFuente)						
+                        .style("font-size",tamanioFuente)
                         .style("text-anchor","start")
                         .style("opacity",0 )
                         .attr("transform"," translate("+String( 10  )+","+String( altura*caso+(tamanioFuente)+marginTop   )+")  rotate("+(0)+") ")
                         .text(function(){
-                        
+
                             return campos[i];
                         })
                         .transition().delay(0).duration(1000)
@@ -266,30 +268,30 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo=function(entity){
 
 
             var ancho=GetValorRangos(  Number(dataElement[campos[i]]) ,1, maximo ,1,svgTooltipWidth*.4);
-        
-            d3.select("#svgTooltip").append("rect")		    		
+
+            d3.select("#svgTooltip").append("rect")
                         .attr("width",1 )
                         .attr("class","penDetail")
                         .attr("x",marginLeft   )
                         .attr("y", (altura*caso)+marginTop )
-                        .attr("height",altura*.4)                        
+                        .attr("height",altura*.4)
                         .attr("fill",colores[caso])
                         .transition().delay(0).duration(1000)
                         .attr("width",ancho )
                         ;
 
             d3.select("#svgTooltip")
-                        .append("text")						
+                        .append("text")
                         .attr("class","penDetail")
-                        .style("fill",colores[caso])		
+                        .style("fill",colores[caso])
                         .style("font-family","Cabin")
                         .style("font-weight","bold")
-                        .style("font-size",tamanioFuente*.8)						
+                        .style("font-size",tamanioFuente*.8)
                         .style("text-anchor","start")
                         .style("opacity",0 )
                         .attr("transform"," translate("+String( 10  )+","+String( altura*caso+(tamanioFuente)+marginTop   )+")  rotate("+(0)+") ")
                         .text(function(){
-                        
+
                             return config.checkLabel(campos[i]);
                         })
                         .transition().delay(0).duration(1000)
@@ -297,27 +299,27 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo=function(entity){
                     ;
 
             d3.select("#svgTooltip")
-                        .append("text")						
+                        .append("text")
                         .attr("class","penDetail")
-                        .style("fill",colores[caso])		
+                        .style("fill",colores[caso])
                         .style("font-family","Cabin")
                         .style("font-weight","bold")
-                        .style("font-size",tamanioFuente*.8)						
+                        .style("font-size",tamanioFuente*.8)
                         .style("text-anchor","start")
                         .style("opacity",0 )
                         .attr("transform"," translate("+String( ancho+(marginLeft)+10  )+","+String( altura*caso+(tamanioFuente)+marginTop   )+")  rotate("+(0)+") ")
                         .text(function(){
-                        
+
                             return formatNumber((Math.round(   (Number(dataElement[campos[i]])/1000)   *100)/100) ,true)+" k";
                         })
                         .transition().delay(0).duration(1000)
                         .style("opacity",1 )
-                    ;                  
+                    ;
 
         }
         caso++;
 
     }
-   
+
 
 }
