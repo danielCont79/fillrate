@@ -367,7 +367,7 @@ color: yellow;
                 </filter>
         </defs>
         </svg>
-        <div id="version"  style="color:gray;opacity:1;font-family: Cabin;font-size:11px;position:fixed;top:70px;left:10px;z-index:9999">V. BETA 18</div>
+        <div id="version"  style="color:gray;opacity:1;font-family: Cabin;font-size:11px;position:fixed;top:70px;left:10px;z-index:9999">V. BETA 25</div>
 
         <div style="position:fixed;z-index:-10;float:left;top:0px;pointer-events:none;height:100%;width:100%;background:linear-gradient(#000000, #000000);"></div>
 
@@ -631,6 +631,9 @@ color: yellow;
               
 
             $(function() { 
+
+                if(window.location.origin.indexOf("localhost")>-1 )
+
 
                 dateInit=new Date($('#datepicker').val());
                 dateEnd=new Date($('#datepicker2').val());
@@ -950,7 +953,7 @@ color: yellow;
         s.parentNode.insertBefore(script, s); 
 
     })();
-
-    */
+*/
+    
 
     </script>

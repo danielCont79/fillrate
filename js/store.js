@@ -1,8 +1,12 @@
-var _bkserver = "https://uscldv3dwad01.azurewebsites.net";
+//var _bkserver = "https://uscldv3dwad01.azurewebsites.net";
 //const _bkserver = "http://10.26.83.182:8080";
 
-if(window.location.origin.indexOf("localhost")==-1 )
-    _bkserver="";
+if(window.location.origin.indexOf("localhost") > -1 ){
+    var _bkserver="https://uscldv3dwad01.azurewebsites.net";
+}else{
+    var  _bkserver=window.location.origin;
+}
+    
 
 var store={
    dataToDraw:[],
