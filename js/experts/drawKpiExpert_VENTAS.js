@@ -268,8 +268,6 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                         diasDelPeriodo[ data.recordset[i].fecha.getTime() ]=true;
                                         data_.push(data.recordset[i]);
 
-                                }else{
-                                        
                                 }
     
                           }
@@ -279,7 +277,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                           var end=dateEnd.getTime();
 
                           for(var i=init; i < end+1000; i+=((1000*60)*60)*24 ){
-                        
+
                               if(!diasDelPeriodo[new Date(i).getTime()]){
                                       
                                       var obj={};
@@ -419,11 +417,15 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                   for(var j=0; j < arr[i].values.length; j++ ){
 
                                         arr[i].VolumenPlan+=Number(arr[i].values[j].VolumenPlan);
-                                        arr[i].VolumenReal+=Number(arr[i].values[j].VolumenReal);
+                                        //arr[i].VolumenReal+=Number(arr[i].values[j].VolumenReal);
 
                                         arr[i].AutofleteReal+=Number(arr[i].values[j].AutofleteReal);
                                         arr[i].RecogidoReal+=Number(arr[i].values[j].RecogidoReal);
                                         arr[i].EntregadoReal+=Number(arr[i].values[j].EntregadoReal);
+
+                                        arr[i].VolumenReal+=Number(arr[i].values[j].AutofleteReal);
+                                        arr[i].VolumenReal+=Number(arr[i].values[j].RecogidoReal);
+                                        arr[i].VolumenReal+=Number(arr[i].values[j].EntregadoReal);
 
                                   }
 
@@ -490,7 +492,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                             <div class="dateContainer " style="margin-right: 9px;
                                                 display: grid;align-content: flex-start">
                                                 <button id="" style="font-size: 10px;margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='mes'; $('#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Mes</button> 
-                                                <button id="" style="font-size: 10px; margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='semana'; $("#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Semana</button> 
+                                                <button id="" style="font-size: 10px; margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='semana'; $('#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Semana</button> 
                                                 <button id="" style="font-size: 10px; margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='dia'; $('#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Día</button> 
                                             </div>
                                             <div class="dateContainer " style="    padding-top: 14px;">
@@ -506,8 +508,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                               </div>
                              
                               <div class="bottom-bar" onClick="drawKpiExpert_VENTAS.DownloadCSVByDay('${entity.key}')" style="    margin-left: 10px;padding: 5px; height: 20px; width: 28px; background-color: rgb(31, 46, 57); border-top-left-radius: 2px; border-top-right-radius: 2px;"><div style="float: left;"><button class="download-button" style="float: right; cursor: pointer; background-color: transparent; border: none; color: rgb(255, 255, 255);"><i class="fas fa-download"></i></button></div></div>
-                              `
-                          
+                              `                          
                             ;
 
                             d3.select("#toolTip4").append("div").html(svgElement); 
@@ -541,9 +542,16 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                 var altura=(svgTooltipHeight*.22);
 
                                 if(arr[i].VolumenPlan==0 && arr[i].VolumenPlan==0){
+
                                   var altura1=1;
                                   var altura2=1;
+
+                                  var altura_AutofleteReal=1;
+                                  var altura_RecogidoReal=1;
+                                  var altura_EntregadoReal=1;
+
                                 }else{
+
                                   var altura1=GetValorRangos( arr[i].VolumenReal,1, maximo ,1,altura);
                                   var altura2=GetValorRangos( arr[i].VolumenPlan,1, maximo ,1,altura);
 
@@ -554,7 +562,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                 
                                 }                               
                                
-
+                                /*
                                 d3.select("#svgTooltip4").append("rect")		    		
                                                 .attr("width",ancho*.9 )
                                                 .attr("class","ventasDetail")
@@ -565,9 +573,10 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                                 .transition().delay(0).duration(i*50)
                                                 .style("height",altura1 )	
                                                 ;
+                                                */
 
                                 d3.select("#svgTooltip4").append("rect")		    		
-                                                .attr("width",ancho*.7 )
+                                                .attr("width",ancho*.9 )
                                                 .attr("class","ventasDetail")
                                                 .attr("x",(ancho*caso)  )
                                                 .attr("y", ((svgTooltipHeight*.65))-altura_AutofleteReal-80  )
@@ -578,7 +587,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                                 ;
 
                                 d3.select("#svgTooltip4").append("rect")		    		
-                                                .attr("width",ancho*.7 )
+                                                .attr("width",ancho*.9 )
                                                 .attr("class","ventasDetail")
                                                 .attr("x",(ancho*caso)  )
                                                 .attr("y", ((svgTooltipHeight*.65))-altura_AutofleteReal-80-(altura_RecogidoReal)  )
@@ -589,7 +598,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                                 ;
 
                                 d3.select("#svgTooltip4").append("rect")		    		
-                                                .attr("width",ancho*.7 )
+                                                .attr("width",ancho*.9 )
                                                 .attr("class","ventasDetail")
                                                 .attr("x",(ancho*caso)  )
                                                 .attr("y", ((svgTooltipHeight*.65))-altura_AutofleteReal-80 -(altura_RecogidoReal+altura_EntregadoReal) )

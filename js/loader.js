@@ -100,8 +100,6 @@ dataLoader.HideLoadings=function(){
 
 }
 
-
-
 dataLoader.LoadData=function(def,cb){  
 
     $("#cargando").css("visibility","visible");   
