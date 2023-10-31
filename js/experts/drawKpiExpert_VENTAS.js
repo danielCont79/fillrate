@@ -320,14 +320,23 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
 
                           for(var i=0; i < data.recordset.length; i++ ){
 
-                                var fechaDelMes = new Date(data.recordset[i].fecha.getFullYear(), data.recordset[i].fecha.getMonth());
-                                
+                                // Asigna el mes
+                                var fechaDelMes = new Date(data.recordset[i].fecha.getFullYear(), data.recordset[i].fecha.getMonth());                                
                                 data.recordset[i].mes=fechaDelMes;
 
-                                if(!data.recordset[i].Vc20descr_sem){
-                                  data.recordset[i].semanaDate=data.recordset[i].fecha.getWeekDate();
-                                  data.recordset[i].Vc20descr_sem=data.recordset[i].semanaDate.getFullYear()+"-"+(data.recordset[i].semanaDate.getMonth()+1)+"-"+data.recordset[i].semanaDate.getDate();
-                                  console.log("crea semamna ",data.recordset[i].Vc20descr_sem);
+                                //Asigna la semana en fecha js
+                                if(data.recordset[i].Vc20descr_sem ){
+
+                                    var semanaStr=data.recordset[i].Vc20descr_sem.split("-");
+                                    data.recordset[i].semanaDate=new Date( Number(semanaStr[0]), Number(semanaStr[1])-1,Number(semanaStr[2])  );
+                                    data.recordset[i].Vc20descr_sem_date=data.recordset[i].semanaDate.getTime();
+
+                                }else if( !data.recordset[i].Vc20descr_sem ){
+
+                                      data.recordset[i].semanaDate=data.recordset[i].fecha.getWeekDate();
+                                      data.recordset[i].Vc20descr_sem=data.recordset[i].semanaDate.getFullYear()+"-"+(data.recordset[i].semanaDate.getMonth()+1)+"-"+data.recordset[i].semanaDate.getDate();
+                                      data.recordset[i].Vc20descr_sem_date=data.recordset[i].semanaDate.getTime();
+                                 
                                 }                             
                                 
                               
@@ -352,9 +361,8 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                             var arr=d3.nest()
                                   .key(function(d) { 
 
-                                          if(d.mes){
-                                            console.log(d);
-                                                  return d.semana; 
+                                          if(d.Vc20descr_sem){                                            
+                                                  return d.Vc20descr_sem_date;
                                           }else{                       
                                                   return 0;
                                           }                        
@@ -400,7 +408,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
 
                                   }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="semana"){
 
-                                    arr[i].Fecha=arr[i].values[0].semana+" "+getMes(arr[i].values[0].mes.getMonth());
+                                    arr[i].Fecha=arr[i].values[0].semanaDate.getDate()+" "+getMes(arr[i].values[0].semanaDate.getMonth());
 
                                   }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
 
@@ -432,7 +440,11 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                           
                                 return b.fecha - a.fecha;   
                             
-                            }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
+                            }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="semana"){
+
+                              return b.Vc20descr_sem_date - a.Vc20descr_sem_date;   
+
+                          }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
 
                                 return b.mes - a.mes;   
 
@@ -454,7 +466,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                           if(svgTooltipWidth < 300)
                                 svgTooltipWidth=300;
                   
-                          var svgTooltipHeight=480;
+                          var svgTooltipHeight=500;
 
                           var tamanioFuente=ancho*.8;   
                                                  
@@ -477,9 +489,9 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                     <div class="dateContainer " style="display: flex;">
                                             <div class="dateContainer " style="margin-right: 9px;
                                                 display: grid;align-content: flex-start">
-                                                <button id="" style="font-size: 10px;margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='mes';drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Mes</button> 
-                                                <button id="" style="font-size: 10px; margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='semana';drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Semana</button> 
-                                                <button id="" style="font-size: 10px; margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='dia';drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Día</button> 
+                                                <button id="" style="font-size: 10px;margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='mes'; $('#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Mes</button> 
+                                                <button id="" style="font-size: 10px; margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='semana'; $("#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Semana</button> 
+                                                <button id="" style="font-size: 10px; margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='dia'; $('#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Día</button> 
                                             </div>
                                             <div class="dateContainer " style="    padding-top: 14px;">
                                                 <input id="datepicker_" width="100%" placeholder="Desde"/>

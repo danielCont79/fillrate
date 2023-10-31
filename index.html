@@ -473,6 +473,8 @@ color: yellow;
         <ul id="Controls2" class="fa-ul" style="width:150px;float:left;position:fixed;top:100px;font-family:Cabin;box-shadow: 5px 5px 20px #000000;right:260px;font-size:11px;z-index:9999999;opacity:1;line-height: 8px;margin:0px;text-transform:uppercase;border-style:solid;border-color:#254650;border-width:1px;color:#000000;background-color:rgba(0,0,0,.9);padding:20px;border-radius:9px;">
         </ul>
 
+        <div id="openweathermap-widget-18" style="position:fixed;z-index:999999;left:500px;top:300px;"></div>
+
     </body>     
   
 
@@ -931,5 +933,20 @@ color: yellow;
         }
     }
           
+
+    //OPEN WEATHER
+
+    window.myWidgetParam ? window.myWidgetParam : window.myWidgetParam = [];  
+
+    window.myWidgetParam.push({id: 18,cityid: '3995465',appid: '5ecb05c129c4cba524f02d97ccc0fee1',units: 'metric',containerid: 'openweathermap-widget-18',  });  
+
+    (function() {
+
+        var script = document.createElement('script');
+    
+        script.async = true;script.charset = "utf-8";script.src = "//openweathermap.org/themes/openweathermap/assets/vendor/owm/js/weather-widget-generator.js";
+        var s = document.getElementsByTagName('script')[0];s.parentNode.insertBefore(script, s); 
+
+    })();
 
     </script>

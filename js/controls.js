@@ -1236,12 +1236,38 @@ filterControls.createHardCodedControls=function(){
                 //elimina los estados
                 EliminaEstadosDibujados();
 
-                if($("#weather_cb").val()!=""){      
+                if($("#weather_cb").val()!="" && $("#weather_cb").val()!="temp_new"){      
+                    
+                    viewer.imageryLayers.removeAll();
+
+                    var imageryLayers=viewer.imageryLayers;
+                   
+                    var url='https://api.mapbox.com/styles/v1/dcontreras1979/ciwiilbs100022qnvp3m3vnsh/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZGNvbnRyZXJhczE5NzkiLCJhIjoiY2l3Z3dpY2gxMDFhbzJvbW40cWRqNmZ0OCJ9.KIrZ8JiXWYgjLBb-nL3kYg';
+                    
+                    layer=new Cesium.UrlTemplateImageryProvider(
+                        {
+                            url:url
+                        }
+                    );
+                    imageryLayers.addImageryProvider(layer);  
+                    
+                    var imageryLayers=viewer.imageryLayers;
+                    var url='https://tile.openweathermap.org/map/'+$("#weather_cb").val()+'/{z}/{x}/{y}.png?appid=497190b8b2c9ba28013a941c3172a3fc';
+                    layer=new Cesium.UrlTemplateImageryProvider(
+                        {
+                            url:url,
+                            alpha: 1,
+                        }
+                    );
+                    imageryLayers.addImageryProvider(layer)
+
+                }else if($("#weather_cb").val()=="temp_new"){      
                     
                     viewer.imageryLayers.removeAll();
 
                     var imageryLayers=viewer.imageryLayers;
                     var url='https://api.mapbox.com/styles/v1/dcontreras1979/clodg9bi4000x01qseqsma88k/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1IjoiZGNvbnRyZXJhczE5NzkiLCJhIjoiY2l3Z3dpY2gxMDFhbzJvbW40cWRqNmZ0OCJ9.KIrZ8JiXWYgjLBb-nL3kYg';
+                  
                     layer=new Cesium.UrlTemplateImageryProvider(
                         {
                             url:url
