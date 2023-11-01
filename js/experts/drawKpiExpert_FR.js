@@ -152,6 +152,9 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){
             .key(function(d) { return d.EstadoZTDem; })
             .entries(entity.values);  
 
+        var totalEnregado=0;
+        var totalSolicitado=0;
+
         for(var i=0; i < arr.length; i++ ){
                 
                 arr[i].CantEntfinal=0;
@@ -171,6 +174,9 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){
                         arr[i].CantEntfinal+=Number(arr[i].values[j][campoDeVolumenFR]);
                         arr[i].totalSolicitado+=Number(arr[i].values[j][campoTotalSolicitado]);
 
+                        totalEnregado+=Number(arr[i].values[j][campoDeVolumenFR]);
+                        totalSolicitado+=Number(arr[i].values[j][campoTotalSolicitado]);
+
                         if(arr[i].values[j][campoDeATiempo] == "A Tiempo"){
                                 arr[i].vol1+=Number(arr[i].values[j][campoDeVolumenFR]);
                         }else if(arr[i].values[j][campoDeATiempo] == "1 a 2 días Tarde"){
@@ -187,9 +193,16 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){
                 
                 arr[i].por1=Math.round((arr[i].vol1/arr[i].totalSolicitado)*100);
                 arr[i].por2=Math.round((arr[i].vol2/arr[i].totalSolicitado)*100);
-                arr[i].por3=Math.round((arr[i].vol3/arr[i].totalSolicitado)*100);   
-                
-                console.log("por1",arr[i].vol1,arr[i].totalSolicitado);
+                arr[i].por3=Math.round((arr[i].vol3/arr[i].totalSolicitado)*100);               
+               
+
+        }
+
+        for(var i=0; i < arr.length; i++ ){
+
+                arr[i].porEntregado= arr[i].totalSolicitado/totalSolicitado;
+                arr[i].porRetrasado= (arr[i].totalSolicitado-arr[i].CantEntfinal)   /totalSolicitado;
+                arr[i].porDifEntrtegadoSolicitado=arr[i].porEntregado-arr[i].porRetrasado;
 
         }
 
@@ -212,7 +225,7 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){
         svgTooltipHeight = windowHeight*.7;
     
     
-        var svgTooltipWidth=600;
+        var svgTooltipWidth=720;
         var marginLeft=svgTooltipWidth*.2;
         var tamanioFuente=altura*.4;
         var marginTop=35;
@@ -239,9 +252,10 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){
 
     var data = arr.map(function(item) {
         return {
-          key: item.key,
-          "por1": item.por1,      
-          "cant": item.CantEntfinal
+                key: item.key,
+                "por1": item.por1,      
+                "cant": item.CantEntfinal,
+                "porRetrasado": item.porDifEntrtegadoSolicitado
         };
         });    
     
@@ -251,11 +265,11 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){
         { key: "key", header: "Estado", sortable: true, width: "100px" },
         { key: "por1", header: "Fill Rate", sortable: true, width: "180px" },    
         { key: "cant", header: "Volumen Entregado", sortable: true, width: "180px" },
+        { key: "porRetrasado", header: "Retrasado (%)", sortable: true, width: "180px" },
         ];
     
     
-       // DEFINE VISITORS PARA CADA COLUMNA
-    
+       // DEFINE VISITORS PARA CADA COLUMNA    
     
       var columnVisitors = {
         key: function(value,i) {
@@ -287,6 +301,16 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){
 
                 return '<div class="bar-container">' +
                 '<span class="bar-value" style="width:80px">' + barValue + '</span>' +
+                '<svg width="90%" height="10"><rect class="bar-rect" width="' + ancho + '" height="10" style="fill: white;"></rect></svg>' +
+                '</div>';
+
+                
+        },
+        porRetrasado: function(value,i) {
+                var ancho=GetValorRangos( value*100,1, 100 ,1, 180 );
+                
+                return '<div class="bar-container">' +
+                '<span class="bar-value" style="width:80px;padding-left:20px;">' + Math.round(value*1000)/1000 + '</span>' +
                 '<svg width="90%" height="10"><rect class="bar-rect" width="' + ancho + '" height="10" style="fill: white;"></rect></svg>' +
                 '</div>';
 

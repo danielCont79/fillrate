@@ -457,11 +457,17 @@ Stage.CloneWindow=function(id_){
 
 	$(pinWindowsObj[id]).attr("id",id.replaceAll("#",""));
 	$(pinWindowsObj[id]).css("background-color","white");
+
 	setTimeout(()=>{$(pinWindowsObj[id]).css("background-color","black");}, 100);
 	
 	$(pinWindowsObj[id]).attr("class",$(id_).attr('class'));
 
 	$(pinWindowsObj[id]).find(".icons-column").css("visibility","hidden");
+
+	
+	if($(pinWindowsObj[id]).find("svg")){
+		$(pinWindowsObj[id]).find("svg").attr("id","");
+	};
 
 	$(pinWindowsObj[id]).find('.top-bar').on("mousedown", function (e) {
 		isDragging = true;

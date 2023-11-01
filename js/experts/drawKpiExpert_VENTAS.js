@@ -543,37 +543,24 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
 
                                 if(arr[i].VolumenPlan==0 && arr[i].VolumenPlan==0){
 
-                                  var altura1=1;
-                                  var altura2=1;
+                                      var altura1=1;
+                                      var altura2=1;
 
-                                  var altura_AutofleteReal=1;
-                                  var altura_RecogidoReal=1;
-                                  var altura_EntregadoReal=1;
+                                      var altura_AutofleteReal=1;
+                                      var altura_RecogidoReal=1;
+                                      var altura_EntregadoReal=1;
 
                                 }else{
 
-                                  var altura1=GetValorRangos( arr[i].VolumenReal,1, maximo ,1,altura);
-                                  var altura2=GetValorRangos( arr[i].VolumenPlan,1, maximo ,1,altura);
+                                      var altura1=GetValorRangos( arr[i].VolumenReal,1, maximo ,1,altura);
+                                      var altura2=GetValorRangos( arr[i].VolumenPlan,1, maximo ,1,altura);
 
-                                  //Por tipo de entrega
-                                  var altura_AutofleteReal=GetValorRangos( arr[i].AutofleteReal,1, maximo ,1,altura);
-                                  var altura_RecogidoReal=GetValorRangos( arr[i].RecogidoReal,1, maximo ,1,altura);
-                                  var altura_EntregadoReal=GetValorRangos( arr[i].EntregadoReal,1, maximo ,1,altura);
+                                      //Por tipo de entrega
+                                      var altura_AutofleteReal=GetValorRangos( arr[i].AutofleteReal,1, maximo ,1,altura);
+                                      var altura_RecogidoReal=GetValorRangos( arr[i].RecogidoReal,1, maximo ,1,altura);
+                                      var altura_EntregadoReal=GetValorRangos( arr[i].EntregadoReal,1, maximo ,1,altura);
                                 
                                 }                               
-                               
-                                /*
-                                d3.select("#svgTooltip4").append("rect")		    		
-                                                .attr("width",ancho*.9 )
-                                                .attr("class","ventasDetail")
-                                                .attr("x",(ancho*caso)  )
-                                                .attr("y", ((svgTooltipHeight*.65))-altura1-80  )
-                                                .attr("height",1)
-                                                .attr("fill","#00A8FF")
-                                                .transition().delay(0).duration(i*50)
-                                                .style("height",altura1 )	
-                                                ;
-                                                */
 
                                 d3.select("#svgTooltip4").append("rect")		    		
                                                 .attr("width",ancho*.9 )
@@ -609,7 +596,6 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                                 ;
                                 
                                 //Por tipo de entrega
-
 
                                 if(lastPosY){
 
