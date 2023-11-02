@@ -1,7 +1,9 @@
 var drawKpiExpert_VENTAS={};
 drawKpiExpert_VENTAS.detalleDeTiempo="dia";
 drawKpiExpert_VENTAS.lastEntity;
-
+drawKpiExpert_VENTAS.lastInitDate;
+drawKpiExpert_VENTAS.lastEndDate;
+drawKpiExpert_VENTAS.dataSet;
 
 drawKpiExpert_VENTAS.DrawElement=function(entity,i){   
   
@@ -126,11 +128,19 @@ drawKpiExpert_VENTAS.DrawTooltipDetail=function(entity){
 
 }  
 
-drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd){ 
+drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd){
   
-  console.log(entity, dateInit, dateEnd);
+      console.log(entity.key,dateInit,dateEnd);
 
-  d3.select("#svgTooltip4").selectAll(".ventasDetail").data([]).exit().remove();
+      if(drawKpiExpert_VENTAS.lastEntity.key==entity.key && drawKpiExpert_VENTAS.lastInitDate.toString()==dateInit.toString() && drawKpiExpert_VENTAS.lastEndDate.toString()==dateEnd.toString()){
+        console.log("evita consultaaa");
+        drawKpiExpert_VENTAS.procesaVentanaPorDia(entity,drawKpiExpert_VENTAS.dataSet);
+        return;
+      }
+
+      console.log("iniciaa consultaaa");
+
+      d3.select("#svgTooltip4").selectAll(".ventasDetail").data([]).exit().remove();
 
       $("#cargando").css("visibility","visible");
 
@@ -340,431 +350,12 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                               
                           }                          
 
-                          if(drawKpiExpert_VENTAS.detalleDeTiempo=="dia"){
-
-                                  var arr=d3.nest()
-                                          .key(function(d) { 
-
-                                                  if(d.fecha){
-                                                          return d.fecha.getTime(); 
-                                                  }else{                       
-                                                          return 0;
-                                                  }                        
-                                  
-                                          })
-                                          .entries(data.recordset);
-
-                          }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="semana"){
-
-                            var arr=d3.nest()
-                                  .key(function(d) { 
-
-                                          if(d.Vc20descr_sem){                                            
-                                                  return d.Vc20descr_sem_date;
-                                          }else{                       
-                                                  return 0;
-                                          }                        
-                          
-                                  })
-                                  .entries(data.recordset);
-
-                          }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
-
-                                    var arr=d3.nest()
-                                          .key(function(d) { 
-
-                                                  if(d.mes){
-                                                    console.log(d);
-                                                          return d.mes.getTime(); 
-                                                  }else{                       
-                                                          return 0;
-                                                  }                        
-                                  
-                                          })
-                                          .entries(data.recordset);
-
-                          }
-
-                          console.log("arr",arr);
-
-                         
-                          var maximo=0;
-                                
-                          for(var i=0; i < arr.length; i++ ){
-
-                                  arr[i].VolumenPlan=0;
-                                  arr[i].VolumenReal=0;
-
-                                  arr[i].AutofleteReal=0;
-                                  arr[i].RecogidoReal=0;
-                                  arr[i].EntregadoReal=0;
-
-
-                                  if(drawKpiExpert_VENTAS.detalleDeTiempo=="dia"){
-
-                                      arr[i].Fecha=arr[i].values[0].fecha.getDate()+" "+getMes(arr[i].values[0].fecha.getMonth());
-
-                                  }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="semana"){
-
-                                    arr[i].Fecha=arr[i].values[0].semanaDate.getDate()+" "+getMes(arr[i].values[0].semanaDate.getMonth());
-
-                                  }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
-
-                                      arr[i].Fecha=getMes(arr[i].values[0].mes.getMonth())+" "+arr[i].values[0].mes.getFullYear();
-
-                                  }
-
-                                  for(var j=0; j < arr[i].values.length; j++ ){
-
-                                        arr[i].VolumenPlan+=Number(arr[i].values[j].VolumenPlan);
-                                        //arr[i].VolumenReal+=Number(arr[i].values[j].VolumenReal);
-
-                                        arr[i].AutofleteReal+=Number(arr[i].values[j].AutofleteReal);
-                                        arr[i].RecogidoReal+=Number(arr[i].values[j].RecogidoReal);
-                                        arr[i].EntregadoReal+=Number(arr[i].values[j].EntregadoReal);
-
-                                        arr[i].VolumenReal+=Number(arr[i].values[j].AutofleteReal);
-                                        arr[i].VolumenReal+=Number(arr[i].values[j].RecogidoReal);
-                                        arr[i].VolumenReal+=Number(arr[i].values[j].EntregadoReal);
-
-                                  }
-
-                                  if(maximo < arr[i].VolumenPlan && arr[i].VolumenPlan>0 ){
-                                    maximo=arr[i].VolumenPlan;
-
-                               } 
-
-                          }
-
-                          arr = arr.sort((a, b) => {  
-
-                            if(drawKpiExpert_VENTAS.detalleDeTiempo=="dia"){
-                                          
-                                return b.fecha - a.fecha;   
-                            
-                            }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="semana"){
-
-                              return b.Vc20descr_sem_date - a.Vc20descr_sem_date;   
-
-                          }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
-
-                                return b.mes - a.mes;   
-
-                            }
-            
-                          });
-
-                          console.log("fechas",arr);
-
-                          drawKpiExpert_VENTAS.lastDataByDay=arr;
-
-                          //arr=arr.reverse();
-
-                          var ancho=18;
-                          var caso=0;    
-
-                          var svgTooltipWidth=arr.length*(ancho*1.05) ;
-
-                          if(svgTooltipWidth < 300)
-                                svgTooltipWidth=300;
-                  
-                          var svgTooltipHeight=500;
-
-                          var tamanioFuente=ancho*.8;   
-                                                 
-
-                          vix_tt_formatToolTip("#toolTip4","Ventas por Día "+dataManager.getNameFromId(entity.key)+" (TM)",svgTooltipWidth+7,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","Venta"));               
-                
-                          var svgElement =
-                          
-                          `<img id="simbologia" src="images/ventasdetalle.jpg" style="width:290px;position:absolute;float:left;right:20px;bottom:${10}px;"></img><svg id='svgTooltip4' style='pointer-events:none;'></svg>
-                          <div class="item2 loginContainer login-page form " style="
-                          position: relative;
-                          padding: 10px;
-                          top: 0px;
-                          margin: 0px;
-                          width: 263px;
-                          left: 0px;
-                          background: #000000;">
-
-                                <div class="dateContainer " style="padding-top: 0px;">
-                                    <div class="dateContainer " style="display: flex;">
-                                            <div class="dateContainer " style="margin-right: 9px;
-                                                display: grid;align-content: flex-start">
-                                                <button id="" style="font-size: 10px;margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='mes'; $('#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Mes</button> 
-                                                <button id="" style="font-size: 10px; margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='semana'; $('#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Semana</button> 
-                                                <button id="" style="font-size: 10px; margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='dia'; $('#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Día</button> 
-                                            </div>
-                                            <div class="dateContainer " style="    padding-top: 14px;">
-                                                <input id="datepicker_" width="100%" placeholder="Desde"/>
-                                                <input id="datepicker2_" width="100%" placeholder="A"/>   
-                                            </div>  
-                                            
-                                    </div>
-                                    <button id="updateVentasDates" class="loginBtn" onclick="">Cambia Período</button> 
-
-                                </div>    
-                        
-                              </div>
-                             
-                              <div class="bottom-bar" onClick="drawKpiExpert_VENTAS.DownloadCSVByDay('${entity.key}')" style="    margin-left: 10px;padding: 5px; height: 20px; width: 28px; background-color: rgb(31, 46, 57); border-top-left-radius: 2px; border-top-right-radius: 2px;"><div style="float: left;"><button class="download-button" style="float: right; cursor: pointer; background-color: transparent; border: none; color: rgb(255, 255, 255);"><i class="fas fa-download"></i></button></div></div>
-                              `                          
-                            ;
-
-                            d3.select("#toolTip4").append("div").html(svgElement); 
-
-                            $("#updateVentasDates").click(function(){    
-
-                                      var newDateInit=new Date($('#datepicker_').val());
-                                      var newDateEnd=new Date($('#datepicker2_').val());
-
-                                      drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(entity,newDateInit,newDateEnd);
-                                   
-                                      d3.select("#svgTooltip4").selectAll(".ventasDetail").data([]).exit().remove();                                      
-                                 
-                                      $("#toolTip4").css("visibility","hidden");
-
-                            });                           
-                          
-                          $('#datepicker_').datepicker({format: 'mm-dd-yyyy'});
-                          $('#datepicker2_').datepicker({format: 'mm-dd-yyyy'}); 
-      
-                          $('#datepicker_').val((dateInit.getMonth()+1)+"-"+dateInit.getDate()+"-"+dateInit.getFullYear());
-                          $('#datepicker2_').val((dateEnd.getMonth()+1)+"-"+dateEnd.getDate()+"-"+dateEnd.getFullYear());      
-
-
-                          // Continua con la Generacion de las graficas dentro del svgTooltip   
-                          
-                          var lastPosY;
-
-                          for(var i=0; i < arr.length; i++ ){                            
-
-                                var altura=(svgTooltipHeight*.22);
-
-                                if(arr[i].VolumenPlan==0 && arr[i].VolumenPlan==0){
-
-                                      var altura1=1;
-                                      var altura2=1;
-
-                                      var altura_AutofleteReal=1;
-                                      var altura_RecogidoReal=1;
-                                      var altura_EntregadoReal=1;
-
-                                }else{
-
-                                      var altura1=GetValorRangos( arr[i].VolumenReal,1, maximo ,1,altura);
-                                      var altura2=GetValorRangos( arr[i].VolumenPlan,1, maximo ,1,altura);
-
-                                      //Por tipo de entrega
-                                      var altura_AutofleteReal=GetValorRangos( arr[i].AutofleteReal,1, maximo ,1,altura);
-                                      var altura_RecogidoReal=GetValorRangos( arr[i].RecogidoReal,1, maximo ,1,altura);
-                                      var altura_EntregadoReal=GetValorRangos( arr[i].EntregadoReal,1, maximo ,1,altura);
-                                
-                                }         
-                                
-                                var data=arr[i];
-
-                                d3.select("#svgTooltip4").append("rect")		    		
-                                                .attr("width",function(d){
-                                                  this.data=data;
-                                                  return ancho*.9;
-                                                })
-                                                .attr("class","ventasDetail")
-                                                .style("pointer-events","auto")
-                                                .attr("x",(ancho*caso)  )
-                                                .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80  )
-                                                .attr("height",1)
-                                                .attr("fill","#66D7F8")
-                                                .on("mouseover",function(d){
-                                    
-                                                  $("#toolTip5").css("visibility","visible");
-              
-                                                  $("#toolTip5").css("left",mouse_x+50);  
-                                                  $("#toolTip5").css("top",mouse_y);            
-                                               
-                                                  $("#toolTip5").html(`
-                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Recogido: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.RecogidoReal)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Entregado: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.EntregadoReal)} TM</span><br>
-                                                  ` );                          
-                                                  
-                                                })
-                                                .on("mouseout",function(d){
-                
-                                                    $("#toolTip5").css("visibility","hidden");		    	
-                
-                
-                                                })
-                                                .transition().delay(0).duration(i*50)
-                                                .style("height",altura_EntregadoReal )	
-                                                ;
-
-                                d3.select("#svgTooltip4").append("rect")		    		
-                                                .attr("width",function(d){
-                                                  this.data=data;
-                                                  return ancho*.9;
-                                                } )
-                                                .attr("class","ventasDetail")
-                                                .attr("x",(ancho*caso)  )
-                                                .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80-(altura_RecogidoReal)  )
-                                                .attr("height",1)
-                                                .style("pointer-events","auto")
-                                                .attr("fill","#EC69FF")
-                                                .on("mouseover",function(d){
-                                    
-                                                  $("#toolTip5").css("visibility","visible");
-              
-                                                  $("#toolTip5").css("left",mouse_x+50);  
-                                                  $("#toolTip5").css("top",mouse_y);            
-                                               
-                                                  $("#toolTip5").html(`
-                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Recogido: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.RecogidoReal)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Entregado: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.EntregadoReal)} TM</span><br>
-                                                  ` );                          
-                                                  
-                                                })
-                                                .on("mouseout",function(d){
-                
-                                                    $("#toolTip5").css("visibility","hidden");		    	
-                
-                
-                                                })
-                                                .transition().delay(0).duration(i*50)
-                                                .style("height",altura_RecogidoReal )	
-                                                ;
-
-                                d3.select("#svgTooltip4").append("rect")		    		
-                                                .attr("width",function(d){
-                                                  this.data=data;
-                                                  return ancho*.9;
-                                                } )
-                                                .attr("class","ventasDetail")
-                                                .style("pointer-events","auto")
-                                                .attr("x",(ancho*caso)  )
-                                                .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80 -(altura_RecogidoReal+altura_AutofleteReal) )
-                                                .attr("height",1)
-                                                .attr("fill","#FFF600")
-                                                .on("mouseover",function(d){
-                                    
-                                                  $("#toolTip5").css("visibility","visible");
-              
-                                                  $("#toolTip5").css("left",mouse_x+50);  
-                                                  $("#toolTip").css("top",mouse_y);            
-                                               
-                                                  $("#toolTip5").html(`
-                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Recogido: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.RecogidoReal)} TM</span><br>
-                                                      <span style='color:#fff600;font-size:${13}px;'>Entregado: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.EntregadoReal)} TM</span><br>
-                                                  ` );                          
-                                                  
-                                                })
-                                                .on("mouseout",function(d){
-                
-                                                    $("#toolTip5").css("visibility","hidden");		    	
-                
-                
-                                                })
-                                                .transition().delay(0).duration(i*50)
-                                                .style("height",altura_AutofleteReal )	
-                                                ;
-                                
-                                //Por tipo de entrega
-
-                                if(lastPosY){
-
-                                  d3.select("#svgTooltip4").append("line")       
-                                                .attr("class","ventasDetail")                                
-                                                .attr("x1",lastPosY.x+(ancho/2) )
-                                                .attr("y1", lastPosY.y   )
-                                                .attr("x2",ancho*caso+(ancho/2) )
-                                                .attr("y2", ((svgTooltipHeight*.65))-altura2-80  )
-                                                .style("stroke","#ffffff")
-                                                .style("stroke-width",2)
-                                                .style("stroke-opacity",1);
-
-                                }
-
-                                lastPosY={x:(ancho*caso) ,y:((svgTooltipHeight*.65))-altura2-80 };
-                                
-
-                                d3.select("#svgTooltip4")
-                                                .append("text")						
-                                                .attr("class","ventasDetail")
-                                                .style("fill","#ffffff")		
-                                                .style("font-family","Cabin")
-                                                .style("font-weight","bold")
-                                                .style("font-size",tamanioFuente*.7)						
-                                                .style("text-anchor","start")
-                                                .style("opacity",0 )
-                                                .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.7)+1  )+","+String( ((svgTooltipHeight*.2))-10 )+")  rotate("+(-90)+") ")
-                                                .text(function(){
-                                                  
-                                                  var porDif="0";
-
-                                                  if(arr[i].VolumenPlan>0){
-
-                                                    porDif = Math.round((arr[i].VolumenReal/arr[i].VolumenPlan)*100);
-
-                                                  }
-
-                                                  if(arr[i].VolumenPlan == 0){
-                                                    return "0";
-                                                  }
-
-                                                return  "R: "+formatNumber(arr[i].VolumenReal)+" -  "+ porDif +"%";
-                        
-                                                })
-                                                .transition().delay(0).duration(i*50)
-                                                .style("opacity",1 );
-                                
-
-                                d3.select("#svgTooltip4")
-                                                .append("text")						
-                                                .attr("class","ventasDetail")
-                                                .style("fill","#ffffff")		
-                                                .style("font-family","Cabin")
-                                                .style("font-weight","bold")
-                                                .style("font-size",tamanioFuente*.8)	
-                                                .style("text-anchor","end")
-                                                .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.7)  )+","+String( (svgTooltipHeight*.65)-74  )+")  rotate("+(-90)+") ")
-                                                .text(function(){
-                                                        
-                                                  return  arr[i].Fecha;
-                        
-                                                });
-
-                                
-
-                                caso++; 
-
-                          }
-
-                          $(".gj-picker").css("z-index", 99999999);
-
-                          $("#toolTip4").css("visibility","visible");        
-                          $("#toolTip4").css("max-height","");    
-                          $("#toolTip4").css("bottom",4+"px");
-                          $("#toolTip4").css("right",30+"px");
-
-                          if(windowWidth > 1500 ){
-
-                            $("#toolTip4").css("top",80+"px");
-                            $("#toolTip4").css("left",windowWidth/2+"px");
-                           
-                          }  
-
-                          d3.select("#svgTooltip4")                     
-                                .style("width", svgTooltipWidth )
-                                .style("height", (svgTooltipHeight*.6) )
-                                ;
-
+                          drawKpiExpert_VENTAS.lastEntity=entity;
+                          drawKpiExpert_VENTAS.lastInitDate=dateInit;
+                          drawKpiExpert_VENTAS.lastEndDate=dateEnd;
+                          drawKpiExpert_VENTAS.dataSet=data;
+
+                          drawKpiExpert_VENTAS.procesaVentanaPorDia(entity,data);
                         
 
                   });
@@ -772,6 +363,436 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
             }
 
       }      
+
+}
+
+drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data){
+
+                    if(drawKpiExpert_VENTAS.detalleDeTiempo=="dia"){
+
+                      var arr=d3.nest()
+                              .key(function(d) { 
+
+                                      if(d.fecha){
+                                              return d.fecha.getTime(); 
+                                      }else{                       
+                                              return 0;
+                                      }                        
+                      
+                              })
+                              .entries(data.recordset);
+
+                  }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="semana"){
+
+                  var arr=d3.nest()
+                      .key(function(d) { 
+
+                              if(d.Vc20descr_sem){                                            
+                                      return d.Vc20descr_sem_date;
+                              }else{                       
+                                      return 0;
+                              }                        
+
+                      })
+                      .entries(data.recordset);
+
+                  }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
+
+                        var arr=d3.nest()
+                              .key(function(d) { 
+
+                                      if(d.mes){
+                                        console.log(d);
+                                              return d.mes.getTime(); 
+                                      }else{                       
+                                              return 0;
+                                      }                        
+                      
+                              })
+                              .entries(data.recordset);
+
+                  }
+
+                  console.log("arr",arr);
+
+
+                  var maximo=0;
+                    
+                  for(var i=0; i < arr.length; i++ ){
+
+                      arr[i].VolumenPlan=0;
+                      arr[i].VolumenReal=0;
+
+                      arr[i].AutofleteReal=0;
+                      arr[i].RecogidoReal=0;
+                      arr[i].EntregadoReal=0;
+
+
+                      if(drawKpiExpert_VENTAS.detalleDeTiempo=="dia"){
+
+                          arr[i].Fecha=arr[i].values[0].fecha.getDate()+" "+getMes(arr[i].values[0].fecha.getMonth());
+
+                      }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="semana"){
+
+                        arr[i].Fecha=arr[i].values[0].semanaDate.getDate()+" "+getMes(arr[i].values[0].semanaDate.getMonth());
+
+                      }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
+
+                          arr[i].Fecha=getMes(arr[i].values[0].mes.getMonth())+" "+arr[i].values[0].mes.getFullYear();
+
+                      }
+
+                      for(var j=0; j < arr[i].values.length; j++ ){
+
+                            arr[i].VolumenPlan+=Number(arr[i].values[j].VolumenPlan);
+                            //arr[i].VolumenReal+=Number(arr[i].values[j].VolumenReal);
+
+                            arr[i].AutofleteReal+=Number(arr[i].values[j].AutofleteReal);
+                            arr[i].RecogidoReal+=Number(arr[i].values[j].RecogidoReal);
+                            arr[i].EntregadoReal+=Number(arr[i].values[j].EntregadoReal);
+
+                            arr[i].VolumenReal+=Number(arr[i].values[j].AutofleteReal);
+                            arr[i].VolumenReal+=Number(arr[i].values[j].RecogidoReal);
+                            arr[i].VolumenReal+=Number(arr[i].values[j].EntregadoReal);
+
+                      }
+
+                      if(maximo < arr[i].VolumenPlan && arr[i].VolumenPlan>0 ){
+                        maximo=arr[i].VolumenPlan;
+
+                  } 
+
+                  }
+
+                  arr = arr.sort((a, b) => {  
+
+                  if(drawKpiExpert_VENTAS.detalleDeTiempo=="dia"){
+                              
+                    return b.fecha - a.fecha;   
+
+                  }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="semana"){
+
+                  return b.Vc20descr_sem_date - a.Vc20descr_sem_date;   
+
+                  }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
+
+                    return b.mes - a.mes;   
+
+                  }
+
+                  });
+
+                  console.log("fechas",arr);
+
+                  drawKpiExpert_VENTAS.lastDataByDay=arr;
+
+                  //arr=arr.reverse();
+
+                  var ancho=18;
+                  var caso=0;    
+
+                  var svgTooltipWidth=arr.length*(ancho*1.05) ;
+
+                  if(svgTooltipWidth < 300)
+                    svgTooltipWidth=300;
+
+                  var svgTooltipHeight=500;
+
+                  var tamanioFuente=ancho*.8;   
+                                    
+
+                  vix_tt_formatToolTip("#toolTip4","Ventas por Día "+dataManager.getNameFromId(entity.key)+" (TM)",svgTooltipWidth+7,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","Venta"));               
+
+                  var svgElement =
+
+                  `<img id="simbologia" src="images/ventasdetalle.jpg" style="width:290px;position:absolute;float:left;right:20px;bottom:${10}px;"></img><svg id='svgTooltip4' style='pointer-events:none;'></svg>
+                  <div class="item2 loginContainer login-page form " style="
+                  position: relative;
+                  padding: 10px;
+                  top: 0px;
+                  margin: 0px;
+                  width: 263px;
+                  left: 0px;
+                  background: #000000;">
+
+                    <div class="dateContainer " style="padding-top: 0px;">
+                        <div class="dateContainer " style="display: flex;">
+                                <div class="dateContainer " style="margin-right: 9px;
+                                    display: grid;align-content: flex-start">
+                                    <button id="" style="font-size: 10px;margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='mes'; $('#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Mes</button> 
+                                    <button id="" style="font-size: 10px; margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='semana'; $('#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Semana</button> 
+                                    <button id="" style="font-size: 10px; margin-top: 2px;" class="loginBtn" onclick="drawKpiExpert_VENTAS.detalleDeTiempo='dia'; $('#toolTip4').css('visibility','hidden');drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(drawKpiExpert_VENTAS.lastEntity,new Date($('#datepicker_').val()),new Date($('#datepicker2_').val()))">Día</button> 
+                                </div>
+                                <div class="dateContainer " style="    padding-top: 14px;">
+                                    <input id="datepicker_" width="100%" placeholder="Desde"/>
+                                    <input id="datepicker2_" width="100%" placeholder="A"/>   
+                                </div>  
+                                
+                        </div>
+                        <button id="updateVentasDates" class="loginBtn" onclick="">Cambia Período</button> 
+
+                    </div>    
+
+                  </div>
+
+                  <div class="bottom-bar" onClick="drawKpiExpert_VENTAS.DownloadCSVByDay('${entity.key}')" style="    margin-left: 10px;padding: 5px; height: 20px; width: 28px; background-color: rgb(31, 46, 57); border-top-left-radius: 2px; border-top-right-radius: 2px;"><div style="float: left;"><button class="download-button" style="float: right; cursor: pointer; background-color: transparent; border: none; color: rgb(255, 255, 255);"><i class="fas fa-download"></i></button></div></div>
+                  `                          
+                  ;
+
+                  d3.select("#toolTip4").append("div").html(svgElement); 
+
+                  $("#updateVentasDates").click(function(){    
+
+                          var newDateInit=new Date($('#datepicker_').val());
+                          var newDateEnd=new Date($('#datepicker2_').val());
+
+                          drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(entity,newDateInit,newDateEnd);
+                      
+                          d3.select("#svgTooltip4").selectAll(".ventasDetail").data([]).exit().remove();                                      
+                    
+                          $("#toolTip4").css("visibility","hidden");
+
+                  });                           
+
+                  $('#datepicker_').datepicker({format: 'mm-dd-yyyy'});
+                  $('#datepicker2_').datepicker({format: 'mm-dd-yyyy'}); 
+
+                  $('#datepicker_').val((dateInit.getMonth()+1)+"-"+dateInit.getDate()+"-"+dateInit.getFullYear());
+                  $('#datepicker2_').val((dateEnd.getMonth()+1)+"-"+dateEnd.getDate()+"-"+dateEnd.getFullYear());      
+
+
+                  // Continua con la Generacion de las graficas dentro del svgTooltip   
+
+                  var lastPosY;
+
+                  for(var i=0; i < arr.length; i++ ){                            
+
+                    var altura=(svgTooltipHeight*.22);
+
+                    if(arr[i].VolumenPlan==0 && arr[i].VolumenPlan==0){
+
+                          var altura1=1;
+                          var altura2=1;
+
+                          var altura_AutofleteReal=1;
+                          var altura_RecogidoReal=1;
+                          var altura_EntregadoReal=1;
+
+                    }else{
+
+                          var altura1=GetValorRangos( arr[i].VolumenReal,1, maximo ,1,altura);
+                          var altura2=GetValorRangos( arr[i].VolumenPlan,1, maximo ,1,altura);
+
+                          //Por tipo de entrega
+                          var altura_AutofleteReal=GetValorRangos( arr[i].AutofleteReal,1, maximo ,1,altura);
+                          var altura_RecogidoReal=GetValorRangos( arr[i].RecogidoReal,1, maximo ,1,altura);
+                          var altura_EntregadoReal=GetValorRangos( arr[i].EntregadoReal,1, maximo ,1,altura);
+                    
+                    }         
+                    
+                    var data=arr[i];
+
+                    d3.select("#svgTooltip4").append("rect")		    		
+                                    .attr("width",function(d){
+                                      this.data=data;
+                                      return ancho*.9;
+                                    })
+                                    .attr("class","ventasDetail")
+                                    .style("pointer-events","auto")
+                                    .attr("x",(ancho*caso)  )
+                                    .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80  )
+                                    .attr("height",1)
+                                    .attr("fill","#66D7F8")
+                                    .on("mouseover",function(d){
+                        
+                                      $("#toolTip5").css("visibility","visible");
+
+                                      $("#toolTip5").css("left",mouse_x+50);  
+                                      $("#toolTip5").css("top",mouse_y);            
+                                  
+                                      $("#toolTip5").html(`
+                                          <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Recogido: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.RecogidoReal)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Entregado: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.EntregadoReal)} TM</span><br>
+                                      ` );                          
+                                      
+                                    })
+                                    .on("mouseout",function(d){
+
+                                        $("#toolTip5").css("visibility","hidden");		    	
+
+
+                                    })
+                                    .transition().delay(0).duration(i*50)
+                                    .style("height",altura_EntregadoReal )	
+                                    ;
+
+                    d3.select("#svgTooltip4").append("rect")		    		
+                                    .attr("width",function(d){
+                                      this.data=data;
+                                      return ancho*.9;
+                                    } )
+                                    .attr("class","ventasDetail")
+                                    .attr("x",(ancho*caso)  )
+                                    .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80-(altura_RecogidoReal)  )
+                                    .attr("height",1)
+                                    .style("pointer-events","auto")
+                                    .attr("fill","#EC69FF")
+                                    .on("mouseover",function(d){
+                        
+                                      $("#toolTip5").css("visibility","visible");
+
+                                      $("#toolTip5").css("left",mouse_x+50);  
+                                      $("#toolTip5").css("top",mouse_y);            
+                                  
+                                      $("#toolTip5").html(`
+                                          <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Recogido: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.RecogidoReal)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Entregado: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.EntregadoReal)} TM</span><br>
+                                      ` );                          
+                                      
+                                    })
+                                    .on("mouseout",function(d){
+
+                                        $("#toolTip5").css("visibility","hidden");		    	
+
+
+                                    })
+                                    .transition().delay(0).duration(i*50)
+                                    .style("height",altura_RecogidoReal )	
+                                    ;
+
+                    d3.select("#svgTooltip4").append("rect")		    		
+                                    .attr("width",function(d){
+                                      this.data=data;
+                                      return ancho*.9;
+                                    } )
+                                    .attr("class","ventasDetail")
+                                    .style("pointer-events","auto")
+                                    .attr("x",(ancho*caso)  )
+                                    .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80 -(altura_RecogidoReal+altura_AutofleteReal) )
+                                    .attr("height",1)
+                                    .attr("fill","#FFF600")
+                                    .on("mouseover",function(d){
+                        
+                                      $("#toolTip5").css("visibility","visible");
+
+                                      $("#toolTip5").css("left",mouse_x+50);  
+                                      $("#toolTip").css("top",mouse_y);            
+                                  
+                                      $("#toolTip5").html(`
+                                          <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Recogido: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.RecogidoReal)} TM</span><br>
+                                          <span style='color:#fff600;font-size:${13}px;'>Entregado: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.EntregadoReal)} TM</span><br>
+                                      ` );                          
+                                      
+                                    })
+                                    .on("mouseout",function(d){
+
+                                        $("#toolTip5").css("visibility","hidden");		    	
+
+
+                                    })
+                                    .transition().delay(0).duration(i*50)
+                                    .style("height",altura_AutofleteReal )	
+                                    ;
+                    
+                    //Por tipo de entrega
+
+                    if(lastPosY){
+
+                      d3.select("#svgTooltip4").append("line")       
+                                    .attr("class","ventasDetail")                                
+                                    .attr("x1",lastPosY.x+(ancho/2) )
+                                    .attr("y1", lastPosY.y   )
+                                    .attr("x2",ancho*caso+(ancho/2) )
+                                    .attr("y2", ((svgTooltipHeight*.65))-altura2-80  )
+                                    .style("stroke","#ffffff")
+                                    .style("stroke-width",2)
+                                    .style("stroke-opacity",1);
+
+                    }
+
+                    lastPosY={x:(ancho*caso) ,y:((svgTooltipHeight*.65))-altura2-80 };
+                    
+
+                    d3.select("#svgTooltip4")
+                                    .append("text")						
+                                    .attr("class","ventasDetail")
+                                    .style("fill","#ffffff")		
+                                    .style("font-family","Cabin")
+                                    .style("font-weight","bold")
+                                    .style("font-size",tamanioFuente*.7)						
+                                    .style("text-anchor","start")
+                                    .style("opacity",0 )
+                                    .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.7)+1  )+","+String( ((svgTooltipHeight*.2))-10 )+")  rotate("+(-90)+") ")
+                                    .text(function(){
+                                      
+                                      var porDif="0";
+
+                                      if(arr[i].VolumenPlan>0){
+
+                                        porDif = Math.round((arr[i].VolumenReal/arr[i].VolumenPlan)*100);
+
+                                      }
+
+                                      if(arr[i].VolumenPlan == 0){
+                                        return "0";
+                                      }
+
+                                    return  "R: "+formatNumber(arr[i].VolumenReal)+" -  "+ porDif +"%";
+
+                                    })
+                                    .transition().delay(0).duration(i*50)
+                                    .style("opacity",1 );
+                    
+
+                    d3.select("#svgTooltip4")
+                                    .append("text")						
+                                    .attr("class","ventasDetail")
+                                    .style("fill","#ffffff")		
+                                    .style("font-family","Cabin")
+                                    .style("font-weight","bold")
+                                    .style("font-size",tamanioFuente*.8)	
+                                    .style("text-anchor","end")
+                                    .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.7)  )+","+String( (svgTooltipHeight*.65)-74  )+")  rotate("+(-90)+") ")
+                                    .text(function(){
+                                            
+                                      return  arr[i].Fecha;
+
+                                    });
+
+                    
+
+                    caso++; 
+
+                  }
+
+                  $(".gj-picker").css("z-index", 99999999);
+
+                  $("#toolTip4").css("visibility","visible");        
+                  $("#toolTip4").css("max-height","");    
+                  $("#toolTip4").css("bottom",4+"px");
+                  $("#toolTip4").css("right",30+"px");
+
+                  if(windowWidth > 1500 ){
+
+                  $("#toolTip4").css("top",80+"px");
+                  $("#toolTip4").css("left",windowWidth/2+"px");
+
+                  }  
+
+                  d3.select("#svgTooltip4")                     
+                    .style("width", svgTooltipWidth )
+                    .style("height", (svgTooltipHeight*.6) )
+                    ;
+
 
 }
 
