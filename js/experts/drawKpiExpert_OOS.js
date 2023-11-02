@@ -357,12 +357,22 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                 
                             ;
 
+
             for(var i=0; i < arr.length; i++ ){   
 
                
                 var altura1=GetValorRangos( arr[i].OOS*1000,1, maximo ,1,svgTooltipHeight*.13);
                 var altura2=GetValorRangos( arr[i].Fisico ,1, maximo2 ,1,svgTooltipHeight*.13   );
-                var altura3=GetValorRangos( arr[i].Numerador ,1, maximo3 ,1,svgTooltipHeight*.13   );
+                var altura3=GetValorRangos( arr[i].Numerador ,0, maximo3 ,1,svgTooltipHeight*.13   );
+
+                if(maximo==0)
+                altura1=1;
+
+                if(maximo2==0)
+                altura2=1;
+
+                if(maximo3==0)
+                altura3=1;
                 
                 
                 var color="#1ADD00";
@@ -388,7 +398,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 .attr("width",ancho*.8 )
                                 .attr("class","ossDetail")
                                 .attr("x",(ancho*i)  )
-                                .attr("y", (svgTooltipHeight*.3)-altura2-marginBottom  )
+                                .attr("y", (svgTooltipHeight*.27)-altura2-marginBottom  )
                                 .attr("height",altura2)
                                 .attr("fill","#ffffff")
                                 .style("pointer-events","auto")
@@ -435,7 +445,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 .attr("class","ossDetail")
                                 .style("fill",function(d){
                                     
-                                    var color ="#FFFFFF";
+                                    var color ="#C6C6C6";
 
                                     if(arr[i].agregado){
                                         color ="#5C5C5C";
@@ -455,7 +465,34 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                 
                                     return  date.getDate()+" "+getMes(date.getMonth());
                 
-                                });    
+                                }); 
+                                
+                d3.select("#svgTooltip3")
+                                .append("text")						
+                                .attr("class","ossDetail")
+                                .style("fill",function(d){
+                                    
+                                    var color ="#C6C6C6";
+
+                                    if(arr[i].agregado){
+                                        color ="#5C5C5C";
+                                    }
+                                    
+                                    return color;
+                                    
+                                })		
+                                .style("font-family","Cabin")
+                                .style("font-weight","bold")
+                                .style("font-size",tamanioFuente)	
+                                .style("text-anchor","end")
+                                .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.28)-marginBottom-3+3   )+")  rotate("+(-90)+") ")
+                                .text(function(){
+                                
+                                    var date=new Date( Number(arr[i].key) );
+                
+                                    return  date.getDate()+" "+getMes(date.getMonth());
+                
+                                }); 
 
                 d3.select("#svgTooltip3")
                                 .append("text")						
@@ -465,7 +502,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 .style("font-weight","bold")
                                 .style("font-size",tamanioFuente)	
                                 .style("text-anchor","start")
-                                .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.3)-altura2-marginBottom-3   )+")  rotate("+(-90)+") ")
+                                .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.27)-altura2-marginBottom-3   )+")  rotate("+(-90)+") ")
                                 .text(function(){
                                 
                                     return  formatNumber(arr[i].Fisico) ;

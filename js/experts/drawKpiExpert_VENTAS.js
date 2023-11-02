@@ -560,39 +560,119 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                                       var altura_RecogidoReal=GetValorRangos( arr[i].RecogidoReal,1, maximo ,1,altura);
                                       var altura_EntregadoReal=GetValorRangos( arr[i].EntregadoReal,1, maximo ,1,altura);
                                 
-                                }                               
+                                }         
+                                
+                                var data=arr[i];
 
                                 d3.select("#svgTooltip4").append("rect")		    		
-                                                .attr("width",ancho*.9 )
+                                                .attr("width",function(d){
+                                                  this.data=data;
+                                                  return ancho*.9;
+                                                })
                                                 .attr("class","ventasDetail")
+                                                .style("pointer-events","auto")
                                                 .attr("x",(ancho*caso)  )
-                                                .attr("y", ((svgTooltipHeight*.65))-altura_AutofleteReal-80  )
+                                                .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80  )
                                                 .attr("height",1)
-                                                .attr("fill","#19E0E0")
+                                                .attr("fill","#66D7F8")
+                                                .on("mouseover",function(d){
+                                    
+                                                  $("#toolTip5").css("visibility","visible");
+              
+                                                  $("#toolTip5").css("left",mouse_x+50);  
+                                                  $("#toolTip5").css("top",mouse_y);            
+                                               
+                                                  $("#toolTip5").html(`
+                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Recogido: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.RecogidoReal)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Entregado: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.EntregadoReal)} TM</span><br>
+                                                  ` );                          
+                                                  
+                                                })
+                                                .on("mouseout",function(d){
+                
+                                                    $("#toolTip5").css("visibility","hidden");		    	
+                
+                
+                                                })
                                                 .transition().delay(0).duration(i*50)
-                                                .style("height",altura_AutofleteReal )	
+                                                .style("height",altura_EntregadoReal )	
                                                 ;
 
                                 d3.select("#svgTooltip4").append("rect")		    		
-                                                .attr("width",ancho*.9 )
+                                                .attr("width",function(d){
+                                                  this.data=data;
+                                                  return ancho*.9;
+                                                } )
                                                 .attr("class","ventasDetail")
                                                 .attr("x",(ancho*caso)  )
-                                                .attr("y", ((svgTooltipHeight*.65))-altura_AutofleteReal-80-(altura_RecogidoReal)  )
+                                                .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80-(altura_RecogidoReal)  )
                                                 .attr("height",1)
-                                                .attr("fill","#FCA36D")
+                                                .style("pointer-events","auto")
+                                                .attr("fill","#EC69FF")
+                                                .on("mouseover",function(d){
+                                    
+                                                  $("#toolTip5").css("visibility","visible");
+              
+                                                  $("#toolTip5").css("left",mouse_x+50);  
+                                                  $("#toolTip5").css("top",mouse_y);            
+                                               
+                                                  $("#toolTip5").html(`
+                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Recogido: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.RecogidoReal)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Entregado: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.EntregadoReal)} TM</span><br>
+                                                  ` );                          
+                                                  
+                                                })
+                                                .on("mouseout",function(d){
+                
+                                                    $("#toolTip5").css("visibility","hidden");		    	
+                
+                
+                                                })
                                                 .transition().delay(0).duration(i*50)
                                                 .style("height",altura_RecogidoReal )	
                                                 ;
 
                                 d3.select("#svgTooltip4").append("rect")		    		
-                                                .attr("width",ancho*.9 )
+                                                .attr("width",function(d){
+                                                  this.data=data;
+                                                  return ancho*.9;
+                                                } )
                                                 .attr("class","ventasDetail")
+                                                .style("pointer-events","auto")
                                                 .attr("x",(ancho*caso)  )
-                                                .attr("y", ((svgTooltipHeight*.65))-altura_AutofleteReal-80 -(altura_RecogidoReal+altura_EntregadoReal) )
+                                                .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80 -(altura_RecogidoReal+altura_AutofleteReal) )
                                                 .attr("height",1)
-                                                .attr("fill","#9BFF65")
+                                                .attr("fill","#FFF600")
+                                                .on("mouseover",function(d){
+                                    
+                                                  $("#toolTip5").css("visibility","visible");
+              
+                                                  $("#toolTip5").css("left",mouse_x+50);  
+                                                  $("#toolTip").css("top",mouse_y);            
+                                               
+                                                  $("#toolTip5").html(`
+                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Recogido: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.RecogidoReal)} TM</span><br>
+                                                      <span style='color:#fff600;font-size:${13}px;'>Entregado: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.EntregadoReal)} TM</span><br>
+                                                  ` );                          
+                                                  
+                                                })
+                                                .on("mouseout",function(d){
+                
+                                                    $("#toolTip5").css("visibility","hidden");		    	
+                
+                
+                                                })
                                                 .transition().delay(0).duration(i*50)
-                                                .style("height",altura_EntregadoReal )	
+                                                .style("height",altura_AutofleteReal )	
                                                 ;
                                 
                                 //Por tipo de entrega

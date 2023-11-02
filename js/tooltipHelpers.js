@@ -1007,14 +1007,15 @@ function s2ab(s) {
                 .append("td")
                 .attr("class", "body-cell")
                 .style("border", "0px solid #81A8B7") 
+                .style("padding-left", "10px")
                 .style("width", function(d) {
                   return d.width; // Usa los mismos anchos que las columnas de la tabla de datos
                 })
                 .html(function(d) {
-                  var visitor = totalsColumnVisitors[d.column.key] || totalsColumnVisitors[d.column.key] || (function() { return ''; });
 
-                   
+                    var visitor = totalsColumnVisitors[d.column.key] || totalsColumnVisitors[d.column.key] || (function() { return ''; });                   
                     return visitor ? visitor(d.value) : d.value;
+
                 });
 
 

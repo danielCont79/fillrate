@@ -126,8 +126,10 @@ kpiExpert_FR.eraseChart=function(){
        
 }
 
-
-kpiExpert_FR.DrawTooltipDetail=function(entity){   
+kpiExpert_FR.lastEntity;
+kpiExpert_FR.DrawTooltipDetail=function(entity){  
+        
+        kpiExpert_FR.lastEntity=entity;
 
         d3.select("#svgTooltip").selectAll(".frDetail").data([]).exit().remove();
         d3.select("#svgTooltip3").selectAll(".frDetail").data([]).exit().remove();
@@ -144,215 +146,252 @@ kpiExpert_FR.DrawTooltipDetail=function(entity){
 
 }
 
-kpiExpert_FR.DrawTooltipDetail_Estado=function(entity){ 
+kpiExpert_FR.DrawTooltipDetail_Estado=function(entity,extraData){ 
 
-        var maximo=0;
+                var maximo=0;
+                var maximo2=0;
 
-        var arr=d3.nest()
-            .key(function(d) { return d.EstadoZTDem; })
-            .entries(entity.values);  
+                var arr=d3.nest()
+                .key(function(d) { return d.EstadoZTDem; })
+                .entries(entity.values);  
 
-        var totalEnregado=0;
-        var totalSolicitado=0;
+               
+                var totalSolicitado=0;
 
-        for(var i=0; i < arr.length; i++ ){
-                
-                arr[i].CantEntfinal=0;
-                arr[i].fecha=arr[i].values[0].fecha.getTime();
-                arr[i].totalSolicitado=0;
+                for(var i=0; i < arr.length; i++ ){
+                        
+                        arr[i].CantEntfinal=0;
+                        arr[i].fecha=arr[i].values[0].fecha.getTime();
+                        arr[i].totalSolicitado=0;
+                        arr[i].totalSolicitadoATiempo=0;
+                        
 
-                arr[i].vol1=0;
-                arr[i].vol2=0;
-                arr[i].vol3=0;
+                        arr[i].vol1=0;
+                        arr[i].vol2=0;
+                        arr[i].vol3=0;
 
-                arr[i].por1=0;
-                arr[i].por2=0;
-                arr[i].por3=0;
+                      
+                        arr[i].por1=0;
+                        arr[i].por2=0;
+                        arr[i].por3=0;
 
-                for(var j=0; j < arr[i].values.length; j++ ){
+                        for(var j=0; j < arr[i].values.length; j++ ){
 
-                        arr[i].CantEntfinal+=Number(arr[i].values[j][campoDeVolumenFR]);
-                        arr[i].totalSolicitado+=Number(arr[i].values[j][campoTotalSolicitado]);
+                                arr[i].CantEntfinal+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                arr[i].totalSolicitado+=Number(arr[i].values[j][campoTotalSolicitado]);                               
+                                totalSolicitado+=Number(arr[i].values[j][campoTotalSolicitado]);
 
-                        totalEnregado+=Number(arr[i].values[j][campoDeVolumenFR]);
-                        totalSolicitado+=Number(arr[i].values[j][campoTotalSolicitado]);
+                                if(arr[i].values[j][campoDeATiempo] == "A Tiempo"){                                 
+                                        arr[i].vol1+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                }else if(arr[i].values[j][campoDeATiempo] == "1 a 2 días Tarde"){
+                                        arr[i].vol2+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                }else if(arr[i].values[j][campoDeATiempo] == "3 o más días Tarde"){
+                                        arr[i].vol3+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                }                        
+                        }
 
-                        if(arr[i].values[j][campoDeATiempo] == "A Tiempo"){
-                                arr[i].vol1+=Number(arr[i].values[j][campoDeVolumenFR]);
-                        }else if(arr[i].values[j][campoDeATiempo] == "1 a 2 días Tarde"){
-                                arr[i].vol2+=Number(arr[i].values[j][campoDeVolumenFR]);
-                        }else if(arr[i].values[j][campoDeATiempo] == "3 o más días Tarde"){
-                                arr[i].vol3+=Number(arr[i].values[j][campoDeVolumenFR]);
+                        if(maximo < arr[i].CantEntfinal){
+                                maximo=arr[i].CantEntfinal;
                         } 
                         
+                        arr[i].por1=Math.round((arr[i].vol1/arr[i].totalSolicitado)*100);
+                        arr[i].por2=Math.round((arr[i].vol2/arr[i].totalSolicitado)*100);
+                        arr[i].por3=Math.round((arr[i].vol3/arr[i].totalSolicitado)*100);            
+
+                }
+                var sumapor=0;
+                for(var i=0; i < arr.length; i++ ){
+
+                        arr[i].porEntregado= arr[i].vol1/totalSolicitado;
+                        arr[i].porSolicitado= arr[i].totalSolicitado/totalSolicitado;
+                        arr[i].porDifEntrtegadoSolicitado=arr[i].porSolicitado-arr[i].porEntregado;
+                        sumapor+=arr[i].porDifEntrtegadoSolicitado;
+
+                        if(maximo2 < arr[i].porDifEntrtegadoSolicitado )
+                                maximo2 = arr[i].porDifEntrtegadoSolicitado;
+
+                        console.log("Entidad: ",arr[i].key);
+                        console.log("entregado",arr[i].vol1);
+                        console.log("solicitado",arr[i].totalSolicitado);
+                        console.log("totalSolicitado",totalSolicitado);
+                        console.log("% porEntregado",arr[i].porEntregado*100);
+                        console.log("% porSolicitado",arr[i].porSolicitado*100);
+                        console.log("% FR ",arr[i].por1);
+                        console.log("dif",arr[i].porDifEntrtegadoSolicitado*100);
+                        console.log("****************");
+
                 }
 
-                if(maximo < arr[i].CantEntfinal){
-                        maximo=arr[i].CantEntfinal;
-                } 
-                
-                arr[i].por1=Math.round((arr[i].vol1/arr[i].totalSolicitado)*100);
-                arr[i].por2=Math.round((arr[i].vol2/arr[i].totalSolicitado)*100);
-                arr[i].por3=Math.round((arr[i].vol3/arr[i].totalSolicitado)*100);               
-               
+                console.log("sumapor",sumapor*100);
 
-        }
+                arr = arr.sort((a, b) => {                
+                        return b.CantEntfinal - a.CantEntfinal;                                    
 
-        for(var i=0; i < arr.length; i++ ){
+                }); 
 
-                arr[i].porEntregado= arr[i].totalSolicitado/totalSolicitado;
-                arr[i].porRetrasado= (arr[i].totalSolicitado-arr[i].CantEntfinal)   /totalSolicitado;
-                arr[i].porDifEntrtegadoSolicitado=arr[i].porEntregado-arr[i].porRetrasado;
+                arr=arr.reverse();
 
-        }
-
-        arr = arr.sort((a, b) => {                
-                return b.CantEntfinal - a.CantEntfinal;                                    
-
-        }); 
-
-        arr=arr.reverse();
-
-        var altura=30;
-        var caso=0;
-       
-        var svgTooltipHeight=arr.length*altura;
-    
-        if(svgTooltipHeight<80)
-            svgTooltipHeight=80;
-
-        if(svgTooltipHeight > windowHeight*.7)
-        svgTooltipHeight = windowHeight*.7;
-    
-    
-        var svgTooltipWidth=720;
-        var marginLeft=svgTooltipWidth*.2;
-        var tamanioFuente=altura*.4;
-        var marginTop=35;
-
-        $("#toolTip3").css("visibility","visible"); 
-        $("#toolTip3").css("inset","");   
-        $("#toolTip3").css("top",80+"px");
-        $("#toolTip3").css("right",1+"%");
-
-        if(svgTooltipHeight > 400){
-                $("#toolTip3").css("top","");
-                $("#toolTip3").css("bottom","10px");
-        }  
-
-        if(windowWidth > 1500 ){
-
-                $("#toolTip3").css("top",80+"px");
-                $("#toolTip3").css("left",windowWidth*.55+"px");
-               
-        }    
-
-
-    // DATOS 
-
-    var data = arr.map(function(item) {
-        return {
-                key: item.key,
-                "por1": item.por1,      
-                "cant": item.CantEntfinal,
-                "porRetrasado": item.porDifEntrtegadoSolicitado
-        };
-        });    
-    
-        // DEFINE COLUMNAS
-      
-      var columns = [
-        { key: "key", header: "Estado", sortable: true, width: "100px" },
-        { key: "por1", header: "Fill Rate", sortable: true, width: "180px" },    
-        { key: "cant", header: "Volumen Entregado", sortable: true, width: "180px" },
-        { key: "porRetrasado", header: "Retrasado (%)", sortable: true, width: "180px" },
-        ];
-    
-    
-       // DEFINE VISITORS PARA CADA COLUMNA    
-    
-      var columnVisitors = {
-        key: function(value,i) {
-
-            return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_estado','${entity.key}')">${value}
-            </div>`;
-          },
-    
-        por1: function(value,i) {
-
-          var p1 = arr[i].por1;  
-          var p2 =  arr[i].por2;  
-          var p3 =  arr[i].por3;  
-          var svgWidth = 150;  
-          var svgHeight = 15; 
-          
-          
-          
-          var svgString = createBar(p1, p2, p3, svgWidth, svgHeight, p1+"%");
-          
-           
-          return '<div class="bar-container">' +svgString +'</div>';
-
-        },
+                var altura=30;
+                var caso=0;
         
-        cant: function(value,i) {
-                var ancho=GetValorRangos( arr[i].CantEntfinal,1, maximo ,1, 180 );
-                var barValue = formatNumber(value);
+                var svgTooltipHeight=arr.length*altura;
+        
+                if(svgTooltipHeight<80)
+                svgTooltipHeight=80;
 
-                return '<div class="bar-container">' +
-                '<span class="bar-value" style="width:80px">' + barValue + '</span>' +
-                '<svg width="90%" height="10"><rect class="bar-rect" width="' + ancho + '" height="10" style="fill: white;"></rect></svg>' +
-                '</div>';
+                if(svgTooltipHeight > windowHeight*.7)
+                svgTooltipHeight = windowHeight*.7;
+        
+        
+               
+                var marginLeft=svgTooltipWidth*.2;
+                var tamanioFuente=altura*.4;
+                var marginTop=35;
 
+                $("#toolTip3").css("visibility","visible"); 
+                $("#toolTip3").css("inset","");   
+                $("#toolTip3").css("top",80+"px");
+                $("#toolTip3").css("right",1+"%");
+
+                if(svgTooltipHeight > 400){
+                        $("#toolTip3").css("top","");
+                        $("#toolTip3").css("bottom","10px");
+                }  
+
+                if(windowWidth > 1500 ){
+
+                        $("#toolTip3").css("top",80+"px");
+                        $("#toolTip3").css("left",windowWidth*.55+"px");
                 
-        },
-        porRetrasado: function(value,i) {
-                var ancho=GetValorRangos( value*100,1, 100 ,1, 180 );
-                
-                return '<div class="bar-container">' +
-                '<span class="bar-value" style="width:80px;padding-left:20px;">' + Math.round(value*1000)/1000 + '</span>' +
-                '<svg width="90%" height="10"><rect class="bar-rect" width="' + ancho + '" height="10" style="fill: white;"></rect></svg>' +
-                '</div>';
+                }    
 
-                
-        }
-      };
 
-      // COLUMNAS CON TOTALES :
+        // DATOS 
 
-      var columnsWithTotals = ['cant']; 
-      var totalsColumnVisitors = {
-                'cant': function(value) { 
-                        var v = formatNumber(value)+"TM";
-             
-                        return v; 
-                },
-                //'column2': function(value) { return '$' + value.toFixed(2); }
+        var data = arr.map(function(item) {
+                return {
+                        key: item.key,
+                        "por1": item.por1,      
+                        "cant": item.CantEntfinal,
+                        "porRetrasado": item.porDifEntrtegadoSolicitado
                 };
+                });    
+        
+                // DEFINE COLUMNAS
+        
+       
 
-    
-    
-      // FORMATEA DIV :
+        if(extraData){
 
-      vix_tt_formatToolTip("#toolTip3","Fill Rate por Estado (TM)",500,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip3","FillRate"));
+                var svgTooltipWidth=650;
+        
+                var columns = [
+                        { key: "key", header: "Estado", sortable: true, width: "100px" },
+                        { key: "por1", header: "Fill Rate", sortable: true, width: "180px" },    
+                        { key: "cant", header: "Volumen Entregado", sortable: true, width: "180px" },
+                        { key: "porRetrasado", header: "Retrasado (%)", sortable: true, width: "180px" },
+                        ];
 
-     // CREA TABLA USANDO DATOS
-      
-     vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip3", columnsWithTotals );        
+        }else{
 
-     // Crea una barra inferior y pasa una funcion de exportacion de datos
-     vix_tt_formatBottomBar("#toolTip3", function () {
-       var dataToExport = formatDataForExport(data, columns);
-       var filename = "exported_data";
-       exportToExcel(dataToExport, filename);
-     });
-      
-      // APLICA TRANSICIONES 
-    
-      vix_tt_transitionRectWidth("toolTip3");     
+                var svgTooltipWidth=450;
+                
+                var columns = [
+                        { key: "key", header: "Estado", sortable: true, width: "100px" },
+                        { key: "por1", header: "Fill Rate", sortable: true, width: "180px" },    
+                        { key: "cant", header: "Volumen Entregado", sortable: true, width: "180px" }
+                       
+                        ];
+
+        }
+        
+        
+        // DEFINE VISITORS PARA CADA COLUMNA    
+        
+        var columnVisitors = {
+                key: function(value,i) {
+
+                return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_estado','${entity.key}')">${value}
+                </div>`;
+                },    
+                por1: function(value,i) {
+
+                var p1 = arr[i].por1;  
+                var p2 =  arr[i].por2;  
+                var p3 =  arr[i].por3;  
+                var svgWidth = 150;  
+                var svgHeight = 15;               
+
+                var svgString = createBar(p1, p2, p3, svgWidth, svgHeight, p1+"%");
+
+                return '<div class="bar-container">' +svgString +'</div>';
+
+                },        
+                cant: function(value,i) {
+                        var ancho=GetValorRangos( arr[i].CantEntfinal,1, maximo ,1, 180 );
+                        var barValue = formatNumber(value);
+
+                        return '<div class="bar-container">' +
+                        '<span class="bar-value" style="width:80px">' + barValue + '</span>' +
+                        '<svg width="90%" height="10"><rect class="bar-rect" width="' + ancho + '" height="10" style="fill: white;"></rect></svg>' +
+                        '</div>';
+
+                        
+                },
+                porRetrasado: function(value,i) {
+                        var ancho=GetValorRangos( value*10000,1,maximo2*10000 ,1, 120 );
+
+                        if(ancho > 120)
+                        ancho=120
+                        
+                        return '<div class="bar-container">' +
+                        '<span class="bar-value" style="width:80px;padding-left:20px;">' + Math.round(value*10000)/100 + '</span>' +
+                        '<svg width="90%" height="10"><rect class="bar-rect" width="' + ancho + '" height="10" style="fill: white;"></rect></svg>' +
+                        '</div>';                
+                }
+        };
+
+        // COLUMNAS CON TOTALES :
+
+        var columnsWithTotals = ['por1','cant','porRetrasado']; 
+        var totalsColumnVisitors = {
+                        'por1': function(value) { 
+                                var v = ( entity.fillRate.fillRate)+"%";             
+                                return v; 
+                        },
+                        'cant': function(value) { 
+                                var v = formatNumber(value)+"TM";             
+                                return v; 
+                        },
+                        'porRetrasado': function(value) { 
+                                var v =  Math.round(value*10000)/100+"%";             
+                                return v; 
+                        }
+                        };
+
+        
+        
+        // FORMATEA DIV :
+
+        vix_tt_formatToolTip("#toolTip3","Fill Rate por Estado (TM)",svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip3","FillRate"),"kpiExpert_FR.DrawTooltipDetail_Estado(kpiExpert_FR.lastEntity,true)");
+
+        // CREA TABLA USANDO DATOS
+        
+        vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip3", columnsWithTotals );        
+
+        // Crea una barra inferior y pasa una funcion de exportacion de datos
+        vix_tt_formatBottomBar("#toolTip3", function () {
+        var dataToExport = formatDataForExport(data, columns);
+        var filename = "exported_data";
+        exportToExcel(dataToExport, filename);
+        });
+        
+        // APLICA TRANSICIONES 
+        
+        vix_tt_transitionRectWidth("toolTip3");     
 
 }
-        
+                
 
 
 
@@ -365,7 +404,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                 for(var i=0; i < entity.values.length; i++ ){
 
                         if(entity.values[i].fecha){
-                                console.log("registra",entity.values[i].fecha.getTime());
+                                
                                 diasDelPeriodo[ entity.values[i].fecha.getTime() ]=true;
                                 data.push(entity.values[i]);
                         }else{
