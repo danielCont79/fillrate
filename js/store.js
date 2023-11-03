@@ -60,7 +60,6 @@ var store={
             {data:"cat_region_origen",placeholder:"Region Origen",fieldInCatlog:"Nombre" , id:"cat_region_origen",type:"autoComplete",nameOnFR:"RegionZTDem",nameOnPendientes:"Region", color:"#3733E7",storeProcedureField:"vc50_Region_UN"},
             {data:"cat_region",placeholder:"Region Destino",fieldInCatlog:"Nombre" , id:"cat_region",type:"autoComplete",nameOnFR:"RegionZTDem",nameOnPendientes:"Region", color:"#12FF00",storeProcedureField:"RegionZTDem"},
             
-
             {data:"cat_estado",placeholder:"Estado",fieldInCatlog:"Nombre",id:"cat_estado",type:"autoComplete",nameOnFR:"EstadoZTDem",nameOnPendientes:"Estado", color:"#12FF00",storeProcedureField:"EstadoZTDem",multipleSelection:true},
             {data:"cat_zt",placeholder:"Zona Transporte",fieldInCatlog:"Nombre",id:"cat_zt",type:"autoComplete",nameOnFR:"ZonaTransporte",nameOnPendientes:"Zona_de_Entrega", color:"#12FF00",storeProcedureField:"Zona_de_Entrega"},
             {data:"cat_cliente",placeholder:"Holding",fieldInCatlog:"Nombre",id:"cat_cliente",type:"autoComplete",nameOnFR:"Cliente",nameOnPendientes:"HoldingNum", color:"#12FF00",storeProcedureField:"Cliente"},

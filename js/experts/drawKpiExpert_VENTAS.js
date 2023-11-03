@@ -132,11 +132,13 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
   
       console.log(entity.key,dateInit,dateEnd);
 
-      if(drawKpiExpert_VENTAS.lastEntity.key==entity.key && drawKpiExpert_VENTAS.lastInitDate.toString()==dateInit.toString() && drawKpiExpert_VENTAS.lastEndDate.toString()==dateEnd.toString()){
-        console.log("evita consultaaa");
-        drawKpiExpert_VENTAS.procesaVentanaPorDia(entity,drawKpiExpert_VENTAS.dataSet);
-        return;
-      }
+      if(drawKpiExpert_VENTAS.lastInitDate){
+        if(drawKpiExpert_VENTAS.lastEntity.key==entity.key && drawKpiExpert_VENTAS.lastInitDate.toString()==dateInit.toString() && drawKpiExpert_VENTAS.lastEndDate.toString()==dateEnd.toString()){
+          console.log("evita consultaaa");
+          drawKpiExpert_VENTAS.procesaVentanaPorDia(entity,drawKpiExpert_VENTAS.dataSet);
+          return;
+        }
+      }      
 
       console.log("iniciaa consultaaa");
 

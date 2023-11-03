@@ -150,6 +150,8 @@ kpiExpert_FR.DrawTooltipDetail=function(entity){
                 
         }else if( Number($("#nivel_cb").val()) > 2   ){
 
+                kpiExpert_FR.DrawTooltipDetail_Estado(entity);
+
                 kpiExpert_FR.DrawTooltipDetail_UN(entity);
                 kpiExpert_FR.DrawTooltipDetail_ByDay(entity);
 
@@ -213,6 +215,37 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
      
                 }
 
+                //Incluye filtro de la entidad y el nivel en el que se encuentra
+                for(var i=0; i < store.niveles.length; i++){    
+
+                        if( store.niveles[i].id == $("#nivel_cb").val() && store.niveles[i].id.toString() != "0" ){
+                               
+                                var catlog_name=store.niveles[i].coordinatesSource;                               
+                                console.log("encuentra catalogo",catlog_name);
+                                for(var j=0; j < store.catlogsForFilters.length; j++){
+                                        if(store.catlogsForFilters[j].data == catlog_name){
+                                                console.log("encuentra parametro",store.catlogsForFilters[j].storeProcedureField);
+                                                var entityName=entity.key;
+                                                if(entityName.indexOf("_")>-1){
+                                                        var nameSplitted=entityName.split("_");
+                                                        entityName=nameSplitted[0];
+                                                }
+                                                params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+entityName;
+
+                                        }
+                                }                               
+
+                        }else if(store.niveles[i].id.toString() == "0"){
+                                if(entity.key.toLowerCase()=="sacos"){
+                                        params+="&Presentacion=Sacos";
+                                }else if(entity.key.toLowerCase()=="granel"){
+                                        params+="&Presentacion=Granel";
+                                }
+                        }
+
+                }
+
+           
                 //FILTRO DE MASIVO
                 if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
 
@@ -228,8 +261,6 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                         
                 }
 
-                 //ID de entidad
-                params+="&idSpider="+entity.key;
 
                 var URL=apiURL+"/"+serviceName+"?fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador=UnidadNegocio"+params;
                 console.log(URL);  
@@ -394,7 +425,7 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                                         var svgTooltipWidth=450;
                                         
                                         var columns = [
-                                                { key: "key", header: "Estado", sortable: true, width: "100px" },
+                                                { key: "key", header: "Unidad Neg.", sortable: true, width: "100px" },
                                                 { key: "por1", header: "Fill Rate", sortable: true, width: "180px" },    
                                                 { key: "cant", header: "Volumen Entregado", sortable: true, width: "180px" }
                                                 
