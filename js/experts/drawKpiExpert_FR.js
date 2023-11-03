@@ -118,6 +118,7 @@ kpiExpert_FR.eraseChart=function(){
 
         d3.select("#svgTooltip").selectAll(".frDetail").data([]).exit().remove();
         d3.select("#svgTooltip3").selectAll(".frDetail").data([]).exit().remove();
+        d3.select("#svgTooltip4").selectAll(".frDetail").data([]).exit().remove();
 
         $("#toolTip2").css("visibility","hidden");
         $("#toolTip3").css("visibility","hidden");
@@ -133,18 +134,374 @@ kpiExpert_FR.DrawTooltipDetail=function(entity){
 
         d3.select("#svgTooltip").selectAll(".frDetail").data([]).exit().remove();
         d3.select("#svgTooltip3").selectAll(".frDetail").data([]).exit().remove();
+        d3.select("#svgTooltip4").selectAll(".frDetail").data([]).exit().remove();
+        
 
-        kpiExpert_FR.DrawTooltipDetail_Estado(entity);
-        kpiExpert_FR.DrawTooltipDetail_ByDay(entity);
+        if( Number($("#nivel_cb").val()) == 0 ){
+
+                kpiExpert_FR.DrawTooltipDetail_Estado(entity);
+                kpiExpert_FR.DrawTooltipDetail_ByDay(entity);   
+
+        }else if( Number($("#nivel_cb").val()) > 0 && Number($("#nivel_cb").val()) < 3  ){
+
+                kpiExpert_FR.DrawTooltipDetail_Estado(entity);
+                kpiExpert_FR.DrawTooltipDetail_UN(entity);
+                kpiExpert_FR.DrawTooltipDetail_ByDay(entity);
+                
+        }else if( Number($("#nivel_cb").val()) > 2   ){
+
+                kpiExpert_FR.DrawTooltipDetail_UN(entity);
+                kpiExpert_FR.DrawTooltipDetail_ByDay(entity);
+
+        }    
 
         opacidadCesium=30;
-      $("#cesiumContainer").css("opacity",opacidadCesium/100); 
-
-      // DISTRIBUYE 
-      vix_tt_distributeDivs(["#toolTip2","#toolTip3"]);  
-       
+        $("#cesiumContainer").css("opacity",opacidadCesium/100);   
+        vix_tt_distributeDivs(["#toolTip2","#toolTip3"]);              
 
 }
+
+kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){ 
+
+        $("#cargando").css("visibility","visible");
+
+        var serviceName;
+        var apiURL;
+        var agrupador="";
+        var nombreCatalogoParaDiccionario;
+        var diccionarioNombres=[];
+
+        for(var i=0; i < store.niveles.length; i++){    
+
+                if( store.niveles[i].id == $("#nivel_cb").val() ){
+                        agrupador=store.niveles[i].storeProcedureField; 
+                        nombreCatalogoParaDiccionario=store.niveles[i].coordinatesSource;
+                }                        
+        }
+
+        for( var i=0; i < store.catlogsForFilters.length; i++ ){    
+                if(store.catlogsForFilters[i].data==nombreCatalogoParaDiccionario){
+                        diccionarioNombres=store.catlogsForFilters[i].diccNames;
+                        
+                }
+        } 
+        
+        for(var i=0; i < store.apiDataSources.length; i++){
+      
+            if(store.apiDataSources[i].varName=="fillRate"){                    
+                    serviceName=store.apiDataSources[i].serviceName;
+                    apiURL=store.apiDataSources[i].apiURL;
+            }
+
+        }
+
+        if(serviceName && apiURL){
+
+                var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
+                var dateEnd_=dateEnd.getFullYear()+"-"+String(Number(dateEnd.getMonth())+1)+"-"+dateEnd.getDate();
+                
+                // FILTROS****
+                var params="";
+                       
+                for(var j=0; j < store.catlogsForFilters.length; j++){
+     
+                     if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+     
+                         params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+     
+                     }
+     
+                }
+
+                //FILTRO DE MASIVO
+                if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
+
+                        params+="&masivos=Todos";               
+
+                }else if($("#masivos_cb").val() == "SinMasivos"){
+
+                        params+="&masivos=Sin Masivos"; 
+
+                }else if($("#masivos_cb").val() == "SoloMasivos"){
+
+                        params+="&masivos=Solo Masivos"; 
+                        
+                }
+
+                 //ID de entidad
+                params+="&idSpider="+entity.key;
+
+                var URL=apiURL+"/"+serviceName+"?fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador=UnidadNegocio"+params;
+                console.log(URL);  
+
+                if(URL.indexOf("undefined" < 0)){
+
+                        dataLoader.AddLoadingTitle("FillRate de Unidades de Neg");
+
+                        d3.json(URL, function (error, data) {
+
+                                dataLoader.DeleteLoadingTitle("FillRate de Unidades de Neg"); 
+
+                                dataLoader.HideLoadings();
+
+                                $("#cargando").css("visibility","hidden");
+
+                                if(error){
+                                        alert("Error API FillRate UN",error);
+                                        resolve();
+                                        return;
+                                }
+
+                                if(data.error){
+                                        alert("Error API FillRate UN",data.error);
+                                        resolve();
+                                        return;
+                                }
+
+                                console.log("FR de UN",data.recordset); 
+
+                                var maximo1=0;
+                                var maximo2=0;
+
+                                var arrTemp=[];
+
+                                var arr=d3.nest()
+                                        .key(function(d) { return d.Agrupador; })
+                                        .entries(data.recordset); 
+
+                                var totalSolicitado=0;
+
+                                var maximo=0;
+                                var maximo2=0;
+
+                                for(var i=0; i < arr.length; i++ ){
+
+                                        arr[i].CantEntfinal=0;                                       
+                                        arr[i].totalSolicitado=0;
+                                        arr[i].totalSolicitadoATiempo=0;
+
+                                        arr[i].vol1=0;
+                                        arr[i].vol2=0;
+                                        arr[i].vol3=0;
+                                      
+                                        arr[i].por1=0;
+                                        arr[i].por2=0;
+                                        arr[i].por3=0;
+
+                                        for(var j=0; j < arr[i].values.length; j++ ){
+
+                                                arr[i].CantEntfinal+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                                arr[i].totalSolicitado+=Number(arr[i].values[j][campoTotalSolicitado]);                               
+                                                totalSolicitado+=Number(arr[i].values[j][campoTotalSolicitado]);
+                
+                                                if(arr[i].values[j][campoDeATiempo] == "A Tiempo"){                                 
+                                                        arr[i].vol1+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                                }else if(arr[i].values[j][campoDeATiempo] == "1 a 2 días Tarde"){
+                                                        arr[i].vol2+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                                }else if(arr[i].values[j][campoDeATiempo] == "3 o más días Tarde"){
+                                                        arr[i].vol3+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                                }                        
+                                        }
+                
+                                        if(maximo < arr[i].CantEntfinal){
+                                                maximo=arr[i].CantEntfinal;
+                                        }
+
+                                        arr[i].por1=Math.round((arr[i].vol1/arr[i].totalSolicitado)*100);
+                                        arr[i].por2=Math.round((arr[i].vol2/arr[i].totalSolicitado)*100);
+                                        arr[i].por3=Math.round((arr[i].vol3/arr[i].totalSolicitado)*100);
+                                        
+                                }
+
+                                var sumapor=0;
+
+                                for(var i=0; i < arr.length; i++ ){
+
+                                        arr[i].porEntregado= arr[i].vol1/totalSolicitado;
+                                        arr[i].porSolicitado= arr[i].totalSolicitado/totalSolicitado;
+                                        arr[i].porDifEntrtegadoSolicitado=arr[i].porSolicitado-arr[i].porEntregado;
+                                        sumapor+=arr[i].porDifEntrtegadoSolicitado;
+                
+                                        if(maximo2 < arr[i].porDifEntrtegadoSolicitado )
+                                                maximo2 = arr[i].porDifEntrtegadoSolicitado;               
+                
+                                }
+                                
+                                arr = arr.sort((a, b) => {                
+                                        return b.CantEntfinal - a.CantEntfinal;                                   
+                                }); 
+                
+                                arr=arr.reverse();
+
+                                var altura=30;
+                                var caso=0;
+                        
+                                var svgTooltipHeight=arr.length*altura;
+                        
+                                if(svgTooltipHeight<80)
+                                svgTooltipHeight=80;
+
+                                if(svgTooltipHeight > windowHeight*.7)
+                                svgTooltipHeight = windowHeight*.7;
+                        
+                        
+                        
+                                var marginLeft=svgTooltipWidth*.2;
+                                var tamanioFuente=altura*.4;
+                                var marginTop=35;
+
+                                $("#toolTip4").css("visibility","visible"); 
+                                $("#toolTip4").css("inset","");   
+                                $("#toolTip4").css("top",80+"px");
+                                $("#toolTip4").css("right",1+"%");
+
+                                if(svgTooltipHeight > 400){
+                                        $("#toolTip4").css("top","");
+                                        $("#toolTip4").css("bottom","10px");
+                                }  
+
+                                if(windowWidth > 1500 ){
+
+                                        $("#toolTip4").css("top",80+"px");
+                                        $("#toolTip4").css("left",windowWidth*.55+"px");
+                                
+                                }
+
+                                // DATOS 
+
+                                var data = arr.map(function(item) {
+                                        return {
+                                                key: item.key,
+                                                "por1": item.por1,      
+                                                "cant": item.CantEntfinal,
+                                                "porRetrasado": item.porDifEntrtegadoSolicitado
+                                        };
+                                        }); 
+                                
+                                if(extraData){
+
+                                        var svgTooltipWidth=650;
+                                
+                                        var columns = [
+                                                { key: "key", header: "Estado", sortable: true, width: "100px" },
+                                                { key: "por1", header: "Fill Rate", sortable: true, width: "180px" },    
+                                                { key: "cant", header: "Volumen Entregado", sortable: true, width: "180px" },
+                                                { key: "porRetrasado", header: "Retrasado (%)", sortable: true, width: "180px" },
+                                                ];
+                        
+                                }else{
+                        
+                                        var svgTooltipWidth=450;
+                                        
+                                        var columns = [
+                                                { key: "key", header: "Estado", sortable: true, width: "100px" },
+                                                { key: "por1", header: "Fill Rate", sortable: true, width: "180px" },    
+                                                { key: "cant", header: "Volumen Entregado", sortable: true, width: "180px" }
+                                                
+                                                ];
+                        
+                                }
+
+                                // DEFINE VISITORS PARA CADA COLUMNA   
+        
+                                var columnVisitors = {
+                                        key: function(value,i) {
+
+                                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_estado','${entity.key}')">${value}
+                                        </div>`;
+                                        },    
+                                        por1: function(value,i) {
+
+                                        var p1 = arr[i].por1;  
+                                        var p2 =  arr[i].por2;  
+                                        var p3 =  arr[i].por3;  
+                                        var svgWidth = 150;  
+                                        var svgHeight = 15;               
+
+                                        var svgString = createBar(p1, p2, p3, svgWidth, svgHeight, p1+"%");
+
+                                        return '<div class="bar-container">' +svgString +'</div>';
+
+                                        },        
+                                        cant: function(value,i) {
+                                                var ancho=GetValorRangos( arr[i].CantEntfinal,1, maximo ,1, 180 );
+                                                var barValue = formatNumber(value);
+
+                                                return '<div class="bar-container">' +
+                                                '<span class="bar-value" style="width:80px">' + barValue + '</span>' +
+                                                '<svg width="90%" height="10"><rect class="bar-rect" width="' + ancho + '" height="10" style="fill: white;"></rect></svg>' +
+                                                '</div>';
+
+                                                
+                                        },
+                                        porRetrasado: function(value,i) {
+                                                var ancho=GetValorRangos( value*10000,1,maximo2*10000 ,1, 120 );
+
+                                                if(ancho > 120)
+                                                ancho=120
+                                                
+                                                return '<div class="bar-container">' +
+                                                '<span class="bar-value" style="width:80px;padding-left:20px;">' + Math.round(value*10000)/100 + '</span>' +
+                                                '<svg width="90%" height="10"><rect class="bar-rect" width="' + ancho + '" height="10" style="fill: white;"></rect></svg>' +
+                                                '</div>';                
+                                        }
+                                };
+
+                                // COLUMNAS CON TOTALES :
+
+                                var columnsWithTotals = ['por1','cant','porRetrasado']; 
+                                var totalsColumnVisitors = {
+                                                'por1': function(value) { 
+                                                        var v = ( entity.fillRate.fillRate)+"%";             
+                                                        return v; 
+                                                },
+                                                'cant': function(value) { 
+                                                        var v = formatNumber(value)+"TM";             
+                                                        return v; 
+                                                },
+                                                'porRetrasado': function(value) { 
+                                                        var v =  Math.round(value*10000)/100+"%";             
+                                                        return v; 
+                                                }
+                                                };
+
+                                
+                                
+                                // FORMATEA DIV :
+
+                                vix_tt_formatToolTip("#toolTip4","Fill Rate por Unidad de Negocio (TM)",svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","FillRate"),"kpiExpert_FR.DrawTooltipDetail_UN(kpiExpert_FR.lastEntity,true)");
+
+                                // CREA TABLA USANDO DATOS
+                                
+                                vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip4", columnsWithTotals );        
+
+                                // Crea una barra inferior y pasa una funcion de exportacion de datos
+                                vix_tt_formatBottomBar("#toolTip4", function () {
+                                var dataToExport = formatDataForExport(data, columns);
+                                var filename = "exported_data";
+                                exportToExcel(dataToExport, filename);
+                                });
+                                
+                                // APLICA TRANSICIONES 
+                                
+                                vix_tt_transitionRectWidth("toolTip4"); 
+
+                                if($("#toolTip3").css("visibility")=="visible" && $("#toolTip4").css("visibility")=="visible" )
+                                        vix_tt_distributeDivs(["#toolTip2","#toolTip3","#toolTip4"]);
+
+                                if($("#toolTip3").css("visibility")=="hidden" && $("#toolTip4").css("visibility")=="visible" )
+                                        vix_tt_distributeDivs(["#toolTip2","#toolTip4"]);
+
+                                if($("#toolTip3").css("visibility")=="visible" && $("#toolTip4").css("visibility")=="hidden" )
+                                        vix_tt_distributeDivs(["#toolTip2","#toolTip3"]);
+
+                        });
+
+                }
+
+        }
+
+}    
 
 kpiExpert_FR.DrawTooltipDetail_Estado=function(entity,extraData){ 
 
@@ -163,13 +520,11 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity,extraData){
                         arr[i].CantEntfinal=0;
                         arr[i].fecha=arr[i].values[0].fecha.getTime();
                         arr[i].totalSolicitado=0;
-                        arr[i].totalSolicitadoATiempo=0;
-                        
+                        arr[i].totalSolicitadoATiempo=0;                        
 
                         arr[i].vol1=0;
                         arr[i].vol2=0;
                         arr[i].vol3=0;
-
                       
                         arr[i].por1=0;
                         arr[i].por2=0;
@@ -199,7 +554,9 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity,extraData){
                         arr[i].por3=Math.round((arr[i].vol3/arr[i].totalSolicitado)*100);            
 
                 }
+
                 var sumapor=0;
+
                 for(var i=0; i < arr.length; i++ ){
 
                         arr[i].porEntregado= arr[i].vol1/totalSolicitado;
@@ -277,9 +634,7 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity,extraData){
                 };
                 });    
         
-                // DEFINE COLUMNAS
-        
-       
+                // DEFINE COLUMNAS     
 
         if(extraData){
 
@@ -390,8 +745,7 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity,extraData){
         
         vix_tt_transitionRectWidth("toolTip3");     
 
-}
-                
+}               
 
 
 
