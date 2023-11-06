@@ -190,7 +190,7 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
         
         for(var i=0; i < store.apiDataSources.length; i++){
       
-            if(store.apiDataSources[i].varName=="fillRate"){                    
+            if(store.apiDataSources[i].varName=="frDia"){                    
                     serviceName=store.apiDataSources[i].serviceName;
                     apiURL=store.apiDataSources[i].apiURL;
             }
@@ -214,6 +214,8 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                      }
      
                 }
+
+                /*
 
                 //Incluye filtro de la entidad y el nivel en el que se encuentra
                 for(var i=0; i < store.niveles.length; i++){    
@@ -244,6 +246,7 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                         }
 
                 }
+                */
 
            
                 //FILTRO DE MASIVO
@@ -260,9 +263,12 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                         params+="&masivos=Solo Masivos"; 
                         
                 }
+                
+                 //ID de entidad
+                 params+="&idSpider="+entity.key;
 
 
-                var URL=apiURL+"/"+serviceName+"?fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador=UnidadNegocio"+params;
+                var URL=apiURL+"/"+serviceName+"?fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+params;
                 console.log(URL);  
 
                 if(URL.indexOf("undefined" < 0)){
@@ -297,7 +303,7 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                                 var arrTemp=[];
 
                                 var arr=d3.nest()
-                                        .key(function(d) { return d.Agrupador; })
+                                        .key(function(d) { return d.vc50_UN_Tact; })
                                         .entries(data.recordset); 
 
                                 var totalSolicitado=0;
