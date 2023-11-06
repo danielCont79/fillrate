@@ -453,12 +453,11 @@ color: yellow;
                 </select>
                 <br>
                
-                <select class="loginBtn" id="dateSelect" onchange="setDates(this);">
-                  <option value="">Seleccionar Mes</option>
-                  <option value="09-2023">Septiembre 2023</option>
-                  <option value="08-2023">Agosto 2023</option>
-                  <option value="07-2023">Julio 2023</option>
-                  <option value="06-2023">Junio 2023</option>               
+                <select id="meses_cb" class="loginBtn" id="dateSelect" onchange="setDates(this);">
+                  <option value="">Seleccionar Mes</option>                
+                  
+                  
+
                 </select>
 
                 <br><br>
@@ -519,14 +518,12 @@ color: yellow;
 
         processQueriesWithWorker(queries, processData);
 
-
     </script> 
    
 
 
 
     <script>
-
         
         //Editor: Daniel Contreras Calderon
 
@@ -543,9 +540,7 @@ color: yellow;
         }else{
             $("#iconOOSF_").hide();
             $("#iconVenta_").hide();
-        }
-
-        
+        }        
 
         function setDates(sel)
         {
@@ -592,6 +587,23 @@ color: yellow;
 
         var fechaActual=new Date();
 
+        //Crea opciones de meses completo para el select de meses
+        var mesInicialOpciones=new Date(2023,7);
+        for(var i=0 ; i < fechaActual.getTime() ; i++ ){
+
+            var newDate_=new Date( mesInicialOpciones.getFullYear(), mesInicialOpciones.getMonth()+i );
+
+            if(newDate_.getTime() > fechaActual.getTime())
+                break;
+
+            $("#meses_cb").append(
+                `  <option value="${newDate_.getMonth()+1}-${newDate_.getFullYear()}"> ${getMes(newDate_.getMonth())}-${newDate_.getFullYear()}</option>  
+                `);
+            
+           
+
+        }
+
         $(function() {
 
             $('#datepicker').datepicker({format: 'mm-dd-yyyy'});
@@ -628,10 +640,7 @@ color: yellow;
             $(".datepicker").css("z-index",99999);
               
 
-            $(function() { 
-
-               
-
+            $(function() {              
 
                 dateInit=new Date($('#datepicker').val());
                 dateEnd=new Date($('#datepicker2').val());
