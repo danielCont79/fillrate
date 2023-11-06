@@ -589,17 +589,19 @@ color: yellow;
 
         //Crea opciones de meses completo para el select de meses
         var mesInicialOpciones=new Date(2023,7);
+
         for(var i=0 ; i < fechaActual.getTime() ; i++ ){
 
             var newDate_=new Date( mesInicialOpciones.getFullYear(), mesInicialOpciones.getMonth()+i );
 
-            if(newDate_.getTime() > fechaActual.getTime())
+            var dia=((1000*60)*60)*24;
+
+            if(newDate_.getTime() > fechaActual.getTime()-(dia*30))
                 break;
 
             $("#meses_cb").append(
                 `  <option value="${newDate_.getMonth()+1}-${newDate_.getFullYear()}"> ${getMes(newDate_.getMonth())}-${newDate_.getFullYear()}</option>  
-                `);
-            
+                `);          
            
 
         }
