@@ -134,8 +134,8 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
 
       if(drawKpiExpert_VENTAS.lastInitDate){
         if(drawKpiExpert_VENTAS.lastEntity.key==entity.key && drawKpiExpert_VENTAS.lastInitDate.toString()==dateInit.toString() && drawKpiExpert_VENTAS.lastEndDate.toString()==dateEnd.toString()){
-          console.log("evita consultaaa");
-          drawKpiExpert_VENTAS.procesaVentanaPorDia(entity,drawKpiExpert_VENTAS.dataSet);
+          
+          drawKpiExpert_VENTAS.procesaVentanaPorDia(entity,drawKpiExpert_VENTAS.dataSet, dateInit, dateEnd);
           return;
         }
       }      
@@ -357,7 +357,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                           drawKpiExpert_VENTAS.lastEndDate=dateEnd;
                           drawKpiExpert_VENTAS.dataSet=data;
 
-                          drawKpiExpert_VENTAS.procesaVentanaPorDia(entity,data);
+                          drawKpiExpert_VENTAS.procesaVentanaPorDia(entity,data, dateInit, dateEnd);
                         
 
                   });
@@ -368,7 +368,9 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
 
 }
 
-drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data){
+drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEnd){
+
+  console.log(dateInit, dateEnd);
 
                     if(drawKpiExpert_VENTAS.detalleDeTiempo=="dia"){
 
@@ -404,7 +406,7 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data){
                               .key(function(d) { 
 
                                       if(d.mes){
-                                        console.log(d);
+                                        
                                               return d.mes.getTime(); 
                                       }else{                       
                                               return 0;
@@ -429,6 +431,10 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data){
                       arr[i].RecogidoReal=0;
                       arr[i].EntregadoReal=0;
 
+                      arr[i].fecha;
+                      arr[i].Vc20descr_sem_date;
+                      arr[i].mes;
+
 
                       if(drawKpiExpert_VENTAS.detalleDeTiempo=="dia"){
 
@@ -436,7 +442,7 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data){
 
                       }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="semana"){
 
-                        arr[i].Fecha=arr[i].values[0].semanaDate.getDate()+" "+getMes(arr[i].values[0].semanaDate.getMonth());
+                          arr[i].Fecha=arr[i].values[0].semanaDate.getDate()+" "+getMes(arr[i].values[0].semanaDate.getMonth());
 
                       }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
 
@@ -457,6 +463,10 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data){
                             arr[i].VolumenReal+=Number(arr[i].values[j].RecogidoReal);
                             arr[i].VolumenReal+=Number(arr[i].values[j].EntregadoReal);
 
+                            arr[i].fecha=arr[i].values[j].fecha.getTime();
+                            arr[i].Vc20descr_sem_date=arr[i].values[j].fecha.getTime();
+                            arr[i].mes=arr[i].values[j].mes;
+
                       }
 
                       if(maximo < arr[i].VolumenPlan && arr[i].VolumenPlan>0 ){
@@ -466,21 +476,23 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data){
 
                   }
 
+
+
                   arr = arr.sort((a, b) => {  
 
-                  if(drawKpiExpert_VENTAS.detalleDeTiempo=="dia"){
-                              
-                    return b.fecha - a.fecha;   
+                        if(drawKpiExpert_VENTAS.detalleDeTiempo=="dia"){
+                                    
+                          return b.fecha - a.fecha;   
 
-                  }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="semana"){
+                        }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="semana"){
 
-                  return b.Vc20descr_sem_date - a.Vc20descr_sem_date;   
+                        return b.Vc20descr_sem_date - a.Vc20descr_sem_date;   
 
-                  }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
+                        }else if(drawKpiExpert_VENTAS.detalleDeTiempo=="mes"){
 
-                    return b.mes - a.mes;   
+                          return b.mes - a.mes;   
 
-                  }
+                        }
 
                   });
 
@@ -488,7 +500,7 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data){
 
                   drawKpiExpert_VENTAS.lastDataByDay=arr;
 
-                  //arr=arr.reverse();
+                  arr=arr.reverse();
 
                   var ancho=18;
                   var caso=0;    
