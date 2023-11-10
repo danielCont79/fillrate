@@ -329,13 +329,13 @@ function vix_tt_formatToolTip(divElement, titulo, width,  initialHeight,infoData
       },
     });
     
-    var downloadButton = $(`<button onclick="" class="down-btn"  style=" background-color: rgb(80, 125, 140);border-style: none;visibility:hidden">`, {
-      class: "down-btn",
+    var downloadButton = $(`<button onclick="" class="down-btn"  style=" background-color: rgb(80, 125, 140);border-style: none;">`, {
+      class: "plus-button",
       
     }).append(' <img  src="images/download_icon.png" style="width: 20px;height: 20px;margin-top: 0px;"></img></button>');
     iconsColumn.append(downloadButton);
     
-    
+    $(downloadButton).hide();
   
     if(extraData){
         var plusButton = $(`<button onclick="${extraData}" style=" background-color: rgb(80, 125, 140);border-style: none;">`, {
@@ -678,7 +678,8 @@ console.log("arrastrando");
     });
     */
 
-    $(divElement).find(".down-btn").css("visibility","visible");
+    //$(divElement).find(".down-btn").css("visibility","visible");
+    $(divElement).find(".down-btn").show();
     $(divElement).find(".down-btn").on("click", function () {
       exportHandler(); // LLama a la funcion que recibe como parametro
     });
