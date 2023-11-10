@@ -190,7 +190,7 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
         
         for(var i=0; i < store.apiDataSources.length; i++){
       
-            if(store.apiDataSources[i].varName=="frDia"){                    
+            if(store.apiDataSources[i].varName=="frUN"){                    
                     serviceName=store.apiDataSources[i].serviceName;
                     apiURL=store.apiDataSources[i].apiURL;
             }
@@ -307,9 +307,6 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                                         .entries(data.recordset); 
 
                                 var totalSolicitado=0;
-
-                                var maximo=0;
-                                var maximo2=0;
 
                                 for(var i=0; i < arr.length; i++ ){
 
@@ -895,13 +892,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                 if(svgTooltipWidth < 280)
                         svgTooltipWidth=280;
         
-                var svgTooltipHeight=620;
-
-                if(windowHeight < 620){
-                        svgTooltipHeight=windowHeight;
-                }   
-                
-                
+                var svgTooltipHeight=600;                
 
                 var marginBottom=svgTooltipHeight*.11;
                 var tamanioFuente=ancho*.8;   
@@ -943,7 +934,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                                 .attr("width",ancho )
                                                 .attr("class","frDetail")
                                                 .attr("x",ancho*caso  )
-                                                .attr("y", (svgTooltipHeight*.78)-altura-3-marginBottom  )
+                                                .attr("y", (svgTooltipHeight*.74)-altura-3-marginBottom  )
                                                 .attr("height",1)
                                                 .attr("fill","none")
                                                 .style("stroke-width",1)
@@ -956,7 +947,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                                 .attr("width",ancho*.6 )
                                                 .attr("class","frDetail")
                                                 .attr("x",(ancho*caso)+(ancho*.1)  )
-                                                .attr("y", (svgTooltipHeight*.78)-altura1-3-marginBottom  )
+                                                .attr("y", (svgTooltipHeight*.74)-altura1-3-marginBottom  )
                                                 .attr("height",1)
                                                 .attr("fill","#00A8FF")
                                                 .transition().delay(0).duration(i*50)
@@ -967,7 +958,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                                 .attr("width",ancho*.6 )
                                                 .attr("class","frDetail")
                                                 .attr("x",(ancho*caso)+(ancho*.1)  )
-                                                .attr("y", (svgTooltipHeight*.78)-altura1-altura2-3-marginBottom  )
+                                                .attr("y", (svgTooltipHeight*.74)-altura1-altura2-3-marginBottom  )
                                                 .attr("height",1)
                                                 .attr("fill","#EAFF00")
                                                 .transition().delay(0).duration(i*50)
@@ -978,7 +969,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                                 .attr("width",ancho*.6 )
                                                 .attr("class","frDetail")
                                                 .attr("x",(ancho*caso)+(ancho*.1)  )
-                                                .attr("y", (svgTooltipHeight*.78)-altura1-altura2-altura3-3-marginBottom  )
+                                                .attr("y", (svgTooltipHeight*.74)-altura1-altura2-altura3-3-marginBottom  )
                                                 .attr("height",1)
                                                 .attr("fill","#FF0000")
                                                 .transition().delay(0).duration(i*50)
@@ -997,7 +988,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                                 .attr("width",(ancho*.7) )
                                                 .attr("class","frDetail")
                                                 .attr("x", ancho*caso  )
-                                                .attr("y", (svgTooltipHeight*.38)-alturaVolumen-3  )
+                                                .attr("y", (svgTooltipHeight*.35)-alturaVolumen-3  )
                                                 .attr("height",alturaVolumen)
                                                 .attr("fill","#FFFFFF")                                     
                                                 .transition().delay(0).duration(i*50)
@@ -1008,7 +999,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                                 .attr("class","frDetail")
                                                 .attr("fill","#ffffff")
                                                 .attr("cx",(ancho*caso)+(ancho/2)-2 )
-                                                .attr("cy",(svgTooltipHeight*.78)-3-marginBottom-alturaVolumen)                   
+                                                .attr("cy",(svgTooltipHeight*.74)-3-marginBottom-alturaVolumen)                   
                                                 .attr("r",4);
                 
         
@@ -1021,7 +1012,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                 .style("font-size",tamanioFuente*.8)						
                                 .style("text-anchor","start")
                                 .style("opacity",0 )
-                                .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.7)+1  )+","+String( ((svgTooltipHeight*.38))-alturaVolumen-6  )+")  rotate("+(-90)+") ")
+                                .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.7)+1  )+","+String( ((svgTooltipHeight*.35))-alturaVolumen-6  )+")  rotate("+(-90)+") ")
                                 .text(function(){
                                 
                                 return  formatNumber(arr[i].CantEntfinal);
@@ -1041,7 +1032,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                         .style("text-anchor","start")
                         .style("opacity",0 )
                         
-                        .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.8)+1  )+","+String( (svgTooltipHeight*.78)-marginBottom+70 )+")  rotate("+(-90)+") ")
+                        .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.8)+1  )+","+String( (svgTooltipHeight*.74)-marginBottom+40 )+")  rotate("+(-90)+") ")
                         .text(function(){
                         
                                 return  arr[i].por1+"%";
@@ -1059,7 +1050,7 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                                         .style("font-weight","bold")
                                         .style("font-size",tamanioFuente*.7)	
                                         .style("text-anchor","end")
-                                        .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.7)  )+","+String( (svgTooltipHeight*.87)-marginBottom+28  )+")  rotate("+(-90)+") ")
+                                        .attr("transform"," translate("+String( ancho*caso+(tamanioFuente*.7)  )+","+String( (svgTooltipHeight*.84)-marginBottom  )+")  rotate("+(-90)+") ")
                                         .text(function(){
                                                 
                                         var date=new Date( Number(arr[i].key) );
