@@ -328,9 +328,13 @@ function vix_tt_formatToolTip(divElement, titulo, width,  initialHeight,infoData
         "align-items": "flex-start", // Align items to the top
       },
     });
-
-
-  
+    
+    var downloadButton = $(`<button onclick="" class="down-btn"  style=" background-color: rgb(80, 125, 140);border-style: none;visibility:hidden">`, {
+      class: "down-btn",
+      
+    }).append(' <img  src="images/download_icon.png" style="width: 20px;height: 20px;margin-top: 0px;"></img></button>');
+    iconsColumn.append(downloadButton);
+    
     
   
     if(extraData){
@@ -610,6 +614,8 @@ console.log("arrastrando");
   // Crea una barra inferior con un icono para descargar
 
   function vix_tt_formatBottomBar(divElement, exportHandler) {
+
+    /*
     // Crea un espacio para que la barra no se pegue
     var spacer = $("<div>", {
       css: {
@@ -654,14 +660,9 @@ console.log("arrastrando");
  
     bottomBar.append(iconAndButtonContainer); 
 
+    //var containerDiv = d3.select(`#${containerID}`);
 
-  //var containerDiv = d3.select(`#${containerID}`);
-
-  var contentDiv = $(divElement).find(".content");
-
-   
-
-
+    var contentDiv = $(divElement).find(".content");
   
     // agrega el espacio
     $(contentDiv).append(spacer);
@@ -675,6 +676,13 @@ console.log("arrastrando");
     downloadButton.on("click", function () {
       exportHandler(); // LLama a la funcion que recibe como parametro
     });
+    */
+
+    $(divElement).find(".down-btn").css("visibility","visible");
+    $(divElement).find(".down-btn").on("click", function () {
+      exportHandler(); // LLama a la funcion que recibe como parametro
+    });
+
   }
   
 
