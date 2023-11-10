@@ -877,7 +877,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
         arr.reverse();
 
 
-        var altura=30;
+        var altura=32;
         var caso=0;
     
         var svgTooltipHeight=arr.length*altura;
@@ -889,7 +889,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
             svgTooltipHeight=windowHeight*.7;
 
 
-        var svgTooltipWidth=600;
+        
         var marginLeft=svgTooltipWidth*.2;
         var tamanioFuente=altura*.4;
         var marginTop=35;
@@ -923,14 +923,14 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
 
       if(extraData){
 
-        var svgTooltipWidth=840;
+        var svgTooltipWidth=850;
 
         var columns = [
           { key: "key", header: "Origen", sortable: true, width: "110px" },
           { key: "PesoPlan", header: "Peso Plan", sortable: true,  width: "100px" },
           { key: "PesoReal", header: "Peso Real ", sortable: true,  width: "100px" },
-          { key: "DifPesos", header: "Dif ", sortable: true,  width: "100px" },
-          { key: "DifP", header: "Cumplimiento (%)", sortable: true,  width: "120px" },
+          { key: "DifPesos", header: "Dif ", sortable: true,  width: "130px" },
+          { key: "DifP", header: "Cumplimiento (%)", sortable: true,  width: "150px" },
           { key: "VolumenPlan", header: "Vol Plan ", sortable: true, width: "100px" },
           { key: "VolumenReal", header: "Vol Real ", sortable: true, width: "100px" },
           { key: "DifK", header: "Dif ", sortable: true, width: "100px" },
@@ -940,14 +940,14 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
 
       }else{
 
-        var svgTooltipWidth=400;
+        var svgTooltipWidth=450;
         
         var columns = [
           { key: "key", header: "Origen", sortable: true, width: "110px" },        
           { key: "PesoPlan", header: "Peso Plan", sortable: true,  width: "100px" },
           { key: "PesoReal", header: "Peso Real ", sortable: true,  width: "100px" },
-          { key: "DifPesos", header: "Dif ", sortable: true,  width: "100px" },
-          { key: "DifP", header: "Cumplimiento (%)", sortable: true,  width: "120px" }
+          { key: "DifPesos", header: "Dif ", sortable: true,  width: "130px" },
+          { key: "DifP", header: "Cumplimiento (%)", sortable: true,  width: "150px" }
         ];
 
       }
@@ -1043,7 +1043,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
            
           }
 
-          vix_tt_formatToolTip("#toolTip4","Orígenes de Abasto hacia "+toTitleCase(entity.key)+"",svgTooltipWidth,svgTooltipHeight+80,dataManager.GetTooltipInfoData("toolTip4","Abasto"),"kpiExpert_ABAS.DrawTooltipDetail_Origen(kpiExpert_ABAS.lastEntity,true)");
+          vix_tt_formatToolTip("#toolTip4","Orígenes de Abasto hacia "+toTitleCase(entity.key)+"",svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","Abasto"),"kpiExpert_ABAS.DrawTooltipDetail_Origen(kpiExpert_ABAS.lastEntity,true)");
       
         }else{
 
