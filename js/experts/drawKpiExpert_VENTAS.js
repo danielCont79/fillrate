@@ -616,13 +616,15 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                                     .attr("x",(ancho*caso)  )
                                     .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80  )
                                     .attr("height",1)
-                                    .attr("fill","#66D7F8")
+                                    .attr("fill","#0068E9")
                                     .on("mouseover",function(d){
                         
                                       $("#toolTip5").css("visibility","visible");
-
                                       $("#toolTip5").css("left",mouse_x+50);  
-                                      $("#toolTip5").css("top",mouse_y);            
+                                     
+                                      $("#toolTip5").css("top",mouse_y); 
+
+                                      $("#toolTip5").css("z-index", Number($("#toolTip4").css("z-index"))+1  );             
                                   
                                       $("#toolTip5").html(`
                                           <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
@@ -653,13 +655,15 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                                     .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80-(altura_RecogidoReal)  )
                                     .attr("height",1)
                                     .style("pointer-events","auto")
-                                    .attr("fill","#EC69FF")
+                                    .attr("fill","#E38000")
                                     .on("mouseover",function(d){
                         
                                       $("#toolTip5").css("visibility","visible");
 
                                       $("#toolTip5").css("left",mouse_x+50);  
-                                      $("#toolTip5").css("top",mouse_y);            
+                                      $("#toolTip5").css("top",mouse_y); 
+                                      
+                                      $("#toolTip5").css("z-index", Number($("#toolTip4").css("z-index"))+1  );     
                                   
                                       $("#toolTip5").html(`
                                           <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
@@ -690,13 +694,15 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                                     .attr("x",(ancho*caso)  )
                                     .attr("y", ((svgTooltipHeight*.65))-altura_EntregadoReal-80 -(altura_RecogidoReal+altura_AutofleteReal) )
                                     .attr("height",1)
-                                    .attr("fill","#FFF600")
+                                    .attr("fill","#FFFFFF")
                                     .on("mouseover",function(d){
                         
                                       $("#toolTip5").css("visibility","visible");
 
                                       $("#toolTip5").css("left",mouse_x+50);  
-                                      $("#toolTip").css("top",mouse_y);            
+                                      $("#toolTip").css("top",mouse_y);       
+                                      
+                                      $("#toolTip5").css("z-index", Number($("#toolTip4").css("z-index"))+1  );   
                                   
                                       $("#toolTip5").html(`
                                           <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
