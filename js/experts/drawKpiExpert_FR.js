@@ -1218,7 +1218,10 @@ kpiExpert_FR.DrawTooltipDetail_ByDay=function(entity){
                 por2_filtered=0;
                 por3_filtered=0;
 
-                for(var k=0;  k < store.dataToDraw.length; k++){      
+                for(var k=0;  k < store.dataToDraw.length; k++){  
+
+                         if(store.dataToDraw[k].Agrupador.toLowerCase().indexOf("sacos") > -1 || store.dataToDraw[k].Agrupador.toLowerCase().indexOf("granel") > -1 )
+                                    continue;    
                         
                         totalCanSol_filtered+=Number(store.dataToDraw[k][campoTotalSolicitado]);
                         

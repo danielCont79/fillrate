@@ -177,6 +177,9 @@ calculateKpiExpert_FR.calculateKPI=function(){
 
                                 for(var j=0;  j < data.recordset.length; j++){
 
+                                    if(data.recordset[j].Agrupador.toLowerCase().indexOf("sacos") > -1 || data.recordset[j].Agrupador.toLowerCase().indexOf("granel") > -1 )
+                                    continue;
+
                                     totalCanSol_ref+=Number(data.recordset[j][campoTotalSolicitado]);
                                 
                                     totalCanEnt_ref+=Number(data.recordset[j][campoDeVolumenFR]);

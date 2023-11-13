@@ -607,10 +607,6 @@ console.log("arrastrando");
   }
 
 
-
-
-
-
   // Crea una barra inferior con un icono para descargar
 
   function vix_tt_formatBottomBar(divElement, exportHandler) {
