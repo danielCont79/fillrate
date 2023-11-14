@@ -299,6 +299,7 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
 
                                 var maximo1=0;
                                 var maximo2=0;
+                                var maximo=0;
 
                                 var arrTemp=[];
 
