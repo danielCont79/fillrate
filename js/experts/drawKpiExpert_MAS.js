@@ -147,9 +147,9 @@ kpiExpert_MAS.DrawTooltipDetail_UN=function(entity){
                         
                         for(var j=0; j < arr[i].values.length; j++ ){
 
-                              if( arr[i].values[j].TipoPedido == "Masivo" ){
+                              if( arr[i].values[j].TipoPedido != "Estándar" || arr[i].values[j].TipoPedido != "Estandar" ){
 
-                                arr[i].MasivosVol+=Number(arr[i].values[j].CantSolFinal);
+                                  arr[i].MasivosVol+=Number(arr[i].values[j].CantSolFinal);
                           
                               }
                   
