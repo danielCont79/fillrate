@@ -126,11 +126,9 @@ kpiExpert_OOS.DrawTooltipDetail_UN=function(entity){
             { key: "OOS", header: "% OOS", sortable: true, width: "120px" },
             { key: "Numera", header: "Volumen Entregado", sortable: true, width: "120px" },
           
-          ];
-        
+          ];        
       
-       // DEFINE VISITORS PARA CADA COLUMNA
-    
+       // DEFINE VISITORS PARA CADA COLUMNA    
     
        var columnVisitors = {
         key: function(value) {
@@ -324,7 +322,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
             if(svgTooltipWidth < 180)
             svgTooltipWidth=180;
 
-            var svgTooltipHeight=700;
+            var svgTooltipHeight=600;
             var tamanioFuente=ancho*.7;   
         
             $("#toolTip3").css("visibility","visible");  
@@ -361,9 +359,9 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
             for(var i=0; i < arr.length; i++ ){   
 
                
-                var altura1=GetValorRangos( arr[i].OOS*1000,1, maximo ,1,svgTooltipHeight*.13);
-                var altura2=GetValorRangos( arr[i].Fisico ,1, maximo2 ,1,svgTooltipHeight*.13   );
-                var altura3=GetValorRangos( arr[i].Numerador ,0, maximo3 ,1,svgTooltipHeight*.13   );
+                var altura1=GetValorRangos( arr[i].OOS*1000,1, maximo ,1,svgTooltipHeight*.21);
+                var altura2=GetValorRangos( arr[i].Fisico ,1, maximo2 ,1,svgTooltipHeight*.21   );
+                var altura3=GetValorRangos( arr[i].Numerador ,0, maximo3 ,1,svgTooltipHeight*.21   );
 
                 if(maximo==0)
                 altura1=1;
@@ -374,6 +372,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                 if(maximo3==0)
                 altura3=1;
                 
+                /*
                 
                 var color="#1ADD00";
 
@@ -392,13 +391,14 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 .attr("fill",color)
                                 .style("pointer-events","auto")
                                 ;
+                                */
                                	
         
                 d3.select("#svgTooltip3").append("rect")		    		
                                 .attr("width",ancho*.8 )
                                 .attr("class","ossDetail")
                                 .attr("x",(ancho*i)  )
-                                .attr("y", (svgTooltipHeight*.27)-altura2-marginBottom  )
+                                .attr("y", (svgTooltipHeight*.35)-altura2-marginBottom  )
                                 .attr("height",altura2)
                                 .attr("fill","#ffffff")
                                 .style("pointer-events","auto")
@@ -408,7 +408,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 .attr("width",ancho*.8 )
                                 .attr("class","ossDetail")
                                 .attr("x",(ancho*i)  )
-                                .attr("y", (svgTooltipHeight*.55)-altura3-marginBottom  )
+                                .attr("y", (svgTooltipHeight*.75)-altura3-marginBottom  )
                                 .attr("height",altura3)
                                 .attr("fill","#0090FF")
                                 .style("pointer-events","auto")
@@ -433,13 +433,16 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 .style("font-weight","bold")
                                 .style("font-size",tamanioFuente)	
                                 .style("text-anchor","start")
-                                .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.85)-altura1-marginBottom-2   )+")  rotate("+(-90)+") ")
+                                .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.85)-marginBottom-2   )+")  rotate("+(-90)+") ")
                                 .text(function(){
-                                
+
+                                    if(arr[i].OOS.toString()=="Infinity")
+                                        return "";
+
                                     return  formatNumber(arr[i].OOS,true)+"%" ;
                 
                                 });
-                
+                /*
                 d3.select("#svgTooltip3")
                                 .append("text")						
                                 .attr("class","ossDetail")
@@ -466,6 +469,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                     return  date.getDate()+" "+getMes(date.getMonth());
                 
                                 }); 
+                                */
                                 
                 d3.select("#svgTooltip3")
                                 .append("text")						
@@ -485,7 +489,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 .style("font-weight","bold")
                                 .style("font-size",tamanioFuente)	
                                 .style("text-anchor","end")
-                                .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.28)-marginBottom-3+3   )+")  rotate("+(-90)+") ")
+                                .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.37)-marginBottom-3+3   )+")  rotate("+(-90)+") ")
                                 .text(function(){
                                 
                                     var date=new Date( Number(arr[i].key) );
@@ -502,7 +506,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 .style("font-weight","bold")
                                 .style("font-size",tamanioFuente)	
                                 .style("text-anchor","start")
-                                .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.27)-altura2-marginBottom-3   )+")  rotate("+(-90)+") ")
+                                .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.47)-altura2-marginBottom-3   )+")  rotate("+(-90)+") ")
                                 .text(function(){
                                 
                                     return  formatNumber(arr[i].Fisico) ;
@@ -517,7 +521,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 .style("font-weight","bold")
                                 .style("font-size",tamanioFuente)	
                                 .style("text-anchor","start")
-                                .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.55)-altura3-marginBottom-3   )+")  rotate("+(-90)+") ")
+                                .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.75)-altura3-marginBottom-3   )+")  rotate("+(-90)+") ")
                                 .text(function(){
                                 
                                     return  arr[i].Numerador ;
@@ -540,16 +544,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                 .attr("transform"," translate("+String( 3  )+","+String( 20 )+")  rotate("+(0)+") ")
                 .text("Inventario (TM):"); 
 
-            d3.select("#svgTooltip3")
-                .append("text")						
-                .attr("class","ossDetail")
-                .style("fill","#ffffff")		
-                .style("font-family","Cabin")
-                .style("font-weight","normal")
-                .style("font-size",tamanioFuente)	
-                .style("text-anchor","start")
-                .attr("transform"," translate("+String( 3  )+","+String( svgTooltipHeight*.61  )+")  rotate("+(0)+") ")
-                .text("Porcentaje (%):");
+            
 
             d3.select("#svgTooltip3")
                 .append("text")						
@@ -559,7 +554,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                 .style("font-weight","normal")
                 .style("font-size",tamanioFuente)	
                 .style("text-anchor","start")
-                .attr("transform"," translate("+String( 3  )+","+String( svgTooltipHeight*.33  )+")  rotate("+(0)+") ")
+                .attr("transform"," translate("+String( 3  )+","+String( svgTooltipHeight*.46  )+")  rotate("+(0)+") ")
                 .text("Cantidad OOS:");
         
 
