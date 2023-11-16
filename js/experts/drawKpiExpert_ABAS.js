@@ -1357,8 +1357,8 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
         icon_day: function(value) {
           console.log("value",value);
           var nombreEntidad=value.split("_");
-              nombreEntidad=nombreEntidad[0];
-          return `<img src="images/days.png" style="width:22px;heght:22px; " onclick="  kpiExpert_ABAS.DrawTooltipDetail_ByDay('${nombreEntidad,entity.key,nombreEntidad[1]}')">
+              nombreEntidad_=nombreEntidad[0];
+          return `<img src="images/days.png" style="width:22px;heght:22px; " onclick="  kpiExpert_ABAS.DrawTooltipDetail_ByDay('${nombreEntidad_}','${entity.key}','${nombreEntidad[1]}')">
           </img>`;
 
         },
