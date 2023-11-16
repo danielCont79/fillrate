@@ -602,7 +602,7 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                           var altura_RecogidoReal=GetValorRangos( arr[i].RecogidoReal,1, maximo ,1,altura);
                           var altura_EntregadoReal=GetValorRangos( arr[i].EntregadoReal,1, maximo ,1,altura);
                     
-                    }         
+                    }
                     
                     var data=arr[i];
 

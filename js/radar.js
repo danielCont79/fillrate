@@ -224,6 +224,16 @@ radar.CleanWindows=function(){
     $("#toolTip5").css("max-height","");
     $("#toolTip5").css("z-index","9999999");
 
+    $("#toolTip6").css("inset",""); 
+    $("#toolTip6").css("top","");
+    $("#toolTip6").css("right","");
+    $("#toolTip6").css("bottom","");
+    $("#toolTip6").css("left","");
+    $("#toolTip6").css("width","");
+    $("#toolTip6").css("height","");
+    $("#toolTip6").css("max-height","");
+    $("#toolTip6").css("z-index","9999999");
+
 }
 
 radar.kpis=[

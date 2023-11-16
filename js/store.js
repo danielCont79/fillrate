@@ -51,7 +51,8 @@ var store={
         {apiURL:_bkserver ,serviceName:"getSP/VIS_Calcular_KPI_PedidosPendientes_Estado",varName:"pendientesEstado",onInitLoad:false,useDateFilters:true},
         {apiURL:_bkserver ,serviceName:"getSP/VIS_Calcular_KPI_Venta_FillRate_porDia_Det",varName:"ventasDia",onInitLoad:false,useDateFilters:false},
         {apiURL:_bkserver ,serviceName:"getSP/VIS_Calcular_KPI_Flota_FillRate_PorDia",varName:"flotaDia",onInitLoad:false,useDateFilters:false},
-        {apiURL:_bkserver ,serviceName:"getSP/VIS_Calcular_FillRate_conParams_conUN",varName:"frUN",onInitLoad:false,useDateFilters:false}
+        {apiURL:_bkserver ,serviceName:"getSP/VIS_Calcular_FillRate_conParams_conUN",varName:"frUN",onInitLoad:false,useDateFilters:false},
+        {apiURL:_bkserver ,serviceName:"getSP/VIS_Calcular_KPI_Abasto_Detalle",varName:"abastoDetalle",onInitLoad:false,useDateFilters:false},        
        
     ],
 
