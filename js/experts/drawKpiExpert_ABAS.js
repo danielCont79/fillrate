@@ -143,7 +143,7 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
     var altura=30;
     var caso=0;
 
-    var svgTooltipHeight=arr.length*altura*.55;
+    var svgTooltipHeight=arr.length*altura*.65;
 
     if(svgTooltipHeight<140){
       console.log("corrigee");
@@ -178,6 +178,8 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
 
     var data = arr.map(function(item) {
         return {
+          icon_day:item.key,
+          icon_plus:item.key,
           key: item.key,
           "VolumenPlan": item.VolumenPlan,
           "VolumenReal": item.VolumenReal,
@@ -194,9 +196,11 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
      
       if(extraData){
 
-        var svgTooltipWidth=840;
+        var svgTooltipWidth=1000;
 
         var columns = [
+          { key: "icon_day", header: "", sortable: false, width: "50px" },
+          { key: "icon_plus", header: "", sortable: false, width: "50px" },
           { key: "key", header: "Destino", sortable: true, width: "110px" },
           { key: "PesoPlan", header: "Peso Plan", sortable: true,  width: "100px" },
           { key: "PesoReal", header: "Peso Real", sortable: true,  width: "100px" },
@@ -212,9 +216,11 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
 
       }else{
 
-        var svgTooltipWidth=500;
+        var svgTooltipWidth=600;
         
         var columns = [
+          { key: "icon_day", header: "", sortable: false, width: "50px" },
+          { key: "icon_plus", header: "", sortable: false, width: "50px" },
           { key: "key", header: "Destino", sortable: true, width: "110px" },         
           { key: "PesoPlan", header: "Peso Plan", sortable: true,  width: "100px" },
           { key: "PesoReal", header: "Peso Real", sortable: true,  width: "100px" },
@@ -231,6 +237,18 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
     
     
       var columnVisitors = {
+        icon_day: function(value) {
+          console.log("value",value);
+          var nombreEntidad=value.split("_");
+              nombreEntidad_=nombreEntidad[0];
+          return `<img src="images/days.png" style="width:22px;heght:22px; " onclick="  kpiExpert_ABAS.DrawTooltipDetail_ByDay('${nombreEntidad_}','${entity.key}','${nombreEntidad[1]}')">
+          </img>`;
+
+        },
+        icon_plus: function(value) {
+          return `<img src="images/plus_icon2.png" style="width:15px;heght:15px; " onclick="console.log('${value}')">
+          </img>`;
+        },
         key: function(value) {
           value=value.replaceAll("_"," ");
             return `<div>${value}
@@ -1061,12 +1079,10 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
           "PesoReal": item.PesoReal,
           "DifPesos": item.DifPesos,
         };
-        });  
-         
+        });         
 
     
         // DEFINE COLUMNAS
-
 
       if(extraData){
 
@@ -1114,7 +1130,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
           </img>`;
         },
         icon_plus: function(value) {
-          return `<img src="images/plus_icon2.png" style="width:16px;heght:16px; " onclick="console.log('${value}')">
+          return `<img src="images/plus_icon2.png" style="width:15px;heght:15px; " onclick="console.log('${value}')">
           </img>`;
         },
         key: function(value) {
@@ -1363,12 +1379,12 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
           console.log("value",value);
           var nombreEntidad=value.split("_");
               nombreEntidad_=nombreEntidad[0];
-          return `<img src="images/days.png" style="width:22px;heght:22px; " onclick="  kpiExpert_ABAS.DrawTooltipDetail_ByDay('${nombreEntidad_}','${entity.key}','${nombreEntidad[1]}')">
+          return `<img src="images/days.png" style="width:22px;heght:22px; " onclick="  kpiExpert_ABAS.DrawTooltipDetail_ByDay('${entity.key }','${nombreEntidad_}','${nombreEntidad[1]}')">
           </img>`;
 
         },
         icon_plus: function(value) {
-          return `<img src="images/plus_icon2.png" style="width:16px;heght:16px; " onclick="console.log('${value}')">
+          return `<img src="images/plus_icon2.png" style="width:15px;heght:15px; " onclick="console.log('${value}')">
           </img>`;
         },
           key: function(value) {
