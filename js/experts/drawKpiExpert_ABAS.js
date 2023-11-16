@@ -570,9 +570,9 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
 
 
   // Detalle por dia de unidad de negocio
-  kpiExpert_ABAS.DrawTooltipDetail_ByDay=function(entity){  
+  kpiExpert_ABAS.DrawTooltipDetail_ByDay=function(entity, origen, transporte){  
 
-    console.log(entity);
+    console.log(entity, origen, transporte);
 
         $("#cargando").css("visibility","visible");
 
@@ -641,7 +641,13 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
                             
                 } 
 
-                params+="&destino="+entity;                
+                params+="&destino="+entity;  
+                
+                if(origen)
+                params+="&origen="+origen;
+
+                if(transporte)
+                params+="&transporte="+transporte;
 
                 var URL=apiURL+"/"+serviceName+"?fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
                 console.log(URL);
@@ -1202,6 +1208,8 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
 
 kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){  
 
+  console.log("entity",entity);
+
         var maximo=0;    
         var maximoVolumen=0;  
         
@@ -1219,10 +1227,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
           var arr=d3.nest()
                 .key(function(d) { return d.Origen; })
                 .entries(entity.abasto.values);
-        }
-    
-        
-
+        }  
         
         for(var i=0; i < arr.length; i++ ){
 
@@ -1270,7 +1275,6 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
         arr = arr.sort((a, b) => b.Dif - a.Dif);    
         arr.reverse();
 
-
         var altura=32;
         var caso=0;
     
@@ -1298,6 +1302,8 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
 
     var data = arr.map(function(item) {
         return {
+          icon_day:item.key,
+          icon_plus:item.key,
           key: item.key,
           "VolumenPlan": item.VolumenPlan,
           "VolumenReal": item.VolumenReal,
@@ -1307,20 +1313,18 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
           "PesoReal": item.PesoReal,
           "DifPesos": item.DifPesos
         };
-        });   
-    
-      
-    
+        });     
+ 
         // DEFINE COLUMNAS
       
-      
-
       if(extraData){
 
-        var svgTooltipWidth=880;
+        var svgTooltipWidth=1000;
 
         var columns = [
-          { key: "key", header: "Origen", sortable: true, width: "110px" },
+          { key: "icon_day", header: "", sortable: false, width: "50px" },
+          { key: "icon_plus", header: "", sortable: false, width: "50px" },
+          { key: "key", header: "Origen", sortable: true, width: "140px" },
           { key: "PesoPlan", header: "Peso Plan", sortable: true,  width: "100px" },
           { key: "PesoReal", header: "Peso Real ", sortable: true,  width: "100px" },
           { key: "DifPesos", header: "Dif ", sortable: true,  width: "130px" },
@@ -1328,16 +1332,17 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
           { key: "VolumenPlan", header: "Vol Plan ", sortable: true, width: "100px" },
           { key: "VolumenReal", header: "Vol Real ", sortable: true, width: "100px" },
           { key: "DifK", header: "Dif ", sortable: true, width: "100px" },
-         
         
         ];
 
       }else{
 
-        var svgTooltipWidth=480;
+        var svgTooltipWidth=600;
         
         var columns = [
-          { key: "key", header: "Origen", sortable: true, width: "110px" },        
+          { key: "icon_day", header: "", sortable: false, width: "50px" },
+          { key: "icon_plus", header: "", sortable: false, width: "50px" },
+          { key: "key", header: "Origen", sortable: true, width: "140px" },        
           { key: "PesoPlan", header: "Peso Plan", sortable: true,  width: "100px" },
           { key: "PesoReal", header: "Peso Real ", sortable: true,  width: "100px" },
           { key: "DifPesos", header: "Dif ", sortable: true,  width: "130px" },
@@ -1346,21 +1351,30 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
 
       }
     
-    
         // DEFINE VISITORS PARA CADA COLUMNA
     
-    
         var columnVisitors = {
-            key: function(value) {
+        icon_day: function(value) {
+          console.log("value",value);
+          var nombreEntidad=value.split("_");
+              nombreEntidad=nombreEntidad[0];
+          return `<img src="images/days.png" style="width:22px;heght:22px; " onclick="  kpiExpert_ABAS.DrawTooltipDetail_ByDay('${nombreEntidad,entity.key,nombreEntidad[1]}')">
+          </img>`;
 
-                var nombreEntidad=value.split("_");
-                nombreEntidad=nombreEntidad[0];
+        },
+        icon_plus: function(value) {
+          return `<img src="images/plus_icon2.png" style="width:16px;heght:16px; " onclick="console.log('${value}')">
+          </img>`;
+        },
+          key: function(value) {
 
-                value=value.replaceAll("_"," ");
-                return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${nombreEntidad}','cat_un','${entity.key}')">${value}
-                </div>`;
-              },
-    
+              var nombreEntidad=value.split("_");
+              nombreEntidad=nombreEntidad[0];
+
+              value=value.replaceAll("_"," ");
+              return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${nombreEntidad}','cat_un','${entity.key}')">${value}
+              </div>`;
+            },    
         VolumenPlan: function(value) {
           return vix_tt_formatNumber(value) ;
         },
@@ -1491,4 +1505,4 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
       vix_tt_transitionRectWidth("toolTip4");
       
     
-    }
+  }
