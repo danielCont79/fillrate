@@ -148,34 +148,33 @@ calculateKpiExpert_OOS.calculateKPI=function(entities,cb){
 
                                         }
 
-                                        for(var i=0;  i < entities.length; i++){ 
-
+                                        console.log("maxDate",maxDate);
+                                        
                                                 
-                                                for(var j=0;  j < data.recordset.length; j++){                                                        
+                                        for(var j=0;  j < data.recordset.length; j++){                                                        
 
-                                                        var entidad=entities_coll[data.recordset[j].Agrupador];
+                                                var entidad=entities_coll[data.recordset[j].Agrupador];
 
-                                                        if(entities_coll[ diccionarioNombres[ data.recordset[j].Agrupador ]] && !entidad){
-                                                                entidad=entities_coll[ diccionarioNombres[ data.recordset[j].Agrupador ]];
-                                                        }
-
-                                                        if( entidad ){
-
-                                                                if( data.recordset[j].fecha.getTime() == maxDate ){
-                                                                        entidad.oos.oos_lastDate.Numerador+=Number(data.recordset[j].Numerador); 
-                                                                        entidad.oos.oos_lastDate.Denominador+=Number(data.recordset[j].Denominador); 
-                                                                        entidad.oos.oos_lastDate.oos=0;
-                                                                        if(entidad.oos.oos_lastDate.Denominador > 0)
-                                                                        entidad.oos.oos_lastDate.oos=Math.round(  (entidad.oos.oos_lastDate.Numerador/entidad.oos.oos_lastDate.Denominador)    *10000)/100;
-
-                                                                }                                              
-                                
-                                                        }
-        
+                                                if(entities_coll[ diccionarioNombres[ data.recordset[j].Agrupador ]] && !entidad){
+                                                        entidad=entities_coll[ diccionarioNombres[ data.recordset[j].Agrupador ]];
                                                 }
 
-                                        }                                       
+                                                if( entidad ){
 
+                                                        if( data.recordset[j].fecha.getTime() == maxDate ){
+
+                                                                entidad.oos.oos_lastDate.Numerador+=Number(data.recordset[j].Numerador); 
+                                                                entidad.oos.oos_lastDate.Denominador+=Number(data.recordset[j].Denominador); 
+                                                                entidad.oos.oos_lastDate.oos=0;
+
+                                                                if(entidad.oos.oos_lastDate.Denominador > 0)
+                                                                entidad.oos.oos_lastDate.oos=Math.round(  (entidad.oos.oos_lastDate.Numerador/entidad.oos.oos_lastDate.Denominador)    *10000)/100;
+
+                                                        }                                              
+                        
+                                                }
+
+                                        }                                                                           
                                         
                                         for(var i=0;  i < entities.length; i++){ 
 

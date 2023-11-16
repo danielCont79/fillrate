@@ -923,7 +923,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
 
       if(extraData){
 
-        var svgTooltipWidth=850;
+        var svgTooltipWidth=880;
 
         var columns = [
           { key: "key", header: "Origen", sortable: true, width: "110px" },
@@ -940,7 +940,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
 
       }else{
 
-        var svgTooltipWidth=450;
+        var svgTooltipWidth=480;
         
         var columns = [
           { key: "key", header: "Origen", sortable: true, width: "110px" },        
@@ -1050,7 +1050,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
           $("#toolTip4").css("bottom","1%");
           $("#toolTip4").css("right","1%");                   
 
-          vix_tt_formatToolTip("#toolTip4","Origenes de abasto hacia UN que atienden (TM) "+toTitleCase(entity.key)+"",svgTooltipWidth,svgTooltipHeight+80,dataManager.GetTooltipInfoData("toolTip4","Abasto"),"kpiExpert_ABAS.DrawTooltipDetail_Origen(kpiExpert_ABAS.lastEntity,true)");
+          vix_tt_formatToolTip("#toolTip4","Origenes de abasto hacia UN que atienden (TM) "+toTitleCase(entity.key)+"",svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","Abasto"),"kpiExpert_ABAS.DrawTooltipDetail_Origen(kpiExpert_ABAS.lastEntity,true)");
       }   
      
 
