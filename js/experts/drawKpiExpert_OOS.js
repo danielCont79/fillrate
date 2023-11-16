@@ -436,7 +436,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.85)-marginBottom-2   )+")  rotate("+(-90)+") ")
                                 .text(function(){
 
-                                    if(arr[i].OOS.toString()=="Infinity")
+                                    if(arr[i].OOS.toString()=="Infinity" || arr[i].OOS.toString()=="NaN")
                                         return "";
 
                                     return  formatNumber(arr[i].OOS,true)+"%" ;
