@@ -942,7 +942,12 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
                       }
                         
                       // DISTRIBUYE 
-                      vix_tt_distributeDivs(["#toolTip3","#toolTip2","#toolTip6"]);  
+                      if(origen){
+                        vix_tt_distributeDivs(["#toolTip5","#toolTip4","#toolTip2","#toolTip6"]); 
+                      }else{
+                        vix_tt_distributeDivs(["#toolTip3","#toolTip2","#toolTip6"]); 
+                      }
+                      
 
                     });
 
