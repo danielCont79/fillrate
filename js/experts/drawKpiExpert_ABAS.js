@@ -946,11 +946,15 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
 
                                       }
 
-                                      if(arr[i].VolumenPlan == 0){
-                                        return "";
+                                      if(arr[i].VolumenPlan == 0 && arr[i].VolumenReal > 0){
+                                        return "R: "+formatNumber(arr[i].VolumenReal)+" TM";
+                                      }
+                                      if(arr[i].VolumenPlan == 0 && arr[i].VolumenReal == 0){
+                                        return " ";
                                       }
 
-                                    return  "R: "+formatNumber(arr[i].VolumenReal)+" -  "+ porDif +"%";
+
+                                    return  "R: "+formatNumber(arr[i].VolumenReal)+" TM -  "+ porDif +"%";
 
                                     })
                                     .transition().delay(0).duration(i*50)
