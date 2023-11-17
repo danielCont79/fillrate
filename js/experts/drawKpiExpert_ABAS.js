@@ -181,6 +181,7 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
           icon_day:item.key,
           icon_plus:item.key,
           key: item.key,
+          transporte: item.key,
           "VolumenPlan": item.VolumenPlan,
           "VolumenReal": item.VolumenReal,
           "DifK": item.VolumenReal - item.VolumenPlan,
@@ -196,12 +197,13 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
      
       if(extraData){
 
-        var svgTooltipWidth=1000;
+        var svgTooltipWidth=1050;
 
         var columns = [
           { key: "icon_day", header: "", sortable: false, width: "50px" },
           { key: "icon_plus", header: "", sortable: false, width: "50px" },
-          { key: "key", header: "Destino", sortable: true, width: "110px" },
+          { key: "key", header: "Destino", sortable: true, width: "80px" },
+          { key: "transporte", header: "Transporte", sortable: true, width: "80px" },
           { key: "PesoPlan", header: "Peso Plan", sortable: true,  width: "100px" },
           { key: "PesoReal", header: "Peso Real", sortable: true,  width: "100px" },
           { key: "DifPesos", header: "Dif", sortable: true,  width: "100px" },
@@ -216,12 +218,13 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
 
       }else{
 
-        var svgTooltipWidth=600;
+        var svgTooltipWidth=650;
         
         var columns = [
           { key: "icon_day", header: "", sortable: false, width: "50px" },
           { key: "icon_plus", header: "", sortable: false, width: "50px" },
-          { key: "key", header: "Destino", sortable: true, width: "110px" },         
+          { key: "key", header: "Destino", sortable: true, width: "80px" }, 
+          { key: "transporte", header: "Transporte", sortable: true, width: "80px" },        
           { key: "PesoPlan", header: "Peso Plan", sortable: true,  width: "100px" },
           { key: "PesoReal", header: "Peso Real", sortable: true,  width: "100px" },
           { key: "DifPesos", header: "Dif", sortable: true,  width: "100px" },
@@ -250,11 +253,20 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
           </img>`;
         },
         key: function(value) {
-          value=value.replaceAll("_"," ");
-            return `<div>${value}
+
+          var nombreEntidad=value.split("_");
+         
+            return `<div>${nombreEntidad[0]}
             </div>`;
           },
-    
+        transporte: function(value) {
+
+          var nombreEntidad=value.split("_");
+
+          value=value.replaceAll("_"," ");
+          return `<div class="" onclick="">${nombreEntidad[1]}
+          </div>`;
+        }, 
         VolumenPlan: function(value) {
           return vix_tt_formatNumber(value) ;
         },
@@ -960,7 +972,11 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
                       }
                         
                       // DISTRIBUYE 
-                      if(origen){
+
+                      if(  $("#nivel_cb").val() < 5){
+                        vix_tt_distributeDivs(["#toolTip2","#toolTip3","#toolTip4","#toolTip6"]); 
+
+                      } else if(origen){
                         vix_tt_distributeDivs(["#toolTip5","#toolTip4","#toolTip2","#toolTip6"]); 
                       }else{
                         vix_tt_distributeDivs(["#toolTip3","#toolTip2","#toolTip6"]); 
@@ -1273,7 +1289,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0=function(entity){
         }
 
         agrupador="UnidadNegocio"; 
-        
+
         for(var i=0; i < store.catlogsForFilters.length; i++){    
             if(store.catlogsForFilters[i].data==nombreCatalogoParaDiccionario){
                 diccionarioNombres=store.catlogsForFilters[i].diccNames;
@@ -1365,9 +1381,17 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0=function(entity){
 
                             data.recordset=dataEntity;
 
+                            for(var i=0; i < data.recordset.length; i++ ){
+
+                              data.recordset[i].OrigenTrans=data.recordset[i].Origen+"_"+data.recordset[i].Transporte;
+                           
+                            }
+                  
                             var arr=d3.nest()
-                                  .key(function(d) { return d.Origen; })
+                                  .key(function(d) { return d.OrigenTrans; })
                                   .entries(data.recordset);
+
+                           
 
                             kpiExpert_ABAS.ProcessData_Origen({key:entity},arr);
 
@@ -1463,8 +1487,9 @@ kpiExpert_ABAS.ProcessData_Origen=function(entity,arr,extraData){
     var data = arr.map(function(item) {
         return {
           icon_day:item.key,
-          icon_plus:item.key,
+         
           key: item.key,
+          transporte: item.key,
           "VolumenPlan": item.VolumenPlan,
           "VolumenReal": item.VolumenReal,
           "DifK": item.VolumenReal - item.VolumenPlan,
@@ -1483,8 +1508,9 @@ kpiExpert_ABAS.ProcessData_Origen=function(entity,arr,extraData){
 
         var columns = [
           { key: "icon_day", header: "", sortable: false, width: "50px" },
-          { key: "icon_plus", header: "", sortable: false, width: "50px" },
-          { key: "key", header: "Origen", sortable: true, width: "140px" },
+          
+          { key: "key", header: "Origen", sortable: true, width: "80px" },
+          { key: "transporte", header: "Transporte", sortable: true, width: "80px" },
           { key: "PesoPlan", header: "Peso Plan", sortable: true,  width: "100px" },
           { key: "PesoReal", header: "Peso Real ", sortable: true,  width: "100px" },
           { key: "DifPesos", header: "Dif ", sortable: true,  width: "130px" },
@@ -1501,8 +1527,9 @@ kpiExpert_ABAS.ProcessData_Origen=function(entity,arr,extraData){
         
         var columns = [
           { key: "icon_day", header: "", sortable: false, width: "50px" },
-          { key: "icon_plus", header: "", sortable: false, width: "50px" },
-          { key: "key", header: "Origen", sortable: true, width: "140px" },        
+         
+          { key: "key", header: "Origen", sortable: true, width: "80px" },  
+          { key: "transporte", header: "Transporte", sortable: true, width: "80px" },      
           { key: "PesoPlan", header: "Peso Plan", sortable: true,  width: "100px" },
           { key: "PesoReal", header: "Peso Real ", sortable: true,  width: "100px" },
           { key: "DifPesos", header: "Dif ", sortable: true,  width: "130px" },
@@ -1522,19 +1549,23 @@ kpiExpert_ABAS.ProcessData_Origen=function(entity,arr,extraData){
           </img>`;
 
         },
-        icon_plus: function(value) {
-          return `<img src="images/plus_icon2.png" style="width:15px;heght:15px; " onclick="console.log('${value}')">
-          </img>`;
-        },
-          key: function(value) {
+        
+        key: function(value) {
 
               var nombreEntidad=value.split("_");
-              nombreEntidad=nombreEntidad[0];
 
               value=value.replaceAll("_"," ");
-              return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${nombreEntidad}','cat_un','${entity.key}')">${value}
+              return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${nombreEntidad[0]}','cat_un','${entity.key}')">${nombreEntidad[0]}
               </div>`;
-            },    
+        },   
+        transporte: function(value) {
+
+          var nombreEntidad=value.split("_");
+
+          value=value.replaceAll("_"," ");
+          return `<div class="" >${nombreEntidad[1]}
+          </div>`;
+        },    
         VolumenPlan: function(value) {
           return vix_tt_formatNumber(value) ;
         },
