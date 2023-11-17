@@ -854,9 +854,14 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
                       
                       $("#toolTip6").css("visibility","visible");  
                       $("#toolTip6").css("inset",""); 
-                      
-                      vix_tt_formatToolTip("#toolTip6","Abasto por Día de Destino "+entity+" (TM)",svgTooltipWidth+7,svgTooltipHeight+100);               
 
+                      if(origen){
+                        vix_tt_formatToolTip("#toolTip6","Abasto por Día de Destino "+entity+" origen "+origen+" (TM)",svgTooltipWidth+7,svgTooltipHeight+100);         
+                      }else{
+                        vix_tt_formatToolTip("#toolTip6","Abasto por Día de Destino "+entity+" (TM)",svgTooltipWidth+7,svgTooltipHeight+100);               
+
+                      }                      
+                    
                       var marginBottom=svgTooltipHeight*.02;
 
                       var svgElement = "<svg id='svgTooltip6' style='pointer-events:none;'></svg>";
