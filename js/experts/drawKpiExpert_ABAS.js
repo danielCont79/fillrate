@@ -1130,7 +1130,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
           </img>`;
         },
         icon_plus: function(value) {
-          return `<img src="images/plus_icon2.png" style="width:15px;heght:15px; " onclick="console.log('${value}')">
+          return `<img src="images/plus_icon2.png" style="width:15px;heght:15px; " onclick="kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0('${value}')">
           </img>`;
         },
         key: function(value) {
@@ -1227,28 +1227,167 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
 
  //********************************************************************************************************************** */
 
-kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){  
-
-  console.log("entity",entity);
-
-        var maximo=0;    
-        var maximoVolumen=0;  
+kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){    
         
         if( 5 == $("#nivel_cb").val() ){
 
           for(var i=0; i < entity.abasto.values.length; i++ ){
+
               entity.abasto.values[i].OrigenTrans=entity.abasto.values[i].Origen+"_"+entity.abasto.values[i].Transporte;
            
           }
+
           var arr=d3.nest()
                 .key(function(d) { return d.OrigenTrans; })
                 .entries(entity.abasto.values);
 
         }else{
+
           var arr=d3.nest()
                 .key(function(d) { return d.Origen; })
                 .entries(entity.abasto.values);
+
         }  
+
+        kpiExpert_ABAS.ProcessData_Origen(entity,arr,extraData);
+
+}
+
+kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0=function(entity){ 
+  
+        $("#cargando").css("visibility","visible");
+
+        var serviceName;
+        var apiURL;
+        var agrupador="";
+        var nombreCatalogoParaDiccionario;
+        var diccionarioNombres=[];
+
+        for(var i=0; i < store.niveles.length; i++){    
+
+          if( store.niveles[i].id == $("#nivel_cb").val() ){
+             
+              nombreCatalogoParaDiccionario=store.niveles[i].coordinatesSource;
+          }
+                
+        }
+
+        agrupador="UnidadNegocio"; 
+        
+        for(var i=0; i < store.catlogsForFilters.length; i++){    
+            if(store.catlogsForFilters[i].data==nombreCatalogoParaDiccionario){
+                diccionarioNombres=store.catlogsForFilters[i].diccNames;
+                
+            }
+        } 
+
+        for(var i=0; i < store.apiDataSources.length; i++){
+          
+            if(store.apiDataSources[i].varName=="abasto"){
+              
+                serviceName=store.apiDataSources[i].serviceName;
+                apiURL=store.apiDataSources[i].apiURL;
+            }
+
+        }
+
+        if(serviceName && apiURL){
+
+              var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
+              var dateEnd_=dateEnd.getFullYear()+"-"+String(Number(dateEnd.getMonth())+1)+"-"+dateEnd.getDate();
+
+
+              // FILTROS ****
+              var params="";
+            
+              for(var j=0; j < store.catlogsForFilters.length; j++){ 
+
+                  if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined  && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+
+                      params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+
+                  }
+
+              }
+
+               //FILTRO DE MASIVO
+               if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
+
+                            params+="&masivos=Todos";               
+
+                }else if($("#masivos_cb").val() == "SinMasivos"){
+
+                            params+="&masivos=Sin Masivos"; 
+
+                }else if($("#masivos_cb").val() == "SoloMasivos"){
+
+                            params+="&masivos=Solo Masivos"; 
+                            
+                } 
+
+                var URL=apiURL+"/"+serviceName+"?fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+                console.log(URL);
+
+                if(URL.indexOf("undefined" < 0)){
+
+                      dataLoader.AddLoadingTitle("Detalle de orígenes de abasto");
+
+                      d3.json(URL, function (error, data) {
+
+                            dataLoader.DeleteLoadingTitle("Detalle de orígenes de abasto"); 
+
+                            dataLoader.HideLoadings();
+
+                            $("#cargando").css("visibility","hidden");
+
+                            if(error){
+                              alert("Error API Detalle Abasto",error);
+                              resolve();
+                              return;
+                            }
+
+                            if(data.error){
+                                alert("Error API Detalle Abasto",data.error);
+                                resolve();
+                                return;
+                            }
+
+                            console.log("Detalle Abasto Orígenes",data.recordset); 
+
+                            var dataEntity=[];
+
+                            for(var j=0;  j < data.recordset.length; j++){
+
+                                if(data.recordset[j].Agrupador == entity){
+                                  dataEntity.push(data.recordset[j]);
+                                }
+                            }
+
+                            data.recordset=dataEntity;
+
+                            var arr=d3.nest()
+                                  .key(function(d) { return d.Origen; })
+                                  .entries(data.recordset);
+
+                            kpiExpert_ABAS.ProcessData_Origen({key:entity},arr);
+
+                      });
+
+                }
+
+        }
+
+
+}
+
+      
+kpiExpert_ABAS.lastArr; 
+kpiExpert_ABAS.ProcessData_Origen=function(entity,arr,extraData){  
+
+        kpiExpert_ABAS.lastArr=arr;
+  
+        var maximo=0;    
+        var maximoVolumen=0;  
         
         for(var i=0; i < arr.length; i++ ){
 
@@ -1461,25 +1600,31 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen=function(entity,extraData){
       $("#toolTip4").css("top",16+"%"); 
 
       if( 5 == $("#nivel_cb").val() ){
-                 
-          $("#toolTip4").css("left",1+"%");
-          $("#toolTip4").css("top",70+"px");
+
+         
+            $("#toolTip4").css("left",1+"%");
+           $("#toolTip4").css("top",70+"px");
+                   
 
           if(windowWidth > 1500 ){
 
-            $("#toolTip4").css("top",90+"px");
-            $("#toolTip4").css("left",100+"px");
+            
+              $("#toolTip4").css("top",90+"px");
+              $("#toolTip4").css("left",100+"px");
+            
            
           }
 
-          vix_tt_formatToolTip("#toolTip4","Orígenes de Abasto hacia "+toTitleCase(entity.key)+"",svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","Abasto"),"kpiExpert_ABAS.DrawTooltipDetail_Origen(kpiExpert_ABAS.lastEntity,true)");
+          vix_tt_formatToolTip("#toolTip4","Orígenes de Abasto hacia "+toTitleCase(entity.key)+"",svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","Abasto"),"kpiExpert_ABAS.ProcessData_Origen(kpiExpert_ABAS.lastEntity,kpiExpert_ABAS.lastArr,true)");
       
         }else{
 
-          $("#toolTip4").css("bottom","1%");
-          $("#toolTip4").css("right","1%");                   
+          
+            $("#toolTip4").css("bottom","1%");
+            $("#toolTip4").css("right","1%");    
+                      
 
-          vix_tt_formatToolTip("#toolTip4","Origenes de abasto hacia UN que atienden (TM) "+toTitleCase(entity.key)+"",svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","Abasto"),"kpiExpert_ABAS.DrawTooltipDetail_Origen(kpiExpert_ABAS.lastEntity,true)");
+            vix_tt_formatToolTip("#toolTip4","Origenes de abasto hacia UN que atienden (TM) "+toTitleCase(entity.key)+"",svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","Abasto"),"kpiExpert_ABAS.ProcessData_Origen(kpiExpert_ABAS.lastEntity,kpiExpert_ABAS.lastArr,true)");
       }   
      
 
