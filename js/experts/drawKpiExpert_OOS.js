@@ -80,10 +80,10 @@ kpiExpert_OOS.DrawTooltipDetail_UN=function(entity){
 
     var altura=30;
    
-    var svgTooltipHeight=(arr.length*altura);
+    var svgTooltipHeight=arr.length*altura;
 
     if(svgTooltipHeight<80)
-    svgTooltipHeight=80;
+        svgTooltipHeight=80;
 
     if(svgTooltipHeight>windowHeight*.8)
         svgTooltipHeight=windowHeight*.8;

@@ -867,7 +867,7 @@ function s2ab(s) {
       var containerDiv = d3.select(`#${containerID}`)
         .append("div")
         .attr("class", "content") // Content es el div al que se le habilita scroll.
-        .style("height", "100%") 
+        .style("height", "97%") 
         .style("overflow", "auto"); // habilita scroll
 
     
