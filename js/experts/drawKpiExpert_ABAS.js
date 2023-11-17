@@ -954,7 +954,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
                                       }
 
 
-                                    return  "R: "+formatNumber(arr[i].VolumenReal)+" TM -  "+ porDif +"%";
+                                    return  "R: "+formatNumber(arr[i].VolumenReal)+" -  "+ porDif +"%";
 
                                     })
                                     .transition().delay(0).duration(i*50)
