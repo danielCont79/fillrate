@@ -79,6 +79,14 @@ kpiExpert_OOS.DrawTooltipDetail_Estado=function(entity){
                         params+="&Presentacion=Granel";
                         continue;
                     }
+                    if(  1 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="RegionZTDem" ){
+                        params+="&RegionZTDem="+entity.key;
+                        continue;
+                    }
+                    if(  2 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="vc50_Region_UN" ){
+                        params+="&vc50_Region_UN="+entity.key;
+                        continue;
+                    }
 
                     if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos"){
 
