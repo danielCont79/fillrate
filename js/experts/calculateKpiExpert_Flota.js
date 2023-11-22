@@ -51,8 +51,6 @@ calculateKpiExpert_Flota.calculateKPI=function(entities){
 
                 }
 
-
-
                 apiURL=store.apiDataSources[i].apiURL;
             }
 

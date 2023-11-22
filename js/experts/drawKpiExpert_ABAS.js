@@ -620,6 +620,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
           }
                 
         }
+        
         for(var i=0; i < store.catlogsForFilters.length; i++){    
             if(store.catlogsForFilters[i].data==nombreCatalogoParaDiccionario){
                 diccionarioNombres=store.catlogsForFilters[i].diccNames;

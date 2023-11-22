@@ -4,12 +4,14 @@ kpiExpert_OOS.eraseChart=function(){
 
     d3.select("#svgTooltip").selectAll(".ossDetail").data([]).exit().remove();
     d3.select("#svgTooltip3").selectAll(".ossDetail").data([]).exit().remove();
+    d3.select("#svgTooltip4").selectAll(".ossDetail").data([]).exit().remove();
 
     console.log();
     
     $("#toolTip2").css("visibility","hidden");	
     $("#toolTip2").css("visibility","hidden");	
     $("#toolTip3").css("visibility","hidden");
+    $("#toolTip4").css("visibility","hidden");
 
    
 }
@@ -18,15 +20,285 @@ kpiExpert_OOS.DrawTooltipDetail=function(entity){
  
     d3.select("#svgTooltip").selectAll(".ossDetail").data([]).exit().remove();
     d3.select("#svgTooltip3").selectAll(".ossDetail").data([]).exit().remove();
+    d3.select("#svgTooltip4").selectAll(".ossDetail").data([]).exit().remove();
     
-    kpiExpert_OOS.DrawTooltipDetail_UN(entity);
-    kpiExpert_OOS.DrawTooltipDetail_Dia(entity);
+   
+    kpiExpert_OOS.DrawTooltipDetail_Dia(entity);  
+
+    if($("#nivel_cb").val() > 2 ){
+        kpiExpert_OOS.DrawTooltipDetail_UN(entity);
+        vix_tt_distributeDivs(["#toolTip2","#toolTip3"]); 
+    }else{
+        kpiExpert_OOS.DrawTooltipDetail_Estado(entity);
+       
+    }
 
     opacidadCesium=30;
     $("#cesiumContainer").css("opacity",opacidadCesium/100); 
 
-    // DISTRIBUYE 
-    //vix_tt_distributeDivs(["#toolTip2","#toolTip3"]);  
+
+}
+
+kpiExpert_OOS.DrawTooltipDetail_Estado=function(entity){  
+
+    $("#cargando").css("visibility","visible");
+
+    var serviceName;
+    var apiURL;
+    var agrupador="";
+    var nombreCatalogoParaDiccionario;
+    var diccionarioNombres=[];
+
+
+    agrupador="Estado";
+
+
+    for(var i=0; i < store.apiDataSources.length; i++){          
+        if(store.apiDataSources[i].varName=="oos"){
+                
+                serviceName=store.apiDataSources[i].serviceName;
+                apiURL=store.apiDataSources[i].apiURL;
+        }
+    }
+
+    if(serviceName && apiURL){
+
+                var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
+                var dateEnd_=dateEnd.getFullYear()+"-"+String(Number(dateEnd.getMonth())+1)+"-"+dateEnd.getDate();
+            
+                // FILTROS****
+                var params="";
+            
+                for(var j=0; j < store.catlogsForFilters.length; j++){
+
+                    if( store.catlogsForFilters[j].storeProcedureField=="Presentacion" && entity.key=="Sacos" ){
+                        params+="&Presentacion=Sacos";
+                        continue;
+                    }
+                    if( store.catlogsForFilters[j].storeProcedureField=="Presentacion" && entity.key=="Granel" ){
+                        params+="&Presentacion=Granel";
+                        continue;
+                    }
+
+                    if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos"){
+
+                        params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+
+                    }
+
+                }
+
+                //FILTRO DE MASIVO
+                if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
+
+                        params+="&masivos=Todos";               
+
+                }else if($("#masivos_cb").val() == "SinMasivos"){
+
+                        params+="&masivos=Sin Masivos"; 
+
+                }else if($("#masivos_cb").val() == "SoloMasivos"){
+
+                        params+="&masivos=Solo Masivos"; 
+                        
+                }
+
+                var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+                console.log(URL);  
+
+               if(URL.indexOf("undefined" < 0)){
+
+                        dataLoader.AddLoadingTitle("OOS por Estado");
+
+                        d3.json(URL, function (error, data) {
+
+                            dataLoader.DeleteLoadingTitle("OOS por Estado"); 
+
+                            dataLoader.HideLoadings();
+
+                                $("#cargando").css("visibility","hidden");
+                                
+                                if(error){
+                                    alert("Error API OOS",error);
+                                    resolve();
+                                    return;
+                                }
+
+                                if(data.error){
+                                    alert("Error API OOS",data.error);
+                                    resolve();
+                                    return;
+                                }
+
+                                console.log("oos",data.recordset);
+
+                                d3.select("#svgTooltip4").selectAll(".ossDetail").data([]).exit().remove();
+
+                                var maximo=0;
+                                var maximoVolumen=0;                                  
+
+                                var arr=d3.nest()
+                                    .key(function(d) { return d.Agrupador; })
+                                    .entries(data.recordset);  
+
+                                    console.log("arr",arr);
+
+                                for(var i=0; i < arr.length; i++ ){
+
+                                    arr[i].Numerador=0;
+                                    arr[i].Denominador=0;
+                                    arr[i].CantEntFinal=0;
+                            
+                                    for(var j=0; j < arr[i].values.length; j++ ){
+                                        
+                                        arr[i].Numerador+=Number(arr[i].values[j].Numerador);
+                                        arr[i].Denominador+=Number(arr[i].values[j].Denominador);
+                                        arr[i].CantEntFinal+=Number(arr[i].values[j].CantEntFinal);            
+                            
+                                        if(maximoVolumen < arr[i].CantEntFinal){
+                                            maximoVolumen=arr[i].CantEntFinal;
+                                        }
+                            
+                                    }
+                            
+                                } 
+                                
+                                for(var i=0; i < arr.length; i++ ){
+                                    arr[i].OOS=Math.round(  (arr[i].Numerador/arr[i].Denominador)*10000)/100;
+                                    if(maximo < arr[i].OOS*1000){
+                                        maximo=arr[i].OOS*1000;
+                                    }
+                                }
+                            
+                                arr = arr.sort((a, b) => b.OOS*1000 - a.OOS*1000);
+                            
+                                var altura=30;
+                               
+                                var svgTooltipHeight=arr.length*altura;
+                            
+                                if(svgTooltipHeight<80)
+                                    svgTooltipHeight=80;
+                            
+                                if(svgTooltipHeight>windowHeight*.8)
+                                    svgTooltipHeight=windowHeight*.8;
+                            
+                                var svgTooltipWidth=600;
+                                //var marginLeft=svgTooltipWidth*.3;
+                                var tamanioFuente=altura*.5;
+                                if(tamanioFuente < 12)
+                                tamanioFuente=12;
+                            
+                                //var marginTop=30;
+                            
+                            
+                                $("#toolTip4").css("visibility","visible");            
+                                $("#toolTip4").css("left",radio+"px"); 
+                                $("#toolTip4").css("top",80+"px");
+                            
+                                if(windowWidth > 1500 ){
+                            
+                                    $("#toolTip4").css("top",80+"px");
+                                    $("#toolTip4").css("left",radio+"px");
+                                   
+                                }
+
+                                // DATOS 
+                                var data = arr.map(function(item) {
+                                    return {
+                                    key: item.key,
+                                    "Numero": item.Numerador,
+                                    "OOS": item.OOS,
+                                    "Numera": item.CantEntFinal,
+                                    };
+                                    }); 
+
+
+                                // DEFINE COLUMNAS
+      
+                                var columns = [
+                                    { key: "key", header: "Unidad de Negocio", sortable: true, width: "120px" },
+                                    { key: "Numero", header: "# OOS", sortable: true, width: "120px" },
+                                    { key: "OOS", header: "% OOS", sortable: true, width: "120px" },
+                                    { key: "Numera", header: "Volumen Entregado", sortable: true, width: "120px" },
+                                
+                                ];        
+      
+                                 // DEFINE VISITORS PARA CADA COLUMNA    
+    
+                                var columnVisitors = {
+                                    key: function(value) {
+                                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_estado','${entity.key}')">${value}
+                                        </div>`;
+                                    },
+                                
+                                    Numero: function(value) {
+                                    return vix_tt_formatNumber(value);
+                                    },
+                                
+                                        OOS: function(value){
+                                
+                                        var barWidth = value + '%';
+                                        var barValue = vix_tt_formatNumber(value)+'%   ';
+                                    
+                                        return '<div class="bar-container">' +
+                                                '<span class="bar-value">' + barValue + '</span>' + '<svg width="100%" height="10">'  
+                                                + '<rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: white;"></rect></svg>' +        
+                                            '</div>';
+                                    },
+                                    Numera: function(value){
+                                
+                                        var barWidth = (value/maximoVolumen)*100 + '%';
+                                        var barValue = vix_tt_formatNumber(value);
+                                
+                                    return '<div class="bar-container">' +
+                                                '<span class="bar-value">' + barValue + '</span>' + '<svg width="100%" height="10">'  
+                                                + '<rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: white;"></rect></svg>' +        
+                                            '</div>';
+                                    }
+                                };
+                                
+
+                                // FORMATEA DIV :
+                                
+                                vix_tt_formatToolTip("#toolTip4","Out of Stock por Estado de "+dataManager.getNameFromId(entity.key),490,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","OOS Cedis"));
+      
+
+                                // COLUMNAS CON TOTALES :
+                                var columnsWithTotals = ['Numero','','Numera']; 
+                                var totalsColumnVisitors = {
+                                            'Numero': function(value) { 
+                                            return vix_tt_formatNumber(value) ; 
+                                            },
+                                            'Numera': function(value) { 
+                                            return vix_tt_formatNumber(value) ;
+                                            },                   
+                                            
+                                            };
+
+                                            // CREA TABLA USANDO DATOS
+            
+                                vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip4", columnsWithTotals );        
+
+                                // Crea una barra inferior y pasa una funcion de exportacion de datos
+                                vix_tt_formatBottomBar("#toolTip4", function () {
+                                        var dataToExport = formatDataForExport(data, columns);
+                                        var filename = "exported_data";
+                                        exportToExcel(dataToExport, filename);
+                                });                                    
+                                    
+                                    
+                                // APLICA TRANSICIONES 
+
+                                vix_tt_transitionRectWidth("toolTip4");
+
+                                vix_tt_distributeDivs(["#toolTip4","#toolTip3"]); 
+
+                        });
+
+
+               }
+
+    }
 
 }
 
