@@ -224,7 +224,7 @@ kpiExpert_OOS.DrawTooltipDetail_Estado=function(entity){
                                 // DEFINE COLUMNAS
       
                                 var columns = [
-                                    { key: "key", header: "Unidad de Negocio", sortable: true, width: "120px" },
+                                    { key: "key", header: "Estado", sortable: true, width: "120px" },
                                     { key: "Numero", header: "# OOS", sortable: true, width: "120px" },
                                     { key: "OOS", header: "% OOS", sortable: true, width: "120px" },
                                     { key: "Numera", header: "Volumen Entregado", sortable: true, width: "120px" },
