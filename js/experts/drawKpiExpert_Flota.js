@@ -655,7 +655,7 @@ kpiExpert_Flota.DrawTooltipDetail_Estado=function(entity){
                             // DEFINE COLUMNAS
                           
                             var columns = [
-                                { key: "key", header: "Origen", sortable: true, width: "150px" },
+                                { key: "key", header: "Estado", sortable: true, width: "150px" },
                                 { key: "Deficit", header: "Deficit", sortable: true, width: "150px" }
                             
                               
@@ -688,7 +688,7 @@ kpiExpert_Flota.DrawTooltipDetail_Estado=function(entity){
 
                           // FORMATEA DIV :
                           
-                          vix_tt_formatToolTip("#toolTip2","Déficit de Flota por Estado de "+dataManager.getNameFromId(entity.key),svgTooltipWidth,svgTooltipHeight+130,dataManager.GetTooltipInfoData("toolTip2","Flota"));
+                          vix_tt_formatToolTip("#toolTip2","Déficit de Flota por Estado de "+dataManager.getNameFromId(entity.key),svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip2","Flota"));
                           
                           // COLUMNAS CON TOTALES :
                   
