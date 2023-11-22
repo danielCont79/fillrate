@@ -46,9 +46,7 @@ kpiExpert_OOS.DrawTooltipDetail_Estado=function(entity){
     var serviceName;
     var apiURL;
     var agrupador="";
-    var nombreCatalogoParaDiccionario;
-    var diccionarioNombres=[];
-
+   
 
     agrupador="Estado";
 
@@ -75,14 +73,17 @@ kpiExpert_OOS.DrawTooltipDetail_Estado=function(entity){
                         params+="&Presentacion=Sacos";
                         continue;
                     }
+
                     if( store.catlogsForFilters[j].storeProcedureField=="Presentacion" && entity.key=="Granel" ){
                         params+="&Presentacion=Granel";
                         continue;
                     }
+
                     if(  1 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="RegionZTDem" ){
                         params+="&RegionZTDem="+entity.key;
                         continue;
                     }
+
                     if(  2 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="vc50_Region_UN" ){
                         params+="&vc50_Region_UN="+entity.key;
                         continue;

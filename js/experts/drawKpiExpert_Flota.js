@@ -117,7 +117,7 @@ kpiExpert_Flota.DrawTooltipDetail=function(entity){
 
                           dataLoader.DeleteLoadingTitle("Flota por Día"); 
 
-                          dataLoader.HideLoadings();
+                         
 
                           $("#cargando").css("visibility","hidden");
 
@@ -344,6 +344,11 @@ kpiExpert_Flota.DrawTooltipDetail=function(entity){
                                   .style("height", (svgTooltipHeight) )
                                   ;
 
+
+                                  vix_tt_distributeDivs(["#toolTip2","#toolTip3","#toolTip4"]);
+
+                                  dataLoader.HideLoadings();
+
                   });
 
                 }
@@ -474,26 +479,8 @@ kpiExpert_Flota.DrawTooltipDetail_Estado=function(entity){
     var serviceName;
     var apiURL;
     var agrupador="";
-    var nombreCatalogoParaDiccionario;
-    var diccionarioNombres=[];
-
-    for(var i=0; i < store.niveles.length; i++){    
-
-      if( store.niveles[i].id == $("#nivel_cb").val() ){
-          
-          nombreCatalogoParaDiccionario=store.niveles[i].coordinatesSource;
-      }
-            
-    }
 
     agrupador="Estado"; 
-
-    for(var i=0; i < store.catlogsForFilters.length; i++){    
-        if(store.catlogsForFilters[i].data==nombreCatalogoParaDiccionario){
-            diccionarioNombres=store.catlogsForFilters[i].diccNames;
-            
-        }
-    } 
 
     for(var i=0; i < store.apiDataSources.length; i++){
       
@@ -515,15 +502,35 @@ kpiExpert_Flota.DrawTooltipDetail_Estado=function(entity){
           
             for(var j=0; j < store.catlogsForFilters.length; j++){ 
 
-                if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined  && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+                  if( store.catlogsForFilters[j].storeProcedureField=="Presentacion" && entity.key=="Sacos" ){
+                      params+="&Presentacion=Sacos";
+                      continue;
+                  }
 
-                    params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+                  if( store.catlogsForFilters[j].storeProcedureField=="Presentacion" && entity.key=="Granel" ){
+                      params+="&Presentacion=Granel";
+                      continue;
+                  }
 
-                }
+                  if(  1 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="RegionZTDem" ){
+                      params+="&RegionZTDem="+entity.key;
+                      continue;
+                  }
+                  
+                  if(  2 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="vc50_Region_UN" ){
+                      params+="&vc50_Region_UN="+entity.key;
+                      continue;
+                  }               
+
+                  if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined  && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+
+                      params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+
+                  }
 
             }
 
-              //FILTRO DE MASIVO
+            //FILTRO DE MASIVO
             if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
 
                         params+="&masivos=Todos";               
@@ -538,9 +545,7 @@ kpiExpert_Flota.DrawTooltipDetail_Estado=function(entity){
                         
             } 
 
-
-
-            var URL=apiURL+"/"+serviceName+"?fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+            var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
             console.log(URL);
 
             if(URL.indexOf("undefined" < 0)){
@@ -551,7 +556,7 @@ kpiExpert_Flota.DrawTooltipDetail_Estado=function(entity){
 
                           dataLoader.DeleteLoadingTitle("Detalle de Flota por Estado"); 
 
-                          dataLoader.HideLoadings();
+                         
 
                           $("#cargando").css("visibility","hidden");
 
@@ -575,17 +580,17 @@ kpiExpert_Flota.DrawTooltipDetail_Estado=function(entity){
 
                           for(var j=0;  j < data.recordset.length; j++){
 
-                                if(data.recordset[j].dtFecha!=""){
+                                if(data.recordset[j].Fecha!=""){
 
-                                      if( data.recordset[j].dtFecha.indexOf("T") > -1){
+                                      if( data.recordset[j].Fecha.indexOf("T") > -1){
                     
-                                              var fechaSplit=data.recordset[j].dtFecha.split("T");
+                                              var fechaSplit=data.recordset[j].Fecha.split("T");
                                               
                                               fechaSplit=fechaSplit[0].split("-");                   
                       
                                       }else{
                                               
-                                              var fechaSplit=data.recordset[j].dtFecha.split("-");
+                                              var fechaSplit=data.recordset[j].Fecha.split("-");
                         
                                       }  
                                       
@@ -601,7 +606,7 @@ kpiExpert_Flota.DrawTooltipDetail_Estado=function(entity){
     
                           var arr=d3.nest()
                               .key(function(d) { return d.Agrupador; })
-                              .entries(entity.flota.values); 
+                              .entries(data.recordset); 
 
                           for(var i=0; i < arr.length; i++ ){
 
@@ -661,7 +666,7 @@ kpiExpert_Flota.DrawTooltipDetail_Estado=function(entity){
                         
                             var columnVisitors = {
                             key: function(value) {
-                                return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_un','${entity.key}')">${value}
+                                return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_estado','${entity.key}')">${value}
                                 </div>`;
                               },
                         
@@ -683,18 +688,18 @@ kpiExpert_Flota.DrawTooltipDetail_Estado=function(entity){
 
                           // FORMATEA DIV :
                           
-                          vix_tt_formatToolTip("#toolTip2","Déficit de Flota por Origen "+dataManager.getNameFromId(entity.key),svgTooltipWidth,svgTooltipHeight+130,dataManager.GetTooltipInfoData("toolTip2","Flota"));
+                          vix_tt_formatToolTip("#toolTip2","Déficit de Flota por Estado de "+dataManager.getNameFromId(entity.key),svgTooltipWidth,svgTooltipHeight+130,dataManager.GetTooltipInfoData("toolTip2","Flota"));
                           
-                                // COLUMNAS CON TOTALES :
-                        
-                                var columnsWithTotals = ['Deficit']; 
-                                var totalsColumnVisitors = {
-                                            'Deficit': function(value) { 
-                                            return formatNumber(value,2) ; 
-                                            }
-                                          
-                                          
-                                          };
+                          // COLUMNAS CON TOTALES :
+                  
+                          var columnsWithTotals = ['Deficit']; 
+                          var totalsColumnVisitors = {
+                                      'Deficit': function(value) { 
+                                      return formatNumber(value,2) ; 
+                                      }
+                                    
+                                    
+                                    };
                                           
                           // CREA TABLA USANDO DATOS
                           
@@ -705,11 +710,14 @@ kpiExpert_Flota.DrawTooltipDetail_Estado=function(entity){
                             var dataToExport = formatDataForExport(data, columns);
                             var filename = "exported_data";
                             exportToExcel(dataToExport, filename);
-                          });       
-                                
+                          });                                       
                                 
                           // APLICA TRANSICIONES
                           vix_tt_transitionRectWidth("toolTip2");
+
+                          vix_tt_distributeDivs(["#toolTip2","#toolTip3","#toolTip4"]);  
+
+                          dataLoader.HideLoadings();
 
                 });
 
