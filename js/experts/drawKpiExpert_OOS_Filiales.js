@@ -369,10 +369,16 @@ kpiExpert_OOS_Filiales.DrawTooltipDetail_Dia=function(entity){
 
             for(var i=0; i < arr.length; i++ ){   
 
-               
-                var altura1=GetValorRangos( arr[i].OOS*1000,1, maximo ,1,svgTooltipHeight*.25);
-                var altura2=GetValorRangos( arr[i].Fisico ,1, maximo2 ,1,svgTooltipHeight*.25);
-                
+                if(maximo > 0){
+                    var altura1=GetValorRangos( arr[i].OOS*1000,1, maximo ,1,svgTooltipHeight*.25);
+                }else{
+                    var altura1=1;
+                }
+                if(maximo2 > 0){
+                    var altura2=GetValorRangos( arr[i].Fisico ,1, maximo2 ,1,svgTooltipHeight*.25);
+                }else{
+                    var altura2=1;
+                }               
                 
                 var color="#1ADD00";
 
@@ -446,12 +452,13 @@ kpiExpert_OOS_Filiales.DrawTooltipDetail_Dia=function(entity){
                                 .style("text-anchor","start")
                                 .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.37)-altura2-marginBottom-3   )+")  rotate("+(-90)+") ")
                                 .text(function(){
+
+                                    if(arr[i].Fisico < 1000)
+                                        return Math.round(arr[i].Fisico);
                                 
                                     return  formatNumber(arr[i].Fisico/1000)+"k" ;
                 
-                                });
-
-              
+                                });              
                 
 
             }
