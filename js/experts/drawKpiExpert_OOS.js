@@ -806,9 +806,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 
                                     return  arr[i].Numerador ;
                 
-                                });
-
-                
+                                });                
 
             }
 
