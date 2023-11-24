@@ -766,7 +766,7 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
 
                                       }
 
-                                      if(arr[i].VolumenPlan == 0){
+                                      if(arr[i].VolumenPlan == 0 && arr[i].VolumenReal == 0){
                                         return "0";
                                       }
 
