@@ -112,7 +112,8 @@ drawKpiExpert_VENTAS.DrawTooltipDetail=function(entity){
     d3.select("#svgTooltip3").selectAll(".ventasDetail").data([]).exit().remove();
     d3.select("#svgTooltip4").selectAll(".ventasDetail").data([]).exit().remove();
     
-    
+    drawKpiExpert_VENTAS.lastInitDate=undefined;
+
     drawKpiExpert_VENTAS.DrawTooltipDetail_Estado(entity);
 
     drawKpiExpert_VENTAS.DrawTooltipDetail_Producto_Presentacion(entity);
@@ -370,7 +371,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
 
 drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEnd){
 
-  console.log(dateInit, dateEnd);
+  console.log(data,dateInit, dateEnd);
 
                     if(drawKpiExpert_VENTAS.detalleDeTiempo=="dia"){
 
