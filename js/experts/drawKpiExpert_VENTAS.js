@@ -470,10 +470,13 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
 
                       }
 
-                      if(maximo < arr[i].VolumenPlan && arr[i].VolumenPlan>0 ){
+                      if(maximo < arr[i].VolumenPlan && arr[i].VolumenPlan>0 )
                         maximo=arr[i].VolumenPlan;
 
-                  } 
+                        if(maximo < arr[i].VolumenReal && arr[i].VolumenReal>0 )
+                          maximo=arr[i].VolumenReal;
+
+                  
 
                   }
 
@@ -497,7 +500,7 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
 
                   });
 
-                  console.log("fechas",arr);
+                  console.log("maximo",maximo);
 
                   drawKpiExpert_VENTAS.lastDataByDay=arr;
 
@@ -584,7 +587,7 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
 
                     var altura=(svgTooltipHeight*.22);
 
-                    if(arr[i].VolumenPlan==0 && arr[i].VolumenPlan==0){
+                    if(arr[i].VolumenPlan==0 && arr[i].VolumenReal==0){
 
                           var altura1=1;
                           var altura2=1;

@@ -6,7 +6,6 @@ kpiExpert_OOS.eraseChart=function(){
     d3.select("#svgTooltip3").selectAll(".ossDetail").data([]).exit().remove();
     d3.select("#svgTooltip4").selectAll(".ossDetail").data([]).exit().remove();
 
-    console.log();
     
     $("#toolTip2").css("visibility","hidden");	
     $("#toolTip2").css("visibility","hidden");	

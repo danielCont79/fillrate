@@ -99,6 +99,11 @@ kpiExpert_OOS_Filiales.DrawTooltipDetail=function(entity){
     kpiExpert_OOS_Filiales.DrawTooltipDetail_UN(entity);
     kpiExpert_OOS_Filiales.DrawTooltipDetail_Dia(entity);
 
+    opacidadCesium=30;
+    $("#cesiumContainer").css("opacity",opacidadCesium/100); 
+
+    vix_tt_distributeDivs(["#toolTip2","#toolTip3"]); 
+
 }
 
 kpiExpert_OOS_Filiales.DrawTooltipDetail_UN=function(entity){  
@@ -150,7 +155,15 @@ kpiExpert_OOS_Filiales.DrawTooltipDetail_UN=function(entity){
     var altura=30;
     //var caso=0;
    
-   // var svgTooltipHeight=(arr.length*altura)+50;
+    var svgTooltipHeight=arr.length*altura;
+
+    if(svgTooltipHeight<80)
+        svgTooltipHeight=80;
+
+    if(svgTooltipHeight>windowHeight*.8)
+        svgTooltipHeight=windowHeight*.8;
+
+
     var svgTooltipWidth=500;
    // var marginLeft=svgTooltipWidth*.3;
     var tamanioFuente=altura*.5;
@@ -234,7 +247,7 @@ kpiExpert_OOS_Filiales.DrawTooltipDetail_UN=function(entity){
 
       // FORMATEA DIV :
     
-        vix_tt_formatToolTip("#toolTip2","OOS Filiales por Origen y Producto de "+dataManager.getNameFromId(entity.key),svgTooltipWidth);
+        vix_tt_formatToolTip("#toolTip2","OOS Filiales por Origen y Producto de "+dataManager.getNameFromId(entity.key),svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","OOS Cedis"));
       
             // COLUMNAS CON TOTALES :
     
@@ -250,21 +263,21 @@ kpiExpert_OOS_Filiales.DrawTooltipDetail_UN=function(entity){
                       
                       };
       
-// CREA TABLA USANDO DATOS
-      
-vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip2", columnsWithTotals );        
+        // CREA TABLA USANDO DATOS
+            
+        vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip2", columnsWithTotals );        
 
-// Crea una barra inferior y pasa una funcion de exportacion de datos
-vix_tt_formatBottomBar("#toolTip2", function () {
-  var dataToExport = formatDataForExport(data, columns);
-  var filename = "exported_data";
-  exportToExcel(dataToExport, filename);
-});
-      
-      
-// APLICA TRANSICIONES 
+        // Crea una barra inferior y pasa una funcion de exportacion de datos
+        vix_tt_formatBottomBar("#toolTip2", function () {
+        var dataToExport = formatDataForExport(data, columns);
+        var filename = "exported_data";
+        exportToExcel(dataToExport, filename);
+        });
+            
+            
+        // APLICA TRANSICIONES 
 
-vix_tt_transitionRectWidth("toolTip2");
+        vix_tt_transitionRectWidth("toolTip2");
 
 }
 
@@ -326,8 +339,8 @@ kpiExpert_OOS_Filiales.DrawTooltipDetail_Dia=function(entity){
             
             var svgTooltipWidth=arr.length*(ancho*1.05);
 
-            if(svgTooltipWidth < 80)
-            svgTooltipWidth=80;
+            if(svgTooltipWidth < 230)
+            svgTooltipWidth=230;
 
             var svgTooltipHeight=500;
             var tamanioFuente=ancho*.7;  
