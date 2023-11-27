@@ -172,6 +172,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_Holding=function(entity){
         var params="";
       
         for(var j=0; j < store.catlogsForFilters.length; j++){ 
+          console.log( store.catlogsForFilters[j].storeProcedureField);
             
               if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Estado" ){ // Estado
                   params+="&Estado="+entity.key;
@@ -185,7 +186,8 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_Holding=function(entity){
                   params+="&ZT="+entity.key;
                   continue;
               } 
-              if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" ){ // Obra
+              if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
+                console.log("cancela arg obra");
                   params+="&Obra="+entity.key;
                   continue;
               } 
@@ -496,7 +498,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
                       params+="&ZT="+entity.key;
                       continue;
                   } 
-                  if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" ){ // Obra
+                  if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
                       params+="&Obra="+entity.key;
                       continue;
                   } 
