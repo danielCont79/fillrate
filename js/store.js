@@ -82,14 +82,14 @@ var store={
     
     niveles:[
 
-        {id:0,label:"Nacional",field:"",coordinatesSource:"",storeProcedureField:"Nacional",oosFlilialesField:"Nacional"},
-        {id:1,label:"Región Destino",field:"RegionZTDem",coordinatesSource:"cat_region",storeProcedureField:"Region",oosFlilialesField:"RegionDem"},
+        {id:0,label:"Nacional",field:"",coordinatesSource:"",storeProcedureField:"Nacional",oosFlilialesField:"Nacional"},        
         {id:2,label:"Región Origen",field:"RegionZTDem",coordinatesSource:"cat_region_origen",storeProcedureField:"RegionOrigen",oosFlilialesField:"RegionDem"},
-        {id:3,label:"Estado",field:"EstadoZTDem",coordinatesSource:"cat_estado",storeProcedureField:"Estado",oosFlilialesField:"EstadoDem"},
         {id:4,label:"Gerencia",field:"GerenciaUN",coordinatesSource:"cat_gerencia",storeProcedureField:"Gerencia",oosFlilialesField:"Gerencia"},
         {id:5,label:"Unidad de Negocio",field:"vc50_UN_Tact",coordinatesSource:"cat_un",storeProcedureField:"UnidadNegocio"},
-        {id:6,label:"Holding",field:"vc50_UN_Tact",coordinatesSource:"cat_cliente_estado",storeProcedureField:"Holding"},
-        {id:7,label:"Zona de transporte",field:"ZonaTransporte",coordinatesSource:"cat_zt",storeProcedureField:"ZT"},            
+        {id:1,label:"Región Destino",field:"RegionZTDem",coordinatesSource:"cat_region",storeProcedureField:"Region",oosFlilialesField:"RegionDem"},
+        {id:3,label:"Estado",field:"EstadoZTDem",coordinatesSource:"cat_estado",storeProcedureField:"Estado",oosFlilialesField:"EstadoDem"},
+        {id:7,label:"Zona de transporte",field:"ZonaTransporte",coordinatesSource:"cat_zt",storeProcedureField:"ZT"},   
+        {id:6,label:"Holding",field:"vc50_UN_Tact",coordinatesSource:"cat_cliente_estado",storeProcedureField:"Holding"},                
         {id:8,label:"Sucursal",field:"Obra",coordinatesSource:"cat_sucursal_estado",storeProcedureField:"Obra"},
         {id:9,label:"Frente",field:"Frente",coordinatesSource:"cat_frente",storeProcedureField:"Frente"},       
 

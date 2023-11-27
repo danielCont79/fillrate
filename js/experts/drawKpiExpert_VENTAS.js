@@ -95,30 +95,47 @@ drawKpiExpert_VENTAS.eraseChart=function(){
     d3.select("#svgTooltip").selectAll(".ventasDetail").data([]).exit().remove();
     d3.select("#svgTooltip3").selectAll(".ventasDetail").data([]).exit().remove();
     d3.select("#svgTooltip4").selectAll(".ventasDetail").data([]).exit().remove();
+    d3.select("#svgTooltip5").selectAll(".ventasDetail").data([]).exit().remove();
+    d3.select("#svgTooltip6").selectAll(".ventasDetail").data([]).exit().remove();
     
     $("#toolTip2").css("visibility","hidden");
     $("#toolTip3").css("visibility","hidden");
     $("#toolTip4").css("visibility","hidden");
+    $("#toolTip5").css("visibility","hidden");
+    $("#toolTip6").css("visibility","hidden");
 
 
 }
 
 
-drawKpiExpert_VENTAS.DrawTooltipDetail=function(entity){  
+drawKpiExpert_VENTAS.DrawTooltipDetail=function(entity){ 
+  
+    $("#toolTip2").css("visibility","hidden");
+    $("#toolTip3").css("visibility","hidden");
+    $("#toolTip4").css("visibility","hidden");
+    $("#toolTip5").css("visibility","hidden");
+    $("#toolTip6").css("visibility","hidden");
   
     drawKpiExpert_VENTAS.lastEntity=entity;
 
     d3.select("#svgTooltip").selectAll(".ventasDetail").data([]).exit().remove();
     d3.select("#svgTooltip3").selectAll(".ventasDetail").data([]).exit().remove();
     d3.select("#svgTooltip4").selectAll(".ventasDetail").data([]).exit().remove();
+    d3.select("#svgTooltip5").selectAll(".ventasDetail").data([]).exit().remove();
+    d3.select("#svgTooltip6").selectAll(".ventasDetail").data([]).exit().remove();
     
-    drawKpiExpert_VENTAS.lastInitDate=undefined;
-
-    drawKpiExpert_VENTAS.DrawTooltipDetail_Estado(entity);
+    drawKpiExpert_VENTAS.lastInitDate=undefined;    
 
     drawKpiExpert_VENTAS.DrawTooltipDetail_Producto_Presentacion(entity);
 
     drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(entity,dateInit,dateEnd);
+
+    if($("#nivel_cb").val() ==3 || $("#nivel_cb").val() > 5 ){ // si es igual a estado o mayor o igual que zona que holding 
+      drawKpiExpert_VENTAS.DrawTooltipDetail_UN(entity);
+      drawKpiExpert_VENTAS.DrawTooltipDetail_Holding(entity);
+    } else{
+      drawKpiExpert_VENTAS.DrawTooltipDetail_Estado(entity);
+    }
 
     opacidadCesium=30;
     $("#cesiumContainer").css("opacity",opacidadCesium/100); 
@@ -128,6 +145,631 @@ drawKpiExpert_VENTAS.DrawTooltipDetail=function(entity){
     vix_tt_distributeDivs(["#toolTip2","#toolTip3","#toolTip4"]);  
 
 }  
+
+
+drawKpiExpert_VENTAS.DrawTooltipDetail_Holding=function(entity){  
+
+  $("#cargando").css("visibility","visible");
+
+  var serviceName;
+  var apiURL;
+  var agrupador="Holding";
+
+  for(var i=0; i < store.apiDataSources.length; i++){          
+    if(store.apiDataSources[i].varName=="ventas"){
+            
+            serviceName=store.apiDataSources[i].serviceName;
+            apiURL=store.apiDataSources[i].apiURL;
+    }
+  }
+
+  if(serviceName && apiURL){
+
+        var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
+        var dateEnd_=dateEnd.getFullYear()+"-"+String(Number(dateEnd.getMonth())+1)+"-"+dateEnd.getDate();
+        
+        // FILTROS****
+        var params="";
+      
+        for(var j=0; j < store.catlogsForFilters.length; j++){ 
+            
+              if(  3 == $("#nivel_cb").val()  ){ // Estado
+                  params+="&Estado="+entity.key;
+                  continue;
+              }
+              if(  6 == $("#nivel_cb").val()  ){ // Holding
+                  params+="&Holding="+entity.key;
+                  continue;
+              }
+              if(  7 == $("#nivel_cb").val()  ){ // ZT
+                  params+="&ZT="+entity.key;
+                  continue;
+              } 
+              if(  8 == $("#nivel_cb").val()  ){ // Obra
+                  params+="&Obra="+entity.key;
+                  continue;
+              } 
+              if(  9 == $("#nivel_cb").val()  ){ // Frente
+                params+="&Frente="+entity.key;
+                continue;
+              }  
+
+              if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+
+                  params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+
+              }
+
+        }            
+
+        //FILTRO DE MASIVO
+        if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
+
+                params+="&masivos=Todos";               
+
+        }else if($("#masivos_cb").val() == "SinMasivos"){
+
+                params+="&masivos=Sin Masivos"; 
+
+        }else if($("#masivos_cb").val() == "SoloMasivos"){
+
+                params+="&masivos=Solo Masivos"; 
+                
+        }    
+
+        var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+        console.log(URL);
+
+        if(URL.indexOf("undefined" < 0)){
+
+          dataLoader.AddLoadingTitle("Ventas por Holding");
+
+            d3.json(URL, function (error, data) {
+
+                    $("#cargando").css("visibility","hidden");
+
+                    dataLoader.DeleteLoadingTitle("Ventas por Holding"); 
+
+                    dataLoader.HideLoadings();
+                    
+                    if(error){
+                        alert("Error API Ventas por Holding",error);
+                        resolve();
+                        return;
+                    }
+
+                    if(data.error){
+                        alert("Error API Ventas por Holding",data.error);
+                        resolve();
+                        return;
+                    }
+
+                    console.log("ventas por Holding",data.recordset);
+
+                    var maximo=0; 
+                    var maximoVolumen=0; 
+                   
+                    var arr=d3.nest()
+                            .key(function(d) { return d.Agrupador; })
+                            .entries(data.recordset);
+                    
+
+                            for(var i=0; i < arr.length; i++ ){
+
+                                  arr[i].Dif=0;
+                                
+                                  arr[i].VolumenReal=0;
+                                  arr[i].VolumenPlan=0;
+                                
+                                  arr[i].Peso=0;
+                          
+                                  for(var j=0; j < arr[i].values.length; j++ ){
+                          
+                                      arr[i].VolumenPlan+=Number(arr[i].values[j].VolumenPlan);
+                                      arr[i].VolumenReal+=Number(arr[i].values[j].VolumenReal);
+                                    
+                                      arr[i].Peso+=Number(arr[i].values[j].Peso);
+                                      
+                                  }       
+                          
+                                  if(arr[i].VolumenReal>0){
+                                      arr[i].difPer=arr[i].VolumenReal/arr[i].VolumenPlan;
+                                      arr[i].difVal=arr[i].VolumenReal/arr[i].VolumenPlan;
+                                      arr[i].difResta=arr[i].VolumenReal-arr[i].VolumenPlan;
+                                  }else{
+                                      arr[i].difPer=0;
+                                  }
+                          
+                                  arr[i].difPer=arr[i].difPer*100;
+                          
+                                  if(maximo < arr[i].difPer){
+                                      maximo=arr[i].difPer;
+                                  }
+                                  if(maximoVolumen < arr[i].Peso){
+                                      maximoVolumen=arr[i].Peso;
+                                  }
+                      
+                          }
+                          
+                          arr = arr.sort((a, b) => b.VolumenReal - a.VolumenReal); 
+                          //arr.reverse();
+                      
+                         
+                          var altura=30;
+                          var caso=0;
+                      
+                          var svgTooltipHeight=(arr.length*altura)+50;
+                      
+                          if(svgTooltipHeight < 160)
+                            svgTooltipHeight=160;
+                      
+                          if(svgTooltipHeight > windowHeight*.8 )
+                            svgTooltipHeight=windowHeight*.8;
+                      
+                      
+                          var svgTooltipWidth=640;
+                          var marginLeft=svgTooltipWidth*.2;
+                          var tamanioFuente=altura*.4;
+                          var marginTop=35;
+                      
+                          $("#toolTip6").css("visibility","visible");            
+                          $("#toolTip6").css("top","80px");
+                          $("#toolTip6").css("left",radio*.7+"px");
+                      
+                          if(windowWidth > 1500 ){
+                                   
+                              $("#toolTip6").css("left",radio+"px");
+                           
+                          }   
+                      
+                      
+                          var toolText =  
+                              "<span style='color:#fff600'><span style='color:#ffffff'>Detalle Ventas por Estado</span></span>"+               
+                              "<svg id='svgTooltip6'  style='pointer-events:none;'></svg> ";
+                      
+                          $("#toolTip6").html(toolText);
+                      
+                      
+                          // DATOS 
+                      
+                          var data = arr.map(function(item) {
+                              return {
+                      
+                                key: item.key,
+                                "VolumenPlan": item.VolumenPlan,
+                                "VolumenReal": item.VolumenReal,
+                                "DifK": item.VolumenReal - item.VolumenPlan,
+                                "DifP":  ((item.VolumenReal / item.VolumenPlan) ) * 100,
+                                "Peso": item.Peso
+                              };
+                              });   
+                      
+                      
+                            
+                              // DEFINE COLUMNAS
+                            
+                            var columns = [
+                              { key: "key", header: "Cliente", sortable: true, width: "100px" },
+                              { key: "VolumenPlan", header: "Vol Plan", sortable: true, width: "100px" },
+                              { key: "VolumenReal", header: "Vol Real", sortable: true, width: "100px" },
+                              { key: "DifK", header: "Dif", sortable: true, width: "100px" },
+                              { key: "DifP", header: "Cumplimiento (%)", sortable: true,  width: "120px" },
+                              { key: "Peso", header: "Peso", sortable: true,  width: "80px" }
+                            ];
+                          
+                          
+                             // DEFINE VISITORS PARA CADA COLUMNA                         
+                          
+                            var columnVisitors = {
+                              key: function(value) {
+                                  return `<div class="key-selector" onclick=" backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_cliente_estado','${entity.key}')">${value}
+                                  </div>`;
+                                },
+                          
+                              VolumenPlan: function(value) {
+                                return vix_tt_formatNumber(value) ;
+                              },
+                              VolumenReal: function(value) {
+                                  return vix_tt_formatNumber(value) ;
+                              },
+                              DifK: function(value) {
+                                  return vix_tt_formatNumber(value) ;
+                              },
+                              DifP: function(value){
+                            
+                                if(value<0)
+                                  value=0;
+                      
+                                if(value > 150 && value!=Infinity)
+                                  value=150;          
+                      
+                                if(value!=Infinity){
+                                  var barWidth = value*.66 + '%';
+                                  var barValue = vix_tt_formatNumber(value)+'%   ';
+                                }else{
+                                  var barWidth =  '0%';
+                                  var barValue = vix_tt_formatNumber(0)+'%   ';
+                                }      
+                              
+                                  return '<div class="bar-container">' +
+                                  '<span class="bar-value">' + barValue + '</span>' + '<svg width="100%" height="10">'  
+                              + '<rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: white;"></rect></svg>' +        
+                              '</div>';
+                          
+                              },
+                              Peso: function(value){
+                            
+                      
+                                 var barWidth = (value/maximoVolumen)*100 + '%';
+                                 var barValue = vix_tt_formatNumber(value)+'TM';
+                            
+                                return '<div class="bar-container">' +
+                                
+                                '<svg width="100%" height="10"><rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: yellow;"></rect></svg>' +
+                                
+                                '</div>';
+                      
+                          
+                              }
+                            };                      
+                      
+                            // COLUMNAS CON TOTALES :
+                
+                            var columnsWithTotals = ['VolumenPlan','VolumenReal','DifK']; 
+                            var totalsColumnVisitors = {
+                                      'VolumenPlan': function(value) { 
+                                        return vix_tt_formatNumber(value) ;
+                                      },
+                                      'VolumenReal': function(value) { 
+                                        return vix_tt_formatNumber(value) ; 
+                                      },
+                                      'DifK': function(value) { 
+                                        return vix_tt_formatNumber(value) ; 
+                                      }
+                                      };
+                      
+                            // FORMATEA DIV :
+                         
+                            vix_tt_formatToolTip("#toolTip6","Detalle de Ventas por Holding (TM)",svgTooltipWidth,svgTooltipHeight,dataManager.GetTooltipInfoData("toolTip6","Venta"));
+                        
+                          
+                            // CREA TABLA USANDO DATOS
+                      
+                            vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip6", columnsWithTotals );
+                      
+                            // Crea una barra inferior y pasa una funcion de exportacion de datos
+                            vix_tt_formatBottomBar("#toolTip6", function () {
+                              var dataToExport = formatDataForExport(data, columns);
+                              var filename = "exported_data";
+                              exportToExcel(dataToExport, filename);
+                            });
+                      
+                            // APLICA TRANSICIONES 
+                          
+                            vix_tt_transitionRectWidth("toolTip6");   
+
+                            vix_tt_distributeDivs(["#toolTip6","#toolTip5","#toolTip3","#toolTip4"]);  
+                    
+            });
+
+        }
+
+  }
+
+}
+
+drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){  
+
+      $("#cargando").css("visibility","visible");
+
+      var serviceName;
+      var apiURL;
+      var agrupador="UnidadNegocio";
+
+      for(var i=0; i < store.apiDataSources.length; i++){          
+        if(store.apiDataSources[i].varName=="ventas"){
+                
+                serviceName=store.apiDataSources[i].serviceName;
+                apiURL=store.apiDataSources[i].apiURL;
+        }
+      }
+
+      if(serviceName && apiURL){
+
+            var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
+            var dateEnd_=dateEnd.getFullYear()+"-"+String(Number(dateEnd.getMonth())+1)+"-"+dateEnd.getDate();
+            
+            // FILTROS****
+            var params="";
+          
+            for(var j=0; j < store.catlogsForFilters.length; j++){ 
+                
+                  if(  3 == $("#nivel_cb").val()  ){ // Estado
+                      params+="&Estado="+entity.key;
+                      continue;
+                  }
+                  if(  6 == $("#nivel_cb").val()  ){ // Holding
+                      params+="&Holding="+entity.key;
+                      continue;
+                  }
+                  if(  7 == $("#nivel_cb").val()  ){ // ZT
+                      params+="&ZT="+entity.key;
+                      continue;
+                  } 
+                  if(  8 == $("#nivel_cb").val()  ){ // Obra
+                      params+="&Obra="+entity.key;
+                      continue;
+                  } 
+                  if(  9 == $("#nivel_cb").val()  ){ // Frente
+                    params+="&Frente="+entity.key;
+                    continue;
+                  }  
+
+                  if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+
+                      params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+
+                  }
+
+            }            
+
+            //FILTRO DE MASIVO
+            if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
+
+                    params+="&masivos=Todos";               
+
+            }else if($("#masivos_cb").val() == "SinMasivos"){
+
+                    params+="&masivos=Sin Masivos"; 
+
+            }else if($("#masivos_cb").val() == "SoloMasivos"){
+
+                    params+="&masivos=Solo Masivos"; 
+                    
+            }    
+
+            var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+            console.log(URL);
+
+            if(URL.indexOf("undefined" < 0)){
+
+              dataLoader.AddLoadingTitle("Ventas por UN");
+
+                d3.json(URL, function (error, data) {
+
+                        $("#cargando").css("visibility","hidden");
+
+                        dataLoader.DeleteLoadingTitle("Ventas por UN"); 
+
+                        //dataLoader.HideLoadings();
+                        
+                        if(error){
+                            alert("Error API Ventas por UNs",error);
+                            resolve();
+                            return;
+                        }
+
+                        if(data.error){
+                            alert("Error API Ventas por UNs",data.error);
+                            resolve();
+                            return;
+                        }
+
+                        console.log("ventas por UNs",data.recordset);
+
+                        var maximo=0; 
+                        var maximoVolumen=0; 
+                       
+                        var arr=d3.nest()
+                                .key(function(d) { return d.Agrupador; })
+                                .entries(data.recordset);
+                        
+
+                                for(var i=0; i < arr.length; i++ ){
+
+                                  arr[i].Dif=0;
+                                 
+                                  arr[i].VolumenReal=0;
+                                  arr[i].VolumenPlan=0;
+                                 
+                                  arr[i].Peso=0;
+                          
+                                  for(var j=0; j < arr[i].values.length; j++ ){
+                          
+                                      arr[i].VolumenPlan+=Number(arr[i].values[j].VolumenPlan);
+                                      arr[i].VolumenReal+=Number(arr[i].values[j].VolumenReal);
+                                     
+                                      arr[i].Peso+=Number(arr[i].values[j].Peso);
+                                      
+                                  }       
+                          
+                                  if(arr[i].VolumenReal>0){
+                                      arr[i].difPer=arr[i].VolumenReal/arr[i].VolumenPlan;
+                                      arr[i].difVal=arr[i].VolumenReal/arr[i].VolumenPlan;
+                                      arr[i].difResta=arr[i].VolumenReal-arr[i].VolumenPlan;
+                                  }else{
+                                      arr[i].difPer=0;
+                                  }
+                          
+                                  arr[i].difPer=arr[i].difPer*100;
+                          
+                                  if(maximo < arr[i].difPer){
+                                      maximo=arr[i].difPer;
+                                  }
+                                  if(maximoVolumen < arr[i].Peso){
+                                      maximoVolumen=arr[i].Peso;
+                                  }
+                          
+                              }
+                              
+                              arr = arr.sort((a, b) => b.VolumenReal - a.VolumenReal); 
+                              //arr.reverse();
+                          
+                             
+                              var altura=30;
+                              var caso=0;
+                          
+                              var svgTooltipHeight=(arr.length*altura)+50;
+                          
+                              if(svgTooltipHeight < 160)
+                                svgTooltipHeight=160;
+                          
+                              if(svgTooltipHeight > windowHeight*.8 )
+                                svgTooltipHeight=windowHeight*.8;
+                          
+                          
+                              var svgTooltipWidth=640;
+                              var marginLeft=svgTooltipWidth*.2;
+                              var tamanioFuente=altura*.4;
+                              var marginTop=35;
+                          
+                              $("#toolTip5").css("visibility","visible");            
+                              $("#toolTip5").css("top","80px");
+                              $("#toolTip5").css("left",radio*.7+"px");
+                          
+                              if(windowWidth > 1500 ){
+                                       
+                                  $("#toolTip5").css("left",radio+"px");
+                               
+                              }   
+                          
+                          
+                              var toolText =  
+                                  "<span style='color:#fff600'><span style='color:#ffffff'>Detalle Ventas por Estado</span></span>"+               
+                                  "<svg id='svgTooltip5'  style='pointer-events:none;'></svg> ";
+                          
+                              $("#toolTip5").html(toolText);
+                          
+                          
+                              // DATOS 
+                          
+                              var data = arr.map(function(item) {
+                                  return {
+                          
+                                    key: item.key,
+                                    "VolumenPlan": item.VolumenPlan,
+                                    "VolumenReal": item.VolumenReal,
+                                    "DifK": item.VolumenReal - item.VolumenPlan,
+                                    "DifP":  ((item.VolumenReal / item.VolumenPlan) ) * 100,
+                                    "Peso": item.Peso
+                                  };
+                                  });   
+                          
+                          
+                                
+                                  // DEFINE COLUMNAS
+                                
+                                var columns = [
+                                  { key: "key", header: "U.N.", sortable: true, width: "100px" },
+                                  { key: "VolumenPlan", header: "Vol Plan", sortable: true, width: "100px" },
+                                  { key: "VolumenReal", header: "Vol Real", sortable: true, width: "100px" },
+                                  { key: "DifK", header: "Dif", sortable: true, width: "100px" },
+                                  { key: "DifP", header: "Cumplimiento (%)", sortable: true,  width: "120px" },
+                                  { key: "Peso", header: "Peso", sortable: true,  width: "80px" }
+                                ];
+                              
+                              
+                                 // DEFINE VISITORS PARA CADA COLUMNA
+                              
+                              
+                                var columnVisitors = {
+                                  key: function(value) {
+                                      return `<div class="key-selector" onclick=" backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_un','${entity.key}')">${value}
+                                      </div>`;
+                                    },
+                              
+                                  VolumenPlan: function(value) {
+                                    return vix_tt_formatNumber(value) ;
+                                  },
+                                  VolumenReal: function(value) {
+                                      return vix_tt_formatNumber(value) ;
+                                  },
+                                  DifK: function(value) {
+                                      return vix_tt_formatNumber(value) ;
+                                  },
+                                  DifP: function(value){
+                                
+                                    if(value<0)
+                                      value=0;
+                          
+                                    if(value > 150 && value!=Infinity)
+                                      value=150;          
+                          
+                                    if(value!=Infinity){
+                                      var barWidth = value*.66 + '%';
+                                      var barValue = vix_tt_formatNumber(value)+'%   ';
+                                    }else{
+                                      var barWidth =  '0%';
+                                      var barValue = vix_tt_formatNumber(0)+'%   ';
+                                    }      
+                                  
+                                      return '<div class="bar-container">' +
+                                      '<span class="bar-value">' + barValue + '</span>' + '<svg width="100%" height="10">'  
+                                  + '<rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: white;"></rect></svg>' +        
+                                  '</div>';
+                              
+                                  },
+                                  Peso: function(value){
+                                
+                          
+                                     var barWidth = (value/maximoVolumen)*100 + '%';
+                                     var barValue = vix_tt_formatNumber(value)+'TM';
+                                
+                                    return '<div class="bar-container">' +
+                                    
+                                    '<svg width="100%" height="10"><rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: yellow;"></rect></svg>' +
+                                    
+                                    '</div>';
+                          
+                              
+                                  }
+                                };
+                          
+                          
+                                     // COLUMNAS CON TOTALES :
+                          
+                                     var columnsWithTotals = ['VolumenPlan','VolumenReal','DifK']; 
+                                     var totalsColumnVisitors = {
+                                               'VolumenPlan': function(value) { 
+                                                 return vix_tt_formatNumber(value) ;
+                                               },
+                                               'VolumenReal': function(value) { 
+                                                 return vix_tt_formatNumber(value) ; 
+                                               },
+                                               'DifK': function(value) { 
+                                                 return vix_tt_formatNumber(value) ; 
+                                               }
+                                               };
+                          
+                                // FORMATEA DIV :
+                             
+                                vix_tt_formatToolTip("#toolTip5","Detalle de Ventas por U.N. (TM)",svgTooltipWidth,svgTooltipHeight,dataManager.GetTooltipInfoData("toolTip5","Venta"));
+                            
+                              
+                                // CREA TABLA USANDO DATOS
+                          
+                                vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip5", columnsWithTotals );
+                          
+                                // Crea una barra inferior y pasa una funcion de exportacion de datos
+                                vix_tt_formatBottomBar("#toolTip5", function () {
+                                  var dataToExport = formatDataForExport(data, columns);
+                                  var filename = "exported_data";
+                                  exportToExcel(dataToExport, filename);
+                                });
+                          
+                                // APLICA TRANSICIONES 
+                              
+                                vix_tt_transitionRectWidth("toolTip5");   
+
+                                vix_tt_distributeDivs(["#toolTip6","#toolTip5","#toolTip3","#toolTip4"]);  
+                        
+                });
+
+            }
+
+      }
+
+}
 
 drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd){
   
@@ -140,8 +782,6 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
           return;
         }
       }      
-
-      console.log("iniciaa consultaaa");
 
       d3.select("#svgTooltip4").selectAll(".ventasDetail").data([]).exit().remove();
 
@@ -223,7 +863,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
 
                           dataLoader.DeleteLoadingTitle("Ventas por Día"); 
 
-                          dataLoader.HideLoadings();
+                         // dataLoader.HideLoadings();
 
                           $("#cargando").css("visibility","hidden");
 
@@ -623,14 +1263,14 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                                     .attr("fill","#0068E9")
                                     .on("mouseover",function(d){
                         
-                                      $("#toolTip5").css("visibility","visible");
-                                      $("#toolTip5").css("left",mouse_x+50);  
+                                      $("#toolTip7").css("visibility","visible");
+                                      $("#toolTip7").css("left",mouse_x+50);  
                                      
-                                      $("#toolTip5").css("top",mouse_y); 
+                                      $("#toolTip7").css("top",mouse_y); 
 
-                                      $("#toolTip5").css("z-index", Number($("#toolTip4").css("z-index"))+1  );             
+                                      $("#toolTip7").css("z-index", Number($("#toolTip4").css("z-index"))+1  );             
                                   
-                                      $("#toolTip5").html(`
+                                      $("#toolTip7").html(`
                                           <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
                                           <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
                                           <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
@@ -641,7 +1281,7 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                                     })
                                     .on("mouseout",function(d){
 
-                                        $("#toolTip5").css("visibility","hidden");		    	
+                                        $("#toolTip7").css("visibility","hidden");		    	
 
 
                                     })
@@ -662,14 +1302,14 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                                     .attr("fill","#E38000")
                                     .on("mouseover",function(d){
                         
-                                      $("#toolTip5").css("visibility","visible");
+                                      $("#toolTip7").css("visibility","visible");
 
-                                      $("#toolTip5").css("left",mouse_x+50);  
-                                      $("#toolTip5").css("top",mouse_y); 
+                                      $("#toolTip7").css("left",mouse_x+50);  
+                                      $("#toolTip7").css("top",mouse_y); 
                                       
-                                      $("#toolTip5").css("z-index", Number($("#toolTip4").css("z-index"))+1  );     
+                                      $("#toolTip7").css("z-index", Number($("#toolTip4").css("z-index"))+1  );     
                                   
-                                      $("#toolTip5").html(`
+                                      $("#toolTip7").html(`
                                           <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
                                           <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
                                           <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
@@ -680,7 +1320,7 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                                     })
                                     .on("mouseout",function(d){
 
-                                        $("#toolTip5").css("visibility","hidden");		    	
+                                        $("#toolTip7").css("visibility","hidden");		    	
 
 
                                     })
@@ -701,14 +1341,14 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                                     .attr("fill","#FFFFFF")
                                     .on("mouseover",function(d){
                         
-                                      $("#toolTip5").css("visibility","visible");
+                                      $("#toolTip7").css("visibility","visible");
 
-                                      $("#toolTip5").css("left",mouse_x+50);  
-                                      $("#toolTip").css("top",mouse_y);       
+                                      $("#toolTip7").css("left",mouse_x+50);  
+                                      $("#toolTip7").css("top",mouse_y);       
                                       
-                                      $("#toolTip5").css("z-index", Number($("#toolTip4").css("z-index"))+1  );   
+                                      $("#toolTip7").css("z-index", Number($("#toolTip4").css("z-index"))+1  );   
                                   
-                                      $("#toolTip5").html(`
+                                      $("#toolTip7").html(`
                                           <span style='color:#fff600;font-size:${13}px;'>Vol Real: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenReal)} TM</span><br>
                                           <span style='color:#fff600;font-size:${13}px;'>Vol Plan: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.VolumenPlan)} TM</span><br>
                                           <span style='color:#fff600;font-size:${13}px;'>Autoflete: </span><span style='color:#00EAFF;font-size:${13}px;'>${formatNumber(this.data.AutofleteReal)} TM</span><br>
@@ -719,7 +1359,7 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                                     })
                                     .on("mouseout",function(d){
 
-                                        $("#toolTip5").css("visibility","hidden");		    	
+                                        $("#toolTip7").css("visibility","hidden");		    	
 
 
                                     })
@@ -1015,9 +1655,9 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_Producto_Presentacion=function(entity){
   };
 
 
-  // FORMATEA DIV :
+      // FORMATEA DIV :
 
-  vix_tt_formatToolTip("#toolTip3","Detalle de Ventas por Producto y Presentación (TM)",svgTooltipWidth,svgTooltipHeight,dataManager.GetTooltipInfoData("toolTip3","Venta"));
+      vix_tt_formatToolTip("#toolTip3","Detalle de Ventas por Producto y Presentación (TM)",svgTooltipWidth,svgTooltipHeight,dataManager.GetTooltipInfoData("toolTip3","Venta"));
 
   
         // COLUMNAS CON TOTALES :
