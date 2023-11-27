@@ -173,23 +173,23 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_Holding=function(entity){
       
         for(var j=0; j < store.catlogsForFilters.length; j++){ 
             
-              if(  3 == $("#nivel_cb").val()  ){ // Estado
+              if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Estado" ){ // Estado
                   params+="&Estado="+entity.key;
                   continue;
               }
-              if(  6 == $("#nivel_cb").val()  ){ // Holding
+              if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
                   params+="&Holding="+entity.key;
                   continue;
               }
-              if(  7 == $("#nivel_cb").val()  ){ // ZT
+              if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZT" ){ // ZT
                   params+="&ZT="+entity.key;
                   continue;
               } 
-              if(  8 == $("#nivel_cb").val()  ){ // Obra
+              if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" ){ // Obra
                   params+="&Obra="+entity.key;
                   continue;
               } 
-              if(  9 == $("#nivel_cb").val()  ){ // Frente
+              if(  9 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="Frente"  ){ // Frente
                 params+="&Frente="+entity.key;
                 continue;
               }  
@@ -484,23 +484,23 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
           
             for(var j=0; j < store.catlogsForFilters.length; j++){ 
                 
-                  if(  3 == $("#nivel_cb").val()  ){ // Estado
+                  if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Estado" ){ // Estado
                       params+="&Estado="+entity.key;
                       continue;
                   }
-                  if(  6 == $("#nivel_cb").val()  ){ // Holding
+                  if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
                       params+="&Holding="+entity.key;
                       continue;
                   }
-                  if(  7 == $("#nivel_cb").val()  ){ // ZT
+                  if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZT" ){ // ZT
                       params+="&ZT="+entity.key;
                       continue;
                   } 
-                  if(  8 == $("#nivel_cb").val()  ){ // Obra
+                  if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" ){ // Obra
                       params+="&Obra="+entity.key;
                       continue;
                   } 
-                  if(  9 == $("#nivel_cb").val()  ){ // Frente
+                  if(  9 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="Frente"  ){ // Frente
                     params+="&Frente="+entity.key;
                     continue;
                   }  
