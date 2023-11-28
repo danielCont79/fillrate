@@ -4,7 +4,7 @@
 if(window.location.origin.indexOf("localhost") > -1 ){
     var _bkserver="https://uscldv3dwad01-auth.azurewebsites.net/api";
 }else{
-    var  _bkserver=window.location.origin="/api";
+    var  _bkserver=window.location.origin+"/api";
     //var _bkserver="https://uscldv3dwad01-auth.azurewebsites.net/api";
 }
     
