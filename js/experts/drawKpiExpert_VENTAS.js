@@ -222,7 +222,13 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
               }
               if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
 
-                  params+="&Holding="+entity.key;
+                var nombre=entity.key;
+                if(entity.key.indexOf("_")>-1){
+                  var nombrepSplit=entity.key.split("_");
+                  nombre=nombrepSplit[0];
+                }
+
+                params+="&Holding="+nombre;
                   continue;
               }
               if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZT" ){ // ZT
@@ -230,8 +236,14 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                   continue;
               } 
               if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
-                
-                  params+="&Obra="+entity.key;
+
+                  var nombre=entity.key;
+                  if(entity.key.indexOf("_")>-1){
+                    var nombrepSplit=entity.key.split("_");
+                    nombre=nombrepSplit[0];
+                  }
+
+                  params+="&Obra="+nombre;
                   continue;
               } 
               if(  9 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="Frente"  ){ // Frente
@@ -267,13 +279,13 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
 
         if(URL.indexOf("undefined" < 0)){
 
-          dataLoader.AddLoadingTitle("Ventas por Holding");
+          dataLoader.AddLoadingTitle("Ventas por "+agrupador);
 
             d3.json(URL, function (error, data) {
 
                     $("#cargando").css("visibility","hidden");
 
-                    dataLoader.DeleteLoadingTitle("Ventas por Holding"); 
+                    dataLoader.DeleteLoadingTitle("Ventas por "+agrupador); 
 
                     dataLoader.HideLoadings();
                     
@@ -387,7 +399,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                               // DEFINE COLUMNAS
                             
                             var columns = [
-                              { key: "key", header: "Cliente", sortable: true, width: "100px" },
+                              { key: "key", header: agrupador, sortable: true, width: "100px" },
                               { key: "VolumenPlan", header: "Vol Plan", sortable: true, width: "100px" },
                               { key: "VolumenReal", header: "Vol Real", sortable: true, width: "100px" },
                               { key: "DifK", header: "Dif", sortable: true, width: "100px" },
@@ -1264,7 +1276,9 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
 
                     var altura=(svgTooltipHeight*.22);
 
-                    if(arr[i].VolumenPlan==0 && arr[i].VolumenReal==0){
+                    console.log(arr[i].VolumenPlan , arr[i].VolumenReal);
+
+                    if(arr[i].VolumenPlan<1 && arr[i].VolumenReal<1){
 
                           var altura1=1;
                           var altura2=1;
@@ -1446,6 +1460,9 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                                       if(arr[i].VolumenPlan == 0 && arr[i].VolumenReal == 0){
                                         return "0";
                                       }
+
+                                    if(arr[i].VolumenReal<1)
+                                      return "R: "+arr[i].VolumenReal+" -  "+ porDif +"%";
 
                                     return  "R: "+formatNumber(arr[i].VolumenReal)+" -  "+ porDif +"%";
 
