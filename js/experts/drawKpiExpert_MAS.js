@@ -147,7 +147,7 @@ kpiExpert_MAS.DrawTooltipDetail_UN=function(entity){
                         
                         for(var j=0; j < arr[i].values.length; j++ ){
 
-                              if( arr[i].values[j].TipoPedido != "Estándar" || arr[i].values[j].TipoPedido != "Estandar" ){
+                              if( arr[i].values[j].TipoPedido != "Estándar" && arr[i].values[j].TipoPedido != "Estandar" ){
 
                                   arr[i].MasivosVol+=Number(arr[i].values[j].CantSolFinal);
                           
@@ -167,6 +167,8 @@ kpiExpert_MAS.DrawTooltipDetail_UN=function(entity){
                         }
 
                   }
+
+                  console.log(arr);
 
                   arr = arr.sort((a, b) => b.Masivos*100 - a.Masivos*100);
 
