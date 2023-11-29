@@ -7,8 +7,6 @@ drawKpiExpert_VENTAS.dataSet;
 
 drawKpiExpert_VENTAS.DrawElement=function(entity,i){   
   
-  
-      
   var altura1=GetValorRangos(entity.ventas.ventas,1 ,100 ,1 ,entity.altura );
 
   if(altura1 < 0)
@@ -123,45 +121,89 @@ drawKpiExpert_VENTAS.DrawTooltipDetail=function(entity){
     d3.select("#svgTooltip4").selectAll(".ventasDetail").data([]).exit().remove();
     d3.select("#svgTooltip5").selectAll(".ventasDetail").data([]).exit().remove();
     d3.select("#svgTooltip6").selectAll(".ventasDetail").data([]).exit().remove();
+
+    drawKpiExpert_VENTAS.registredWindows=[];
     
     drawKpiExpert_VENTAS.lastInitDate=undefined;    
 
     drawKpiExpert_VENTAS.DrawTooltipDetail_Producto_Presentacion(entity);
+    drawKpiExpert_VENTAS.registredWindows.push("toolTip3");
 
     drawKpiExpert_VENTAS.DrawTooltipDetail_porDia(entity,dateInit,dateEnd);
-
-    if($("#nivel_cb").val() ==3 || $("#nivel_cb").val() > 5 ){ // si es igual a estado o mayor o igual que zona que holding 
-      drawKpiExpert_VENTAS.DrawTooltipDetail_UN(entity);
-      drawKpiExpert_VENTAS.DrawTooltipDetail_Holding(entity);
-    } else{
+    drawKpiExpert_VENTAS.registredWindows.push("toolTip4");
+    
+    //Ventanas segun nivel de lectura:
+    
+    if($("#nivel_cb").val() < 3){ // Nacional o regiones
+      drawKpiExpert_VENTAS.registredWindows.push("toolTip2");
       drawKpiExpert_VENTAS.DrawTooltipDetail_Estado(entity);
     }
+    
+    if($("#nivel_cb").val() ==3 || $("#nivel_cb").val() ==4 ){ // estado o gerencia 
+      drawKpiExpert_VENTAS.registredWindows.push("#toolTip5");
+      drawKpiExpert_VENTAS.DrawTooltipDetail_UN(entity);
+    }
+
+    if($("#nivel_cb").val() == 3 ){// estado 
+      drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
+      drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas(entity,"Holding","cat_cliente_estado");
+    }
+
+    if($("#nivel_cb").val() == 5  ){//  UN 
+      drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
+      drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas(entity,"Holding","cat_cliente_estado");
+    }
+
+    if($("#nivel_cb").val() == 7 ){// ZT debe ver holding
+      drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
+      drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas(entity,"Holding","cat_cliente_estado");
+    }
+
+    if($("#nivel_cb").val() == 6 ){// Holding debe ver sucrusal
+      drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
+      drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas(entity,"Obra","cat_sucursal_estado");
+    }
+
+    if($("#nivel_cb").val() == 8 ){// Sucrusal-Obra debe ver frente
+      drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
+      drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas(entity,"Frente","cat_frente");
+    }
+
+    //********************************************************************** */
 
     opacidadCesium=30;
-    $("#cesiumContainer").css("opacity",opacidadCesium/100); 
-
+    $("#cesiumContainer").css("opacity",opacidadCesium/100);
 
     // DISTRIBUYE 
-    vix_tt_distributeDivs(["#toolTip2","#toolTip3","#toolTip4"]);  
+    vix_tt_distributeDivs(["#toolTip3","#toolTip4"]);  
 
 }  
 
+drawKpiExpert_VENTAS.registredWindows=[];
+drawKpiExpert_VENTAS.sortRegistredWindows=function(){
 
-drawKpiExpert_VENTAS.DrawTooltipDetail_Holding=function(entity){  
+  vix_tt_distributeDivs(drawKpiExpert_VENTAS.registredWindows); 
+
+}
+
+
+drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador ,catlog){  
 
   $("#cargando").css("visibility","visible");
 
   var serviceName;
   var apiURL;
-  var agrupador="Holding";
+  var agrupador=agrupador;
+
+
 
   for(var i=0; i < store.apiDataSources.length; i++){          
-    if(store.apiDataSources[i].varName=="ventas"){
-            
+    if(store.apiDataSources[i].varName=="ventas"){            
             serviceName=store.apiDataSources[i].serviceName;
             apiURL=store.apiDataSources[i].apiURL;
     }
   }
+
 
   if(serviceName && apiURL){
 
@@ -179,6 +221,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_Holding=function(entity){
                   continue;
               }
               if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
+
                   params+="&Holding="+entity.key;
                   continue;
               }
@@ -187,7 +230,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_Holding=function(entity){
                   continue;
               } 
               if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
-                console.log("cancela arg obra");
+                
                   params+="&Obra="+entity.key;
                   continue;
               } 
@@ -323,14 +366,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_Holding=function(entity){
                               $("#toolTip6").css("left",radio+"px");
                            
                           }   
-                      
-                      
-                          var toolText =  
-                              "<span style='color:#fff600'><span style='color:#ffffff'>Detalle Ventas por Estado</span></span>"+               
-                              "<svg id='svgTooltip6'  style='pointer-events:none;'></svg> ";
-                      
-                          $("#toolTip6").html(toolText);
-                      
+
                       
                           // DATOS 
                       
@@ -364,7 +400,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_Holding=function(entity){
                           
                             var columnVisitors = {
                               key: function(value) {
-                                  return `<div class="key-selector" onclick=" backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_cliente_estado','${entity.key}')">${value}
+                                  return `<div class="key-selector" onclick=" backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_cliente_estado','${entity.key}')">${dataManager.getNameFromIdFromCatlog(value , catlog)}
                                   </div>`;
                                 },
                           
@@ -432,7 +468,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_Holding=function(entity){
                       
                             // FORMATEA DIV :
                          
-                            vix_tt_formatToolTip("#toolTip6","Detalle de Ventas por Holding (TM)",svgTooltipWidth,svgTooltipHeight,dataManager.GetTooltipInfoData("toolTip6","Venta"));
+                            vix_tt_formatToolTip("#toolTip6","Detalle de Ventas por "+agrupador+" (TM)",svgTooltipWidth,svgTooltipHeight,dataManager.GetTooltipInfoData("toolTip6","Venta"));
                         
                           
                             // CREA TABLA USANDO DATOS
@@ -450,7 +486,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_Holding=function(entity){
                           
                             vix_tt_transitionRectWidth("toolTip6");   
 
-                            vix_tt_distributeDivs(["#toolTip6","#toolTip5","#toolTip3","#toolTip4"]);  
+                            drawKpiExpert_VENTAS.sortRegistredWindows();  
                     
             });
 
@@ -620,7 +656,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
                                 svgTooltipHeight=windowHeight*.8;
                           
                           
-                              var svgTooltipWidth=640;
+                              var svgTooltipWidth=670;
                               var marginLeft=svgTooltipWidth*.2;
                               var tamanioFuente=altura*.4;
                               var marginTop=35;
@@ -662,7 +698,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
                                   // DEFINE COLUMNAS
                                 
                                 var columns = [
-                                  { key: "key", header: "U.N.", sortable: true, width: "100px" },
+                                  { key: "key", header: "U.N.", sortable: true, width: "120px" },
                                   { key: "VolumenPlan", header: "Vol Plan", sortable: true, width: "100px" },
                                   { key: "VolumenReal", header: "Vol Real", sortable: true, width: "100px" },
                                   { key: "DifK", header: "Dif", sortable: true, width: "100px" },
@@ -763,8 +799,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
                               
                                 vix_tt_transitionRectWidth("toolTip5");   
 
-                                vix_tt_distributeDivs(["#toolTip6","#toolTip5","#toolTip3","#toolTip4"]);  
-                        
+                                drawKpiExpert_VENTAS.sortRegistredWindows();  
                 });
 
             }
@@ -1459,6 +1494,7 @@ drawKpiExpert_VENTAS.procesaVentanaPorDia=function(entity,data, dateInit, dateEn
                     .style("height", (svgTooltipHeight*.6) )
                     ;
 
+                  drawKpiExpert_VENTAS.sortRegistredWindows();
 
 }
 
@@ -1470,9 +1506,7 @@ drawKpiExpert_VENTAS.DownloadCSVByDay=function(entity){
 
           var csv = 'Entidad,Volumen Plan,Volumen Real,Fecha\n';
 
-          for(var i=0;  i < drawKpiExpert_VENTAS.lastDataByDay.length; i++){
-
-                            
+          for(var i=0;  i < drawKpiExpert_VENTAS.lastDataByDay.length; i++){                            
 
                             csv +=entity+',';
                             csv +=drawKpiExpert_VENTAS.lastDataByDay[i].VolumenPlan+',';

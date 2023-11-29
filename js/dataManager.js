@@ -154,6 +154,36 @@ dataManager.getCurrentCatlog=function(){
 
 }
 
+
+dataManager.getNameFromIdFromCatlog=function(id,catlog){
+
+    var nombre=id;
+
+    if(store[catlog]){
+        
+        dataCatlog=store[catlog];
+        for(var j=0; j < dataCatlog.length; j++){    
+            if(dataCatlog[j].ID==nombre){ 
+                if(dataCatlog[j].Nombre!=nombre){
+                    nombre=dataCatlog[j].Nombre;
+                }      
+            }      
+        }
+    }else{
+        nombre=id;
+    }
+       
+
+    nombre=nombre.replaceAll("_"," ");
+    nombre=nombre.replaceAll("undefined"," ");
+
+    if(nombre.length > 30)
+        nombre=nombre.substr(0,30)+"...";
+
+    return toTitleCase(nombre);
+
+}
+
 dataManager.getNameFromId=function(id){
 
     var nombre=id;

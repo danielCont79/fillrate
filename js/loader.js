@@ -48,10 +48,15 @@ dataLoader.DeleteLoadingTitle=function(name){
             break;
         }      
 
-    }
+    }   
 
     dataLoader.loadings.current=arrTemp;
-    dataLoader.ShowLoadings();
+
+    if(dataLoader.loadings.current.length==0){
+        dataLoader.HideLoadings();
+    }else{
+        dataLoader.ShowLoadings();
+    }
 
 }   
 
