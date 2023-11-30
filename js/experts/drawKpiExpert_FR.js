@@ -162,28 +162,28 @@ kpiExpert_FR.DrawTooltipDetail=function(entity){
         }
         
         if($("#nivel_cb").val() == 3 ){// estado 
-                drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
-                drawKpiExpert_VENTAS.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
+                kpiExpert_FR.registredWindows.push("#toolTip6");
+                kpiExpert_FR.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
         }
         
         if($("#nivel_cb").val() == 5  ){//  UN 
-                drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
-                drawKpiExpert_VENTAS.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
+                kpiExpert_FR.registredWindows.push("#toolTip6");
+                kpiExpert_FR.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
         }
         
         if($("#nivel_cb").val() == 7 ){// ZT debe ver holding
-                drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
-                drawKpiExpert_VENTAS.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
+                kpiExpert_FR.registredWindows.push("#toolTip6");
+                kpiExpert_FR.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
         }
         
         if($("#nivel_cb").val() == 6 ){// Holding debe ver sucrusal
-                drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
-                drawKpiExpert_VENTAS.DrawTooltipDetail_GenericFr(entity,"Obra","cat_sucursal_estado");
+                kpiExpert_FR.registredWindows.push("#toolTip6");
+                kpiExpert_FR.DrawTooltipDetail_GenericFr(entity,"Obra","cat_sucursal_estado");
         }
         
         if($("#nivel_cb").val() == 8 ){// Sucrusal-Obra debe ver frente
-                drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
-                drawKpiExpert_VENTAS.DrawTooltipDetail_GenericFr(entity,"Frente","cat_frente");
+                kpiExpert_FR.registredWindows.push("#toolTip6");
+                kpiExpert_FR.DrawTooltipDetail_GenericFr(entity,"Frente","cat_frente");
         }
         
         //********************************************************************** */   
@@ -233,6 +233,12 @@ kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){
                             params+="&Estado="+entity.key;
                             continue;
                         }
+
+                        if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
+                                params+="&UnidadNegocio="+entity.key;
+                                continue;
+                        }
+
                         if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
           
                           var nombre=entity.key;
@@ -272,16 +278,12 @@ kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){
           
                  }
                  
-                for(var i=0; i < store.niveles.length; i++){    
-
-                        if(store.niveles[i].id.toString() == "0"){
-                                if(entity.key.toLowerCase()=="sacos"){
-                                        params+="&Presentacion=Sacos";
-                                }else if(entity.key.toLowerCase()=="granel"){
-                                        params+="&Presentacion=Granel";
-                                }
+                if(String($("#nivel_cb").val()) == "0"){
+                        if(entity.key.toLowerCase()=="sacos"){
+                                params+="&Presentacion=Sacos";
+                        }else if(entity.key.toLowerCase()=="granel"){
+                                params+="&Presentacion=Granel";
                         }
-
                 }
 
                 //FILTRO DE MASIVO
@@ -299,7 +301,7 @@ kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){
                 
                 }
 
-                var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+                var URL=apiURL+"/"+serviceName+"?fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
                 console.log(URL);
         
                 if(URL.indexOf("undefined" < 0)){
@@ -315,19 +317,234 @@ kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){
                                 dataLoader.HideLoadings();
 
                                 if(error){
-                                        alert("Error API Ventas por Holding",error);
-                                        resolve();
+                                        alert("Error API FR por Holding",error);
+                                     
                                         return;
-                                    }
+                                }
                 
-                                    if(data.error){
-                                        alert("Error API Ventas por Holding",data.error);
-                                        resolve();
+                                if(data.error){
+                                        alert("Error API FR por Holding",data.error);
+                                      
                                         return;
-                                    }
+                                }
                 
-                                    console.log("FR por "+agrupador,data.recordset);
+                                console.log("FR por "+agrupador,data.recordset);
 
+                                var maximo1=0;
+                                var maximo2=0;
+                                var maximo=0;
+
+                                var arrTemp=[];
+
+                                var arr=d3.nest()
+                                        .key(function(d) { return d.Agrupador; })
+                                        .entries(data.recordset);
+
+                                        var totalSolicitado=0;
+
+                                for(var i=0; i < arr.length; i++ ){
+
+                                        arr[i].CantEntfinal=0;                                       
+                                        arr[i].totalSolicitado=0;
+                                        arr[i].totalSolicitadoATiempo=0;
+
+                                        arr[i].vol1=0;
+                                        arr[i].vol2=0;
+                                        arr[i].vol3=0;
+                                        
+                                        arr[i].por1=0;
+                                        arr[i].por2=0;
+                                        arr[i].por3=0;
+
+                                        for(var j=0; j < arr[i].values.length; j++ ){
+
+                                                arr[i].CantEntfinal+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                                arr[i].totalSolicitado+=Number(arr[i].values[j][campoTotalSolicitado]);                               
+                                                totalSolicitado+=Number(arr[i].values[j][campoTotalSolicitado]);
+                
+                                                if(arr[i].values[j][campoDeATiempo] == "A Tiempo"){                                 
+                                                        arr[i].vol1+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                                }else if(arr[i].values[j][campoDeATiempo] == "1 a 2 días Tarde"){
+                                                        arr[i].vol2+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                                }else if(arr[i].values[j][campoDeATiempo] == "3 o más días Tarde"){
+                                                        arr[i].vol3+=Number(arr[i].values[j][campoDeVolumenFR]);
+                                                }                        
+                                        }
+                
+                                        if(maximo < arr[i].CantEntfinal){
+                                                maximo=arr[i].CantEntfinal;
+                                        }
+
+                                        arr[i].por1=Math.round((arr[i].vol1/arr[i].totalSolicitado)*100);
+                                        arr[i].por2=Math.round((arr[i].vol2/arr[i].totalSolicitado)*100);
+                                        arr[i].por3=Math.round((arr[i].vol3/arr[i].totalSolicitado)*100);
+                                        
+                                }
+
+                                var sumapor=0;
+
+                                for(var i=0; i < arr.length; i++ ){
+
+                                        arr[i].porEntregado= arr[i].vol1/totalSolicitado;
+                                        arr[i].porSolicitado= arr[i].totalSolicitado/totalSolicitado;
+                                        arr[i].porDifEntrtegadoSolicitado=arr[i].porSolicitado-arr[i].porEntregado;
+                                        sumapor+=arr[i].porDifEntrtegadoSolicitado;
+                
+                                        if(maximo2 < arr[i].porDifEntrtegadoSolicitado )
+                                                maximo2 = arr[i].porDifEntrtegadoSolicitado;               
+                
+                                }
+                                
+                                arr = arr.sort((a, b) => {                
+                                        return b.CantEntfinal - a.CantEntfinal;                                   
+                                }); 
+                
+                                arr=arr.reverse();
+
+                                var altura=30;
+                                var caso=0;
+                        
+                                var svgTooltipHeight=arr.length*altura;
+                        
+                                if(svgTooltipHeight<80)
+                                svgTooltipHeight=80;
+
+                                if(svgTooltipHeight > windowHeight*.7)
+                                svgTooltipHeight = windowHeight*.7;
+                        
+                        
+                        
+                                var marginLeft=svgTooltipWidth*.2;
+                                var tamanioFuente=altura*.4;
+                                var marginTop=35;
+
+                                $("#toolTip5").css("visibility","visible"); 
+                                $("#toolTip5").css("inset","");   
+                                $("#toolTip5").css("top",80+"px");
+                                $("#toolTip5").css("right",1+"%");
+
+                                if(svgTooltipHeight > 400){
+                                        $("#toolTip5").css("top","");
+                                        $("#toolTip5").css("bottom","10px");
+                                }  
+
+                                if(windowWidth > 1500 ){
+
+                                        $("#toolTip5").css("top",80+"px");
+                                        $("#toolTip5").css("left",windowWidth*.55+"px");
+                                
+                                }
+
+                                // DATOS 
+
+                                var data = arr.map(function(item) {
+                                        return {
+                                                key: item.key,
+                                                "por1": item.por1,      
+                                                "cant": item.CantEntfinal,
+                                                "porRetrasado": item.porDifEntrtegadoSolicitado
+                                        };
+                                        }); 
+                                
+                               
+
+                                var svgTooltipWidth=650;
+                        
+                                var columns = [
+                                        { key: "key", header: agrupador, sortable: true, width: "100px" },
+                                        { key: "por1", header: "Fill Rate", sortable: true, width: "180px" },    
+                                        { key: "cant", header: "Volumen Entregado", sortable: true, width: "180px" },
+                                        { key: "porRetrasado", header: "Retrasado (%)", sortable: true, width: "180px" },
+                                        ];
+                        
+                               
+
+                                // DEFINE VISITORS PARA CADA COLUMNA   
+        
+                                var columnVisitors = {
+                                        key: function(value,i) {
+
+                                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','${catlog}','${entity.key}')">${dataManager.getNameFromIdFromCatlog(value , catlog)}
+
+                                        </div>`;
+                                        },    
+                                        por1: function(value,i) {
+
+                                        var p1 = arr[i].por1;  
+                                        var p2 =  arr[i].por2;  
+                                        var p3 =  arr[i].por3;  
+                                        var svgWidth = 150;  
+                                        var svgHeight = 15;               
+
+                                        var svgString = createBar(p1, p2, p3, svgWidth, svgHeight, p1+"%");
+
+                                        return '<div class="bar-container">' +svgString +'</div>';
+
+                                        },        
+                                        cant: function(value,i) {
+                                                var ancho=GetValorRangos( arr[i].CantEntfinal,1, maximo ,1, 180 );
+                                                var barValue = formatNumber(value);
+
+                                                return '<div class="bar-container">' +
+                                                '<span class="bar-value" style="width:80px">' + barValue + '</span>' +
+                                                '<svg width="90%" height="10"><rect class="bar-rect" width="' + ancho + '" height="10" style="fill: white;"></rect></svg>' +
+                                                '</div>';
+
+                                                
+                                        },
+                                        porRetrasado: function(value,i) {
+                                                var ancho=GetValorRangos( value*10000,1,maximo2*10000 ,1, 120 );
+
+                                                if(ancho > 120)
+                                                ancho=120
+                                                
+                                                return '<div class="bar-container">' +
+                                                '<span class="bar-value" style="width:80px;padding-left:20px;">' + Math.round(value*10000)/100 + '</span>' +
+                                                '<svg width="90%" height="10"><rect class="bar-rect" width="' + ancho + '" height="10" style="fill: white;"></rect></svg>' +
+                                                '</div>';                
+                                        }
+                                };
+
+                                // COLUMNAS CON TOTALES :
+
+                                var columnsWithTotals = ['por1','cant','porRetrasado']; 
+                                var totalsColumnVisitors = {
+                                                'por1': function(value) { 
+                                                        var v = ( entity.fillRate.fillRate)+"%";             
+                                                        return v; 
+                                                },
+                                                'cant': function(value) { 
+                                                        var v = formatNumber(value)+"TM";             
+                                                        return v; 
+                                                },
+                                                'porRetrasado': function(value) { 
+                                                        var v =  Math.round(value*10000)/100+"%";             
+                                                        return v; 
+                                                }
+                                                };
+
+                                
+                                
+                                // FORMATEA DIV :
+
+                                vix_tt_formatToolTip("#toolTip5","Fill Rate por "+agrupador+" (TM)",svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip5","FillRate"));
+
+                                // CREA TABLA USANDO DATOS
+                                
+                                vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip5", columnsWithTotals );        
+
+                                // Crea una barra inferior y pasa una funcion de exportacion de datos
+                                vix_tt_formatBottomBar("#toolTip5", function () {
+                                var dataToExport = formatDataForExport(data, columns);
+                                var filename = "exported_data";
+                                exportToExcel(dataToExport, filename);
+                                });
+                                
+                                // APLICA TRANSICIONES 
+                                
+                                vix_tt_transitionRectWidth("toolTip5"); 
+
+                                drawKpiExpert_VENTAS.sortRegistredWindows();
 
                     });
 
@@ -391,18 +608,14 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
      
                 }
 
-                for(var i=0; i < store.niveles.length; i++){    
-
-                        if(store.niveles[i].id.toString() == "0"){
-                                if(entity.key.toLowerCase()=="sacos"){
-                                        params+="&Presentacion=Sacos";
-                                }else if(entity.key.toLowerCase()=="granel"){
-                                        params+="&Presentacion=Granel";
-                                }
+                // Filtra en caso de haber seleccionado arañá de sacos o granel
+                if(String($("#nivel_cb").val()) == "0"){
+                        if(entity.key.toLowerCase()=="sacos"){
+                                params+="&Presentacion=Sacos";
+                        }else if(entity.key.toLowerCase()=="granel"){
+                                params+="&Presentacion=Granel";
                         }
-
                 }
-
            
                 //FILTRO DE MASIVO
                 if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
@@ -440,13 +653,13 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
 
                                 if(error){
                                         alert("Error API FillRate UN",error);
-                                        resolve();
+                                       
                                         return;
                                 }
 
                                 if(data.error){
                                         alert("Error API FillRate UN",data.error);
-                                        resolve();
+                                      
                                         return;
                                 }
 
@@ -677,15 +890,7 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                                 
                                 vix_tt_transitionRectWidth("toolTip4"); 
 
-                                if($("#toolTip3").css("visibility")=="visible" && $("#toolTip4").css("visibility")=="visible" )
-                                        vix_tt_distributeDivs(["#toolTip2","#toolTip3","#toolTip4"]);
-
-                                if($("#toolTip3").css("visibility")=="hidden" && $("#toolTip4").css("visibility")=="visible" )
-                                        vix_tt_distributeDivs(["#toolTip2","#toolTip4"]);
-
-                                if($("#toolTip3").css("visibility")=="visible" && $("#toolTip4").css("visibility")=="hidden" )
-                                        vix_tt_distributeDivs(["#toolTip2","#toolTip3"]);
-
+                                drawKpiExpert_VENTAS.sortRegistredWindows();
                         });
 
                 }

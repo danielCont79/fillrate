@@ -219,6 +219,12 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                   params+="&Estado="+entity.key;
                   continue;
               }
+
+              if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
+                params+="&UnidadNegocio="+entity.key;
+                continue;
+              }
+
               if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
 
                 var nombre=entity.key;
@@ -256,7 +262,17 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
 
               }
 
-        }            
+        }
+        
+        if(String($("#nivel_cb").val()) == "0"){
+
+          if(entity.key.toLowerCase()=="sacos"){
+                  params+="&Presentacion=Sacos";
+          }else if(entity.key.toLowerCase()=="granel"){
+                  params+="&Presentacion=Granel";
+          }
+
+        }
 
         //FILTRO DE MASIVO
         if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
@@ -290,13 +306,13 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                     
                     if(error){
                         alert("Error API Ventas por Holding",error);
-                        resolve();
+                       
                         return;
                     }
 
                     if(data.error){
                         alert("Error API Ventas por Holding",data.error);
-                        resolve();
+                       
                         return;
                     }
 
@@ -411,7 +427,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                           
                             var columnVisitors = {
                               key: function(value) {
-                                  return `<div class="key-selector" onclick=" backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_cliente_estado','${entity.key}')">${dataManager.getNameFromIdFromCatlog(value , catlog)}
+                                  return `<div class="key-selector" onclick=" backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','${catlog}','${entity.key}')">${dataManager.getNameFromIdFromCatlog(value , catlog)}
                                   </div>`;
                                 },
                           
@@ -577,6 +593,14 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
                     
             }    
 
+            if(String($("#nivel_cb").val()) == "0"){
+              if(entity.key.toLowerCase()=="sacos"){
+                      params+="&Presentacion=Sacos";
+              }else if(entity.key.toLowerCase()=="granel"){
+                      params+="&Presentacion=Granel";
+              }
+            }
+
             var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
             console.log(URL);
 
@@ -594,13 +618,13 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
                         
                         if(error){
                             alert("Error API Ventas por UNs",error);
-                            resolve();
+                            
                             return;
                         }
 
                         if(data.error){
                             alert("Error API Ventas por UNs",data.error);
-                            resolve();
+                            
                             return;
                         }
 
@@ -897,6 +921,8 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
                     
             }
 
+           
+
             //ID de entidad
             params+="&idSpider="+entity.key;
 
@@ -917,13 +943,13 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_porDia=function(entity, dateInit, dateEnd
 
                           if(error){
                             alert("Error API Ventas por Día",error);
-                            resolve();
+                           
                             return;
                           }
 
                           if(data.error){
                               alert("Error API Ventas por Día",data.error);
-                              resolve();
+                              
                               return;
                           }
 
