@@ -442,12 +442,17 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                                   return vix_tt_formatNumber(value) ;
                               },
                               DifP: function(value){
+
+                                if(value.toString()=="NaN")
+                                value=0;
                             
                                 if(value<0)
                                   value=0;
                       
                                 if(value > 150 && value!=Infinity)
-                                  value=150;          
+                                  value=150;   
+                                
+                                  
                       
                                 if(value!=Infinity){
                                   var barWidth = value*.66 + '%';
