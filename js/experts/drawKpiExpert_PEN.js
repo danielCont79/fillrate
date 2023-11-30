@@ -5,9 +5,13 @@ kpiExpert_PENDIENTES.eraseChart=function(){
     d3.select("#svgTooltip").selectAll(".prodDetail").data([]).exit().remove();   
     d3.select("#svgTooltip3").selectAll(".penDetail").data([]).exit().remove();
     d3.select("#svgTooltip4").selectAll(".penDetail").data([]).exit().remove();
+
     $("#toolTip2").css("visibility","hidden");
     $("#toolTip3").css("visibility","hidden");
     $("#toolTip4").css("visibility","hidden");
+    $("#toolTip5").css("visibility","hidden");
+    $("#toolTip6").css("visibility","hidden");
+    $("#toolTip7").css("visibility","hidden");
 
 }
 
@@ -18,15 +22,637 @@ kpiExpert_PENDIENTES.DrawTooltipDetail=function(entity){
     d3.select("#svgTooltip3").selectAll(".penDetail").data([]).exit().remove();
     d3.select("#svgTooltip4").selectAll(".penDetail").data([]).exit().remove();
 
-    kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo(entity);  
+    $("#toolTip2").css("visibility","hidden");
+    $("#toolTip3").css("visibility","hidden");
+    $("#toolTip4").css("visibility","hidden");
+    $("#toolTip5").css("visibility","hidden");
+    $("#toolTip6").css("visibility","hidden");
+    $("#toolTip7").css("visibility","hidden");
+
+    kpiExpert_PENDIENTES.registredWindows=[];
+
+    kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo(entity);
+    kpiExpert_FR.registredWindows.push("#toolTip2");
+
     kpiExpert_PENDIENTES.DrawTooltipDetail_Dia(entity);
-    kpiExpert_PENDIENTES.DrawTooltipDetail_Estado(entity);  
+    kpiExpert_FR.registredWindows.push("#toolTip3");
+
+
+    //Ventanas segun nivel de lectura:
+    
+    if($("#nivel_cb").val() < 3){ // Nacional o regiones
+        kpiExpert_PENDIENTES.registredWindows.push("toolTip4");
+        kpiExpert_PENDIENTES.DrawTooltipDetail_Estado(entity);
+    }
+
+    if($("#nivel_cb").val() ==3 || $("#nivel_cb").val() ==4 ){ // estado o gerencia 
+        kpiExpert_PENDIENTES.registredWindows.push("#toolTip6");
+        kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr(entity,"UnidadNegocio","cat_un");
+    }
+
+    if($("#nivel_cb").val() == 3 ){// estado 
+        kpiExpert_PENDIENTES.registredWindows.push("#toolTip7");
+        kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(entity,"Holding","cat_cliente_estado");
+    }
+
+    if($("#nivel_cb").val() == 5  ){//  UN 
+        kpiExpert_PENDIENTES.registredWindows.push("#toolTip7");
+            kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(entity,"Holding","cat_cliente_estado");
+    }
+
+    if($("#nivel_cb").val() == 7 ){// ZT debe ver holding
+        kpiExpert_PENDIENTES.registredWindows.push("#toolTip7");
+        kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(entity,"Holding","cat_cliente_estado");
+    }
+
+    if($("#nivel_cb").val() == 6 ){// Holding debe ver sucrusal
+        kpiExpert_PENDIENTES.registredWindows.push("#toolTip7");
+        kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(entity,"Obra","cat_sucursal_estado");
+    }
+
+    if($("#nivel_cb").val() == 8 ){// Sucrusal-Obra debe ver frente
+        kpiExpert_PENDIENTES.registredWindows.push("#toolTip7");
+            kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(entity,"Frente","cat_frente");
+    }
+
+    //********************************************************************** */   
+
+
+   
 
     opacidadCesium=30;
       $("#cesiumContainer").css("opacity",opacidadCesium/100); 
 
-
+    vix_tt_distributeDivs(["#toolTip2","#toolTip3"]);
    
+
+}
+
+kpiExpert_PENDIENTES.registredWindows=[];
+kpiExpert_PENDIENTES.sortRegistredWindows=function(){
+
+  vix_tt_distributeDivs(kpiExpert_PENDIENTES.registredWindows); 
+
+}
+
+kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){  
+
+    $("#cargando").css("visibility","visible");
+
+    var serviceName;
+    var apiURL;
+    var agrupador=agrupador;    
+  
+    for(var i=0; i < store.apiDataSources.length; i++){
+          
+        if(store.apiDataSources[i].varName=="pendientes"){
+           
+            serviceName=store.apiDataSources[i].serviceName;
+            apiURL=store.apiDataSources[i].apiURL;
+        }
+
+    }
+
+    if(serviceName && apiURL){
+
+        var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
+        var dateEnd_=dateEnd.getFullYear()+"-"+String(Number(dateEnd.getMonth())+1)+"-"+dateEnd.getDate();
+       
+        // FILTROS****
+        var params="";
+
+        for(var j=0; j < store.catlogsForFilters.length; j++){ 
+    
+                if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Estado" ){ // Estado
+                    params+="&Estado="+entity.key;
+                    continue;
+                }
+
+                if(  4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Estado
+                    params+="&GerenciaUN="+entity.key;
+                    continue;
+                }
+
+                if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
+                        params+="&UnidadNegocio="+entity.key;
+                        continue;
+                }
+
+                if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
+  
+                  var nombre=entity.key;
+                  if(entity.key.indexOf("_")>-1){
+                    var nombrepSplit=entity.key.split("_");
+                    nombre=nombrepSplit[0];
+                  }
+  
+                  params+="&Holding="+nombre;
+                    continue;
+                }
+                if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZT" ){ // ZT
+                    params+="&ZT="+entity.key;
+                    continue;
+                } 
+                if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
+  
+                    var nombre=entity.key;
+                    if(entity.key.indexOf("_")>-1){
+                      var nombrepSplit=entity.key.split("_");
+                      nombre=nombrepSplit[0];
+                    }
+  
+                    params+="&Obra="+nombre;
+                    continue;
+                } 
+                if(  9 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="Frente"  ){ // Frente
+                  params+="&Frente="+entity.key;
+                  continue;
+                }  
+  
+                if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+  
+                    params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+  
+                }
+  
+         }
+         
+        if(String($("#nivel_cb").val()) == "0"){
+
+                if(entity.key.toLowerCase()=="sacos"){
+                        params+="&Presentacion=Sacos";
+                }else if(entity.key.toLowerCase()=="granel"){
+                        params+="&Presentacion=Granel";
+                }
+
+        }
+
+        //FILTRO DE MASIVO
+        if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
+
+                    params+="&masivos=Todos";               
+
+        }else if($("#masivos_cb").val() == "SinMasivos"){
+
+                    params+="&masivos=Sin Masivos"; 
+
+        }else if($("#masivos_cb").val() == "SoloMasivos"){
+
+                    params+="&masivos=Solo Masivos"; 
+                    
+        }
+
+        console.log("params",params);
+
+        var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+        console.log(URL);
+
+        if(URL.indexOf("undefined" < 0)){
+
+            dataLoader.AddLoadingTitle("Pendientes por "+agrupador);
+
+            d3.json(URL, function (error, data) {
+
+                $("#cargando").css("visibility","hidden");
+
+                dataLoader.DeleteLoadingTitle("Pendientes por "+agrupador); 
+
+                dataLoader.HideLoadings();
+
+                if(error){
+                        alert("Error API Pendientes por "+agrupador,error);                     
+                        return;
+                }
+
+                if(data.error){
+                        alert("Error API Pendientes por "+agrupador,data.error);                      
+                        return;
+                }
+
+                console.log("Pendientes por "+agrupador,data.recordset);
+
+                var maximo1=0;
+                var maximo2=0;
+
+                var arrTemp=[];
+
+                var arr=d3.nest()
+                    .key(function(d) { return d.Agrupador; })
+                    .entries(data.recordset);  
+
+                for(var i=0; i < arr.length; i++ ){
+
+                    arr[i].Libre_Pendiente_Hoy=0;
+                    arr[i].Libre_Retrasado=0;
+
+                    for(var j=0; j < arr[i].values.length; j++ ){        
+                    
+                        arr[i].Libre_Pendiente_Hoy+=Number(arr[i].values[j].Libre_Pendiente_Hoy);
+                        arr[i].Libre_Retrasado+=Number(arr[i].values[j].Libre_Retrasado);
+            
+                    }
+
+                    if(maximo1 < arr[i].Libre_Pendiente_Hoy){
+                        maximo1 = arr[i].Libre_Pendiente_Hoy;
+                    }
+            
+                    if(maximo2 < arr[i].Libre_Retrasado){
+                        maximo2= arr[i].Libre_Retrasado;
+                    }
+
+                }
+
+                arr = arr.sort((a, b) => b.Libre_Pendiente_Hoy - a.Libre_Pendiente_Hoy);    
+                //arr.reverse();
+
+                var altura=30;
+                var caso=0;
+
+                var svgTooltipHeight=(arr.length*altura*.5 );
+
+                if(svgTooltipHeight<80)
+                    svgTooltipHeight=80;
+
+                if(svgTooltipHeight>windowHeight*.7)
+                    svgTooltipHeight=windowHeight*.7;
+
+                var svgTooltipWidth=430;
+                var marginLeft=svgTooltipWidth*.2;
+                var tamanioFuente=altura*.4;
+                var marginTop=35;                                    
+
+                $("#toolTip6").css("visibility","visible");  
+                $("#toolTip6").css("inset","");      
+                $("#toolTip6").css("left",radio*.7+"px");
+                $("#toolTip6").css("top","50px");
+
+                if(svgTooltipHeight > 400){
+                    $("#toolTip6").css("top","");
+                    $("#toolTip6").css("bottom","10px");
+                }                               
+
+                // DATOS 
+                var data = arr.map(function(item) {
+                    return {
+                    key: item.key,
+                    "Libre_Pendiente_Hoy": item.Libre_Pendiente_Hoy,
+                    "Libre_Retrasado": item.Libre_Retrasado,
+                   
+                    };
+                    });
+
+
+                // DEFINE COLUMNAS      
+                var columns = [
+                    { key: "key", header:agrupador, sortable: true, width: "130px" },
+                    { key: "Libre_Pendiente_Hoy", header: "Libre Pendiente Hoy", sortable: true, width: "160px" },
+                    { key: "Libre_Retrasado", header: "Libre Retrasado", sortable: true, width: "160px" },
+                  
+                ];
+
+                // DEFINE VISITORS PARA CADA COLUMNA   
+                var columnVisitors = {
+                    key: function(value) {
+                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','${catlog}','${entity.key}')">${dataManager.getNameFromIdFromCatlog(value , catlog)}
+                        </div>`;
+                    },                                   
+                   
+                    Libre_Pendiente_Hoy: function(value){
+                
+                        var barWidth = (value/maximo1)*100 + '%';
+                        var barValue = vix_tt_formatNumber(value)+'';
+                    
+                        return '<div class="bar-container">' +
+                        '<span class="bar-value">' + barValue + '</span>' + '<svg width="90%" height="10">'  
+                        + '<rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: #0096E3;"></rect></svg>' +        
+                        '</div>';
+                    },
+                    Libre_Retrasado: function(value){
+                
+                        var barWidth = (value/maximo1)*100 + '%';
+                        var barValue = vix_tt_formatNumber(value)+'';
+                
+                    return '<div class="bar-container">' +
+                    '<span class="bar-value">' + barValue + '</span>' + '<svg width="90%" height="10">'  
+                    + '<rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: #0096E3;"></rect></svg>' +        
+                    '</div>';
+                    }
+                };
+
+                // FORMATEA DIV :
+                vix_tt_formatToolTip("#toolTip6","Pendientes por "+agrupador+" de "+dataManager.getNameFromId(entity.key)+" (TM)",480,svgTooltipHeight+110,dataManager.GetTooltipInfoData("toolTip6","Pendientes"));
+
+                // COLUMNAS CON TOTALES :
+                var columnsWithTotals = ['Libre_Pendiente_Hoy','Libre_Retrasado']; 
+                var totalsColumnVisitors = {
+                            'Libre_Pendiente_Hoy': function(value) { 
+                            return vix_tt_formatNumber(value) ;
+                            },
+                            'Libre_Retrasado': function(value) { 
+                            return vix_tt_formatNumber(value) ; 
+                            }
+                            };  
+
+               // CREA TABLA USANDO DATOS
+
+                vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip6", columnsWithTotals );        
+
+                // Crea una barra inferior y pasa una funcion de exportacion de datos
+                    vix_tt_formatBottomBar("#toolTip6", function () {
+                    var dataToExport = formatDataForExport(data, columns);
+                    var filename = "exported_data";
+                    exportToExcel(dataToExport, filename);
+                });
+                // APLICA TRANSICIONES
+                vix_tt_transitionRectWidth("toolTip6");
+
+                 // DISTRIBUYE 
+                 drawKpiExpert_VENTAS.sortRegistredWindows(); 
+
+            });
+
+        }
+    }
+
+}
+
+
+kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,catlog){  
+
+    $("#cargando").css("visibility","visible");
+
+    var serviceName;
+    var apiURL;
+    var agrupador=agrupador;    
+  
+    for(var i=0; i < store.apiDataSources.length; i++){
+          
+        if(store.apiDataSources[i].varName=="pendientes"){
+           
+            serviceName=store.apiDataSources[i].serviceName;
+            apiURL=store.apiDataSources[i].apiURL;
+        }
+
+    }
+
+    if(serviceName && apiURL){
+
+        var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
+        var dateEnd_=dateEnd.getFullYear()+"-"+String(Number(dateEnd.getMonth())+1)+"-"+dateEnd.getDate();
+       
+        // FILTROS****
+        var params="";
+
+        for(var j=0; j < store.catlogsForFilters.length; j++){ 
+    
+                if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Estado" ){ // Estado
+                    params+="&Estado="+entity.key;
+                    continue;
+                }
+
+                if(  4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Estado
+                    params+="&GerenciaUN="+entity.key;
+                    continue;
+                }
+
+                if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
+                        params+="&UnidadNegocio="+entity.key;
+                        continue;
+                }
+
+                if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
+  
+                  var nombre=entity.key;
+                  if(entity.key.indexOf("_")>-1){
+                    var nombrepSplit=entity.key.split("_");
+                    nombre=nombrepSplit[0];
+                  }
+  
+                  params+="&Holding="+nombre;
+                    continue;
+                }
+                if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZT" ){ // ZT
+                    params+="&ZT="+entity.key;
+                    continue;
+                } 
+                if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
+  
+                    var nombre=entity.key;
+                    if(entity.key.indexOf("_")>-1){
+                      var nombrepSplit=entity.key.split("_");
+                      nombre=nombrepSplit[0];
+                    }
+  
+                    params+="&Obra="+nombre;
+                    continue;
+                } 
+                if(  9 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="Frente"  ){ // Frente
+                  params+="&Frente="+entity.key;
+                  continue;
+                }  
+  
+                if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+  
+                    params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+  
+                }
+  
+         }
+         
+        if(String($("#nivel_cb").val()) == "0"){
+
+                if(entity.key.toLowerCase()=="sacos"){
+                        params+="&Presentacion=Sacos";
+                }else if(entity.key.toLowerCase()=="granel"){
+                        params+="&Presentacion=Granel";
+                }
+
+        }
+
+        //FILTRO DE MASIVO
+        if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
+
+                    params+="&masivos=Todos";               
+
+        }else if($("#masivos_cb").val() == "SinMasivos"){
+
+                    params+="&masivos=Sin Masivos"; 
+
+        }else if($("#masivos_cb").val() == "SoloMasivos"){
+
+                    params+="&masivos=Solo Masivos"; 
+                    
+        }
+
+        var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+        console.log(URL);
+
+        if(URL.indexOf("undefined" < 0)){
+
+            dataLoader.AddLoadingTitle("Pendientes por "+agrupador);
+
+            d3.json(URL, function (error, data) {
+
+                $("#cargando").css("visibility","hidden");
+
+                dataLoader.DeleteLoadingTitle("Pendientes por "+agrupador); 
+
+                dataLoader.HideLoadings();
+
+                if(error){
+                        alert("Error API Pendientes por "+agrupador,error);                     
+                        return;
+                }
+
+                if(data.error){
+                        alert("Error API Pendientes por "+agrupador,data.error);                      
+                        return;
+                }
+
+                console.log("Pendientes por "+agrupador,data.recordset);
+
+                var maximo1=0;
+                var maximo2=0;
+
+                var arrTemp=[];
+
+                var arr=d3.nest()
+                    .key(function(d) { return d.Agrupador; })
+                    .entries(data.recordset);  
+
+                for(var i=0; i < arr.length; i++ ){
+
+                    arr[i].Libre_Pendiente_Hoy=0;
+                    arr[i].Libre_Retrasado=0;
+
+                    for(var j=0; j < arr[i].values.length; j++ ){        
+                    
+                        arr[i].Libre_Pendiente_Hoy+=Number(arr[i].values[j].Libre_Pendiente_Hoy);
+                        arr[i].Libre_Retrasado+=Number(arr[i].values[j].Libre_Retrasado);
+            
+                    }
+
+                    if(maximo1 < arr[i].Libre_Pendiente_Hoy){
+                        maximo1 = arr[i].Libre_Pendiente_Hoy;
+                    }
+            
+                    if(maximo2 < arr[i].Libre_Retrasado){
+                        maximo2= arr[i].Libre_Retrasado;
+                    }
+
+                }
+
+                arr = arr.sort((a, b) => b.Libre_Pendiente_Hoy - a.Libre_Pendiente_Hoy);    
+                //arr.reverse();
+
+                var altura=30;
+                var caso=0;
+
+                var svgTooltipHeight=(arr.length*altura*.5 );
+
+                if(svgTooltipHeight<80)
+                    svgTooltipHeight=80;
+
+                if(svgTooltipHeight>windowHeight*.7)
+                    svgTooltipHeight=windowHeight*.7;
+
+                var svgTooltipWidth=430;
+                var marginLeft=svgTooltipWidth*.2;
+                var tamanioFuente=altura*.4;
+                var marginTop=35;                                    
+
+                $("#toolTip7").css("visibility","visible");  
+                $("#toolTip7").css("inset","");      
+                $("#toolTip7").css("left",radio*.7+"px");
+                $("#toolTip7").css("top","50px");
+
+                if(svgTooltipHeight > 400){
+                    $("#toolTip7").css("top","");
+                    $("#toolTip7").css("bottom","10px");
+                }                               
+
+                // DATOS 
+                var data = arr.map(function(item) {
+                    return {
+                    key: item.key,
+                    "Libre_Pendiente_Hoy": item.Libre_Pendiente_Hoy,
+                    "Libre_Retrasado": item.Libre_Retrasado,
+                   
+                    };
+                    });
+
+
+                // DEFINE COLUMNAS      
+                var columns = [
+                    { key: "key", header:agrupador, sortable: true, width: "130px" },
+                    { key: "Libre_Pendiente_Hoy", header: "Libre Pendiente Hoy", sortable: true, width: "160px" },
+                    { key: "Libre_Retrasado", header: "Libre Retrasado", sortable: true, width: "160px" },
+                  
+                ];
+
+                // DEFINE VISITORS PARA CADA COLUMNA   
+                var columnVisitors = {
+                    key: function(value) {
+                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','${catlog}','${entity.key}')">${dataManager.getNameFromIdFromCatlog(value , catlog)}
+                        </div>`;
+                    },                                   
+                   
+                    Libre_Pendiente_Hoy: function(value){
+                
+                        var barWidth = (value/maximo1)*100 + '%';
+                        var barValue = vix_tt_formatNumber(value)+'';
+                    
+                        return '<div class="bar-container">' +
+                        '<span class="bar-value">' + barValue + '</span>' + '<svg width="90%" height="10">'  
+                        + '<rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: #0096E3;"></rect></svg>' +        
+                        '</div>';
+                    },
+                    Libre_Retrasado: function(value){
+                
+                        var barWidth = (value/maximo1)*100 + '%';
+                        var barValue = vix_tt_formatNumber(value)+'';
+                
+                    return '<div class="bar-container">' +
+                    '<span class="bar-value">' + barValue + '</span>' + '<svg width="90%" height="10">'  
+                    + '<rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: #0096E3;"></rect></svg>' +        
+                    '</div>';
+                    }
+                };
+
+                // FORMATEA DIV :
+                vix_tt_formatToolTip("#toolTip7","Pendientes por "+agrupador+" de "+dataManager.getNameFromId(entity.key)+" (TM)",480,svgTooltipHeight+110,dataManager.GetTooltipInfoData("toolTip7","Pendientes"));
+
+                // COLUMNAS CON TOTALES :
+                var columnsWithTotals = ['Libre_Pendiente_Hoy','Libre_Retrasado']; 
+                var totalsColumnVisitors = {
+                            'Libre_Pendiente_Hoy': function(value) { 
+                            return vix_tt_formatNumber(value) ;
+                            },
+                            'Libre_Retrasado': function(value) { 
+                            return vix_tt_formatNumber(value) ; 
+                            }
+                            };  
+
+               // CREA TABLA USANDO DATOS
+
+                vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip7", columnsWithTotals );        
+
+                // Crea una barra inferior y pasa una funcion de exportacion de datos
+                    vix_tt_formatBottomBar("#toolTip7", function () {
+                    var dataToExport = formatDataForExport(data, columns);
+                    var filename = "exported_data";
+                    exportToExcel(dataToExport, filename);
+                });
+                // APLICA TRANSICIONES
+                vix_tt_transitionRectWidth("toolTip7");
+
+                 // DISTRIBUYE 
+                 drawKpiExpert_VENTAS.sortRegistredWindows(); 
+
+            });
+
+        }
+    }
 
 }
 

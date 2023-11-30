@@ -198,7 +198,7 @@ kpiExpert_FR.DrawTooltipDetail=function(entity){
 kpiExpert_FR.registredWindows=[];
 kpiExpert_FR.sortRegistredWindows=function(){
 
-  vix_tt_distributeDivs(kpiExpert_FR.registredWindows); 
+  vix_tt_distributeDivs(kpiExpert_FR.registredWindows);
 
 }
 
@@ -317,13 +317,13 @@ kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){
                                 dataLoader.HideLoadings();
 
                                 if(error){
-                                        alert("Error API FR por Holding",error);
+                                        alert("Error API FR por "+agrupador,error);
                                      
                                         return;
                                 }
                 
                                 if(data.error){
-                                        alert("Error API FR por Holding",data.error);
+                                        alert("Error API FR por "+agrupador,data.error);
                                       
                                         return;
                                 }
