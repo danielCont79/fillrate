@@ -94,6 +94,7 @@ Stage.initStage=function(resolve, reject){
 		    {
 		    	$("#toolTip").css("visibility","hidden");
 				
+				if($('.loginContainer').css('visibility')!="visible" &&   $('#toolTipLoader').css('visibility')!="visible")
 				radar.CleanWindows();
 
 				$('#Controls').css("visibility","hidden");
@@ -125,7 +126,8 @@ Stage.initStage=function(resolve, reject){
 					{
 						$("#toolTip").css("visibility","hidden");
 						
-						radar.CleanWindows();
+						if($('.loginContainer').css('visibility')!="visible" &&   $('#toolTipLoader').css('visibility')!="visible")
+							radar.CleanWindows();
 		
 						$('#Controls').css("visibility","hidden");
 						$('#Controls2').css("visibility","hidden");
@@ -165,7 +167,8 @@ Stage.initStage=function(resolve, reject){
 		    }else
 		    {
 		    	$("#toolTip").css("visibility","hidden");
-				
+
+				if($('.loginContainer').css('visibility')!="visible" &&  $('#toolTipLoader').css('visibility')!="visible")
 				radar.CleanWindows();
 
 				$('#Controls').css("visibility","hidden");
@@ -517,6 +520,7 @@ Stage.ToogleCalendar=function(val){
 	if(val){
 
 		if(val=="on"){
+			radar.CleanWindows();
 
 			$('.loginContainer').css('visibility','visible');
 			$('#Controls').css('visibility','hidden');
@@ -533,6 +537,8 @@ Stage.ToogleCalendar=function(val){
 		calendarVisible=!calendarVisible;
 
 		if(calendarVisible){
+
+			radar.CleanWindows();
 
 			$('.loginContainer').css('visibility','visible');
 			$('#Controls').css('visibility','hidden');

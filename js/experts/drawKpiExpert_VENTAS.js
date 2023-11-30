@@ -99,6 +99,7 @@ drawKpiExpert_VENTAS.eraseChart=function(){
     $("#toolTip2").css("visibility","hidden");
     $("#toolTip3").css("visibility","hidden");
     $("#toolTip4").css("visibility","hidden");
+    $("#toolTip4").html("");
     $("#toolTip5").css("visibility","hidden");
     $("#toolTip6").css("visibility","hidden");
 
