@@ -399,7 +399,7 @@ kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){
                                         return b.CantEntfinal - a.CantEntfinal;                                   
                                 }); 
                 
-                                arr=arr.reverse();
+                                //arr=arr.reverse();
 
                                 var altura=30;
                                 var caso=0;
@@ -734,7 +734,7 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                                         return b.CantEntfinal - a.CantEntfinal;                                   
                                 }); 
                 
-                                arr=arr.reverse();
+                                //arr=arr.reverse();
 
                                 var altura=30;
                                 var caso=0;
