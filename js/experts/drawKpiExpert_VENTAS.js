@@ -196,7 +196,6 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
   var agrupador=agrupador;
 
 
-
   for(var i=0; i < store.apiDataSources.length; i++){          
     if(store.apiDataSources[i].varName=="ventas"){            
             serviceName=store.apiDataSources[i].serviceName;
@@ -214,7 +213,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
         var params="";
       
         for(var j=0; j < store.catlogsForFilters.length; j++){ 
-          console.log( store.catlogsForFilters[j].storeProcedureField);
+
             
               if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Estado" ){ // Estado
                   params+="&Estado="+entity.key;
@@ -301,7 +300,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                         return;
                     }
 
-                    console.log("ventas por Holding",data.recordset);
+                    console.log("ventas por "+agrupador,data.recordset);
 
                     var maximo=0; 
                     var maximoVolumen=0; 

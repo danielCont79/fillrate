@@ -122,8 +122,8 @@ kpiExpert_FR.eraseChart=function(){
 
         $("#toolTip2").css("visibility","hidden");
         $("#toolTip3").css("visibility","hidden");
-        
-        
+        $("#toolTip4").css("visibility","hidden");
+        $("#toolTip5").css("visibility","hidden");
        
 }
 
@@ -135,33 +135,209 @@ kpiExpert_FR.DrawTooltipDetail=function(entity){
         d3.select("#svgTooltip").selectAll(".frDetail").data([]).exit().remove();
         d3.select("#svgTooltip3").selectAll(".frDetail").data([]).exit().remove();
         d3.select("#svgTooltip4").selectAll(".frDetail").data([]).exit().remove();
+
+        $("#toolTip2").css("visibility","hidden");
+        $("#toolTip3").css("visibility","hidden");
+        $("#toolTip4").css("visibility","hidden");
+        $("#toolTip5").css("visibility","hidden");
+
+        kpiExpert_FR.registredWindows=[];
+
+        kpiExpert_FR.DrawTooltipDetail_ByDay(entity);
+        kpiExpert_FR.registredWindows.push("toolTip2");
+
+        //DrawTooltipDetail_Estado
+        //DrawTooltipDetail_UN
+
+        //Ventanas segun nivel de lectura:
+    
+        if($("#nivel_cb").val() < 3){ // Nacional o regiones
+                kpiExpert_FR.registredWindows.push("toolTip3");
+                kpiExpert_FR.DrawTooltipDetail_Estado(entity);
+        }
         
-
-        if( Number($("#nivel_cb").val()) == 0 ){
-
-                kpiExpert_FR.DrawTooltipDetail_Estado(entity);
-                kpiExpert_FR.DrawTooltipDetail_ByDay(entity);   
-
-        }else if( Number($("#nivel_cb").val()) > 0 && Number($("#nivel_cb").val()) < 3  ){
-
-                kpiExpert_FR.DrawTooltipDetail_Estado(entity);
+        if($("#nivel_cb").val() ==3 || $("#nivel_cb").val() ==4 ){ // estado o gerencia 
+                kpiExpert_FR.registredWindows.push("#toolTip3");
                 kpiExpert_FR.DrawTooltipDetail_UN(entity);
-                kpiExpert_FR.DrawTooltipDetail_ByDay(entity);
-                
-        }else if( Number($("#nivel_cb").val()) > 2   ){
-
-                kpiExpert_FR.DrawTooltipDetail_Estado(entity);
-
-                kpiExpert_FR.DrawTooltipDetail_UN(entity);
-                kpiExpert_FR.DrawTooltipDetail_ByDay(entity);
-
-        }    
+        }
+        
+        if($("#nivel_cb").val() == 3 ){// estado 
+                drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
+                drawKpiExpert_VENTAS.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
+        }
+        
+        if($("#nivel_cb").val() == 5  ){//  UN 
+                drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
+                drawKpiExpert_VENTAS.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
+        }
+        
+        if($("#nivel_cb").val() == 7 ){// ZT debe ver holding
+                drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
+                drawKpiExpert_VENTAS.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
+        }
+        
+        if($("#nivel_cb").val() == 6 ){// Holding debe ver sucrusal
+                drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
+                drawKpiExpert_VENTAS.DrawTooltipDetail_GenericFr(entity,"Obra","cat_sucursal_estado");
+        }
+        
+        if($("#nivel_cb").val() == 8 ){// Sucrusal-Obra debe ver frente
+                drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
+                drawKpiExpert_VENTAS.DrawTooltipDetail_GenericFr(entity,"Frente","cat_frente");
+        }
+        
+        //********************************************************************** */   
 
         opacidadCesium=30;
-        $("#cesiumContainer").css("opacity",opacidadCesium/100);   
+        $("#cesiumContainer").css("opacity",opacidadCesium/100);
+
         vix_tt_distributeDivs(["#toolTip2","#toolTip3"]);              
 
 }
+
+kpiExpert_FR.registredWindows=[];
+kpiExpert_FR.sortRegistredWindows=function(){
+
+  vix_tt_distributeDivs(kpiExpert_FR.registredWindows); 
+
+}
+
+kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){  
+
+        $("#cargando").css("visibility","visible");
+
+        var serviceName;
+        var apiURL;
+        var agrupador=agrupador;
+        
+      
+        for(var i=0; i < store.apiDataSources.length; i++){          
+          if(store.apiDataSources[i].varName=="fillRate"){            
+                  serviceName=store.apiDataSources[i].serviceName;
+                  apiURL=store.apiDataSources[i].apiURL;
+          }
+        }
+
+        if(serviceName && apiURL){
+
+                var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
+                var dateEnd_=dateEnd.getFullYear()+"-"+String(Number(dateEnd.getMonth())+1)+"-"+dateEnd.getDate();
+                
+                // FILTROS****
+                var params="";
+
+                for(var j=0; j < store.catlogsForFilters.length; j++){ 
+
+            
+                        if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Estado" ){ // Estado
+                            params+="&Estado="+entity.key;
+                            continue;
+                        }
+                        if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
+          
+                          var nombre=entity.key;
+                          if(entity.key.indexOf("_")>-1){
+                            var nombrepSplit=entity.key.split("_");
+                            nombre=nombrepSplit[0];
+                          }
+          
+                          params+="&Holding="+nombre;
+                            continue;
+                        }
+                        if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZT" ){ // ZT
+                            params+="&ZT="+entity.key;
+                            continue;
+                        } 
+                        if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
+          
+                            var nombre=entity.key;
+                            if(entity.key.indexOf("_")>-1){
+                              var nombrepSplit=entity.key.split("_");
+                              nombre=nombrepSplit[0];
+                            }
+          
+                            params+="&Obra="+nombre;
+                            continue;
+                        } 
+                        if(  9 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="Frente"  ){ // Frente
+                          params+="&Frente="+entity.key;
+                          continue;
+                        }  
+          
+                        if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+          
+                            params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+          
+                        }
+          
+                 }
+                 
+                for(var i=0; i < store.niveles.length; i++){    
+
+                        if(store.niveles[i].id.toString() == "0"){
+                                if(entity.key.toLowerCase()=="sacos"){
+                                        params+="&Presentacion=Sacos";
+                                }else if(entity.key.toLowerCase()=="granel"){
+                                        params+="&Presentacion=Granel";
+                                }
+                        }
+
+                }
+
+                //FILTRO DE MASIVO
+                if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
+
+                params+="&masivos=Todos";               
+
+                }else if($("#masivos_cb").val() == "SinMasivos"){
+
+                params+="&masivos=Sin Masivos"; 
+
+                }else if($("#masivos_cb").val() == "SoloMasivos"){
+
+                params+="&masivos=Solo Masivos"; 
+                
+                }
+
+                var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+                console.log(URL);
+        
+                if(URL.indexOf("undefined" < 0)){
+        
+                dataLoader.AddLoadingTitle("FR por "+agrupador);
+        
+                    d3.json(URL, function (error, data) {
+        
+                                $("#cargando").css("visibility","hidden");
+
+                                dataLoader.DeleteLoadingTitle("FR por "+agrupador); 
+
+                                dataLoader.HideLoadings();
+
+                                if(error){
+                                        alert("Error API Ventas por Holding",error);
+                                        resolve();
+                                        return;
+                                    }
+                
+                                    if(data.error){
+                                        alert("Error API Ventas por Holding",data.error);
+                                        resolve();
+                                        return;
+                                    }
+                
+                                    console.log("FR por "+agrupador,data.recordset);
+
+
+                    });
+
+                }
+
+        }
+
+
+}
+
 
 kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){ 
 
@@ -215,29 +391,9 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
      
                 }
 
-                /*
-
-                //Incluye filtro de la entidad y el nivel en el que se encuentra
                 for(var i=0; i < store.niveles.length; i++){    
 
-                        if( store.niveles[i].id == $("#nivel_cb").val() && store.niveles[i].id.toString() != "0" ){
-                               
-                                var catlog_name=store.niveles[i].coordinatesSource;                               
-                                console.log("encuentra catalogo",catlog_name);
-                                for(var j=0; j < store.catlogsForFilters.length; j++){
-                                        if(store.catlogsForFilters[j].data == catlog_name){
-                                                console.log("encuentra parametro",store.catlogsForFilters[j].storeProcedureField);
-                                                var entityName=entity.key;
-                                                if(entityName.indexOf("_")>-1){
-                                                        var nameSplitted=entityName.split("_");
-                                                        entityName=nameSplitted[0];
-                                                }
-                                                params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+entityName;
-
-                                        }
-                                }                               
-
-                        }else if(store.niveles[i].id.toString() == "0"){
+                        if(store.niveles[i].id.toString() == "0"){
                                 if(entity.key.toLowerCase()=="sacos"){
                                         params+="&Presentacion=Sacos";
                                 }else if(entity.key.toLowerCase()=="granel"){
@@ -246,7 +402,6 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                         }
 
                 }
-                */
 
            
                 //FILTRO DE MASIVO
@@ -777,8 +932,7 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity,extraData){
         exportToExcel(dataToExport, filename);
         });
         
-        // APLICA TRANSICIONES 
-        
+        // APLICA TRANSICIONES         
         vix_tt_transitionRectWidth("toolTip3");     
 
 }               
