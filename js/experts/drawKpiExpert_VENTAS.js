@@ -216,17 +216,18 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
         for(var j=0; j < store.catlogsForFilters.length; j++){ 
 
             
-              if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Estado" ){ // Estado
-                  params+="&Estado="+entity.key;
-                  continue;
-              }
+              if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="EstadoZTDem" ){ // Estado
 
-              if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
-                params+="&UnidadNegocio="+entity.key;
+                params+="&EstadoZTDem="+entity.key;
                 continue;
               }
 
-              if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
+              if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
+                      params+="&vc50_UN_Tact="+entity.key;
+                      continue;
+              }
+
+              if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Cliente" ){ // Holding
 
                 var nombre=entity.key;
                 if(entity.key.indexOf("_")>-1){
@@ -234,11 +235,11 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                   nombre=nombrepSplit[0];
                 }
 
-                params+="&Holding="+nombre;
+                params+="&Cliente="+nombre;
                   continue;
               }
-              if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZT" ){ // ZT
-                  params+="&ZT="+entity.key;
+              if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Zona_de_Entrega" ){ // ZT
+                  params+="&Zona_de_Entrega="+entity.key;
                   continue;
               } 
               if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
@@ -262,7 +263,6 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                   params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
 
               }
-
         }
         
         if(String($("#nivel_cb").val()) == "0"){

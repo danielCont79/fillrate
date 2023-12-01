@@ -123,57 +123,53 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
 
         for(var j=0; j < store.catlogsForFilters.length; j++){ 
     
-                if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Estado" ){ // Estado
-                    params+="&Estado="+entity.key;
-                    continue;
+            if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="EstadoZTDem" ){ // Estado
+
+                params+="&EstadoZTDem="+entity.key;
+                continue;
+              }
+
+              if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
+                      params+="&vc50_UN_Tact="+entity.key;
+                      continue;
+              }
+
+              if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Cliente" ){ // Holding
+
+                var nombre=entity.key;
+                if(entity.key.indexOf("_")>-1){
+                  var nombrepSplit=entity.key.split("_");
+                  nombre=nombrepSplit[0];
                 }
 
-                if(  4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Estado
-                    params+="&GerenciaUN="+entity.key;
-                    continue;
-                }
+                params+="&Cliente="+nombre;
+                  continue;
+              }
+              if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Zona_de_Entrega" ){ // ZT
+                  params+="&Zona_de_Entrega="+entity.key;
+                  continue;
+              } 
+              if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
 
-                if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
-                        params+="&UnidadNegocio="+entity.key;
-                        continue;
-                }
-
-                if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
-  
                   var nombre=entity.key;
                   if(entity.key.indexOf("_")>-1){
                     var nombrepSplit=entity.key.split("_");
                     nombre=nombrepSplit[0];
                   }
-  
-                  params+="&Holding="+nombre;
-                    continue;
-                }
-                if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZT" ){ // ZT
-                    params+="&ZT="+entity.key;
-                    continue;
-                } 
-                if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
-  
-                    var nombre=entity.key;
-                    if(entity.key.indexOf("_")>-1){
-                      var nombrepSplit=entity.key.split("_");
-                      nombre=nombrepSplit[0];
-                    }
-  
-                    params+="&Obra="+nombre;
-                    continue;
-                } 
-                if(  9 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="Frente"  ){ // Frente
-                  params+="&Frente="+entity.key;
+
+                  params+="&Obra="+nombre;
                   continue;
-                }  
-  
-                if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
-  
-                    params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
-  
-                }
+              } 
+              if(  9 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="Frente"  ){ // Frente
+                params+="&Frente="+entity.key;
+                continue;
+              }  
+
+              if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+
+                  params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+
+              }
   
          }
          
@@ -405,57 +401,53 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,ca
 
         for(var j=0; j < store.catlogsForFilters.length; j++){ 
     
-                if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Estado" ){ // Estado
-                    params+="&Estado="+entity.key;
-                    continue;
+            if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="EstadoZTDem" ){ // Estado
+
+                params+="&EstadoZTDem="+entity.key;
+                continue;
+              }
+
+              if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
+                      params+="&vc50_UN_Tact="+entity.key;
+                      continue;
+              }
+
+              if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Cliente" ){ // Holding
+
+                var nombre=entity.key;
+                if(entity.key.indexOf("_")>-1){
+                  var nombrepSplit=entity.key.split("_");
+                  nombre=nombrepSplit[0];
                 }
 
-                if(  4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Estado
-                    params+="&GerenciaUN="+entity.key;
-                    continue;
-                }
+                params+="&Cliente="+nombre;
+                  continue;
+              }
+              if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Zona_de_Entrega" ){ // ZT
+                  params+="&Zona_de_Entrega="+entity.key;
+                  continue;
+              } 
+              if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
 
-                if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
-                        params+="&UnidadNegocio="+entity.key;
-                        continue;
-                }
-
-                if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
-  
                   var nombre=entity.key;
                   if(entity.key.indexOf("_")>-1){
                     var nombrepSplit=entity.key.split("_");
                     nombre=nombrepSplit[0];
                   }
-  
-                  params+="&Holding="+nombre;
-                    continue;
-                }
-                if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZT" ){ // ZT
-                    params+="&ZT="+entity.key;
-                    continue;
-                } 
-                if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
-  
-                    var nombre=entity.key;
-                    if(entity.key.indexOf("_")>-1){
-                      var nombrepSplit=entity.key.split("_");
-                      nombre=nombrepSplit[0];
-                    }
-  
-                    params+="&Obra="+nombre;
-                    continue;
-                } 
-                if(  9 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="Frente"  ){ // Frente
-                  params+="&Frente="+entity.key;
+
+                  params+="&Obra="+nombre;
                   continue;
-                }  
-  
-                if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
-  
-                    params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
-  
-                }
+              } 
+              if(  9 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="Frente"  ){ // Frente
+                params+="&Frente="+entity.key;
+                continue;
+              }  
+
+              if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+
+                  params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+
+              }
   
          }
          
