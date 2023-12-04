@@ -13,6 +13,7 @@ kpiExpert_ABAS.eraseChart=function(){
     $("#toolTip4").css("visibility","hidden");
     $("#toolTip5").css("visibility","hidden");
     $("#toolTip6").css("visibility","hidden");
+    $("#toolTip7").css("visibility","hidden");
 
 }
 
@@ -22,7 +23,14 @@ kpiExpert_ABAS.DrawTooltipDetail=function(entity,extraData){
 
   kpiExpert_ABAS.lastEntity=entity;
 
-    $("#toolTip").css("visibility","hidden");        
+    $("#toolTip").css("visibility","hidden");  
+    
+    $("#toolTip2").css("visibility","hidden");
+    $("#toolTip3").css("visibility","hidden");
+    $("#toolTip4").css("visibility","hidden");
+    $("#toolTip5").css("visibility","hidden");
+    $("#toolTip6").css("visibility","hidden");
+    $("#toolTip7").css("visibility","hidden");
     
     d3.select("#svgTooltip").selectAll(".abasDetail").data([]).exit().remove();
     d3.select("#svgTooltip3").selectAll(".abasDetail").data([]).exit().remove();
@@ -30,33 +38,49 @@ kpiExpert_ABAS.DrawTooltipDetail=function(entity,extraData){
     d3.select("#svgTooltip5").selectAll(".abasDetail").data([]).exit().remove();
     d3.select("#svgTooltip6").selectAll(".abasDetail").data([]).exit().remove();
 
+    kpiExpert_ABAS.registredWindows=[];
+
     // VENTANA SE MUESTRA SI SE ESTA EN NIVEL DE UNIDAD DE NEGOCIO   
    
     if( 5 == $("#nivel_cb").val() ){
-       kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen(entity,extraData); 
-       kpiExpert_ABAS.DrawTooltipDetail_Origen(entity,extraData);  
-    }else if($("#nivel_cb").val() < 3){
-        kpiExpert_ABAS.DrawTooltipDetail_Estado(entity,extraData);
-    }else{
-        kpiExpert_ABAS.DrawTooltipDetail_UN(entity,extraData);
-    }
 
-    //kpiExpert_ABAS.DrawTooltipDetail_Origen(entity);    
+       kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen(entity,extraData);
+       kpiExpert_ABAS.registredWindows.push("#toolTip5");
+
+       kpiExpert_ABAS.DrawTooltipDetail_Origen(entity,extraData);
+       kpiExpert_ABAS.registredWindows.push("#toolTip4");
+
+    }
     
-    kpiExpert_ABAS.DrawTooltipDetail_Transporte(entity,extraData);
-      
+    else if($("#nivel_cb").val() < 3){
+
+        kpiExpert_ABAS.DrawTooltipDetail_Estado(entity,extraData);
+        drawKpiExpert_VENTAS.registredWindows.push("toolTip3");
+
+    }else{
+
+        kpiExpert_ABAS.DrawTooltipDetail_UN(entity,extraData);
+        drawKpiExpert_VENTAS.registredWindows.push("toolTip3");
+
+    }    
+    
+    kpiExpert_ABAS.DrawTooltipDetail_Transporte(entity,extraData);      
 
     opacidadCesium=30;
       $("#cesiumContainer").css("opacity",opacidadCesium/100);     
 
     // DISTRIBUYE
-    if( 5 == $("#nivel_cb").val() ){
-         vix_tt_distributeDivs(["#toolTip5","#toolTip4","#toolTip2"]);  
-    } else {
-         vix_tt_distributeDivs(["#toolTip3","#toolTip2"]);
-    }
+    vix_tt_distributeDivs(["#toolTip3","#toolTip4"]);
 
 }
+
+kpiExpert_ABAS.registredWindows=[];
+kpiExpert_ABAS.sortRegistredWindows=function(){
+
+  vix_tt_distributeDivs(kpiExpert_ABAS.registredWindows); 
+
+}
+
 
 
  //********************************************************************************************************************** */
@@ -352,9 +376,8 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
      });
       
       
-      // APLICA TRANSICIONES 
-    
-      vix_tt_transitionRectWidth("toolTip5");
+      // APLICA TRANSICIONES     
+      kpiExpert_ABAS.sortRegistredWindows();
       
     
 }
@@ -985,14 +1008,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
                         
                       // DISTRIBUYE 
 
-                      if(  $("#nivel_cb").val() < 5){
-                        vix_tt_distributeDivs(["#toolTip2","#toolTip3","#toolTip4","#toolTip6"]); 
-
-                      } else if(origen){
-                        vix_tt_distributeDivs(["#toolTip5","#toolTip4","#toolTip2","#toolTip6"]); 
-                      }else{
-                        vix_tt_distributeDivs(["#toolTip3","#toolTip2","#toolTip6"]); 
-                      }
+                      kpiExpert_ABAS.sortRegistredWindows();
                       
 
                     });
@@ -1354,7 +1370,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
                                 
                                   vix_tt_transitionRectWidth("toolTip3");
 
-                                  vix_tt_distributeDivs(["#toolTip3","#toolTip2"]); 
+                                  kpiExpert_ABAS.sortRegistredWindows();
 
                           });
 
@@ -1613,6 +1629,8 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
       // APLICA TRANSICIONES 
     
       vix_tt_transitionRectWidth("toolTip3");
+
+      kpiExpert_ABAS.sortRegistredWindows();
       
  }
 
@@ -2070,11 +2088,7 @@ kpiExpert_ABAS.ProcessData_Origen=function(entity,arr,extraData){
         exportToExcel(dataToExport, filename);
       });
      
-      return;
-      
-      // APLICA TRANSICIONES 
-    
-      vix_tt_transitionRectWidth("toolTip4");
+      kpiExpert_ABAS.sortRegistredWindows();
       
     
   }
