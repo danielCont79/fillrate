@@ -65,7 +65,7 @@ var store={
             {data:"cat_region",placeholder:"Region Destino",fieldInCatlog:"Nombre" , id:"cat_region",type:"autoComplete",nameOnFR:"RegionZTDem",nameOnPendientes:"Region", color:"#12FF00",storeProcedureField:"RegionZTDem"},
             
             {data:"cat_estado",placeholder:"Estado",fieldInCatlog:"Nombre",id:"cat_estado",type:"autoComplete",nameOnFR:"EstadoZTDem",nameOnPendientes:"Estado", color:"#12FF00",storeProcedureField:"EstadoZTDem",multipleSelection:true},
-            {data:"cat_zt",placeholder:"Zona Transporte",fieldInCatlog:"Nombre",id:"cat_zt",type:"autoComplete",nameOnFR:"ZonaTransporte",nameOnPendientes:"Zona_de_Entrega", color:"#12FF00",storeProcedureField:"Zona_de_Entrega"},
+            {data:"cat_zt",placeholder:"Zona Transporte",fieldInCatlog:"Nombre",id:"cat_zt",type:"autoComplete",nameOnFR:"ZonaTransporte",nameOnPendientes:"Zona_de_Entrega", color:"#12FF00",storeProcedureField:"ZonaTransporte"},
             {data:"cat_cliente",placeholder:"Holding",fieldInCatlog:"Nombre",id:"cat_cliente",type:"autoComplete",nameOnFR:"Cliente",nameOnPendientes:"HoldingNum", color:"#12FF00",storeProcedureField:"Cliente"},
 
             // CATALOGOS QUE NO SE MUESTRAN EN FILTROS NO TIENEN EL  "type" solo se utilizan para el dibujado de cilindros
@@ -89,7 +89,7 @@ var store={
         {id:5,label:"Unidad de Negocio",field:"vc50_UN_Tact",coordinatesSource:"cat_un",storeProcedureField:"UnidadNegocio"},
         {id:1,label:"Región Destino",field:"RegionZTDem",coordinatesSource:"cat_region",storeProcedureField:"Region",oosFlilialesField:"RegionDem"},
         {id:3,label:"Estado",field:"EstadoZTDem",coordinatesSource:"cat_estado",storeProcedureField:"Estado",oosFlilialesField:"EstadoDem"},
-        {id:7,label:"Zona de transporte",field:"ZonaTransporte",coordinatesSource:"cat_zt",storeProcedureField:"ZonaTransporte"},   
+        {id:7,label:"Zona de transporte",field:"ZonaTransporte",coordinatesSource:"cat_zt",storeProcedureField:"ZT"},   
         {id:6,label:"Holding",field:"vc50_UN_Tact",coordinatesSource:"cat_cliente_estado",storeProcedureField:"Holding"},                
         {id:8,label:"Sucursal",field:"Obra",coordinatesSource:"cat_sucursal_estado",storeProcedureField:"Obra"},
         {id:9,label:"Frente",field:"Frente",coordinatesSource:"cat_frente",storeProcedureField:"Frente"},       

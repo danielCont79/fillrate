@@ -132,7 +132,7 @@ kpiExpert_MAS.DrawTooltipDetail_GenericaMas=function(entity, agrupador ,catlog){
                         params+="&Cliente="+nombre;
                           continue;
                       }
-                      if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Zona_de_Entrega" ){ // ZT
+                      if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZonaTransporte" ){ // ZT
                           params+="&ZonaTransporte="+entity.key;
                           continue;
                       } 
