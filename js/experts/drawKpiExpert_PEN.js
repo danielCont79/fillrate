@@ -132,7 +132,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
               if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Gerencia" ){ // Gerencia
                 params+="&Gerencia="+entity.key;
                 continue;
-            }
+              }
 
               if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
                       params+="&vc50_UN_Tact="+entity.key;
@@ -231,6 +231,47 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
                 }
 
                 console.log("Pendientes por "+agrupador,data.recordset);
+
+                var dataTemp=[];
+                var ultimaFecha=0;
+
+                for(var j=0;  j < data.recordset.length; j++){
+
+                    if(data.recordset[j].FechaActual!=""){
+
+                        if( data.recordset[j].FechaActual.indexOf("T") > -1){
+    
+                            var fechaSplit=data.recordset[j].FechaActual.split("T");
+                            
+                            fechaSplit=fechaSplit[0].split("-");                   
+    
+                        }else{
+                            
+                            var fechaSplit=data.recordset[j].FechaActual.split("-");
+      
+                        }                   
+    
+                        data.recordset[j].fecha= new Date(Number(fechaSplit[0]),Number(fechaSplit[1])-1 ,Number(fechaSplit[2])); 
+
+                        if(ultimaFecha < data.recordset[j].fecha.getTime())
+                            ultimaFecha = data.recordset[j].fecha.getTime();
+                        
+                    } 
+
+                }
+
+                for(var j=0;  j < data.recordset.length; j++){
+
+                    if( data.recordset[j].fecha.getTime() == ultimaFecha ){          
+                 
+                        dataTemp.push( data.recordset[j] );                                           
+        
+                    }
+
+                }
+
+                data.recordset=dataTemp;
+
 
                 var maximo1=0;
                 var maximo2=0;
@@ -512,6 +553,46 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,ca
                 }
 
                 console.log("Pendientes por "+agrupador,data.recordset);
+
+                var dataTemp=[];
+                var ultimaFecha=0;
+
+                for(var j=0;  j < data.recordset.length; j++){
+
+                    if(data.recordset[j].FechaActual!=""){
+
+                        if( data.recordset[j].FechaActual.indexOf("T") > -1){
+    
+                            var fechaSplit=data.recordset[j].FechaActual.split("T");
+                            
+                            fechaSplit=fechaSplit[0].split("-");                   
+    
+                        }else{
+                            
+                            var fechaSplit=data.recordset[j].FechaActual.split("-");
+      
+                        }                   
+    
+                        data.recordset[j].fecha= new Date(Number(fechaSplit[0]),Number(fechaSplit[1])-1 ,Number(fechaSplit[2])); 
+
+                        if(ultimaFecha < data.recordset[j].fecha.getTime())
+                            ultimaFecha = data.recordset[j].fecha.getTime();
+                        
+                    } 
+
+                }
+
+                for(var j=0;  j < data.recordset.length; j++){
+
+                    if( data.recordset[j].fecha.getTime() == ultimaFecha ){          
+                 
+                        dataTemp.push( data.recordset[j] );                                           
+        
+                    }
+
+                }
+
+                data.recordset=dataTemp;
 
                 var maximo1=0;
                 var maximo2=0;
