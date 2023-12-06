@@ -560,10 +560,17 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
           
             for(var j=0; j < store.catlogsForFilters.length; j++){ 
                 
-                  if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Estado" ){ // Estado
-                      params+="&Estado="+entity.key;
-                      continue;
-                  }
+              if(  3 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="EstadoZTDem" ){ // Estado
+
+                params+="&EstadoZTDem="+entity.key;
+                continue;
+              }
+
+              if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Gerencia
+                params+="&GerenciaUN="+entity.key;
+                continue;
+            }
+
                   if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
                       params+="&Holding="+entity.key;
                       continue;
