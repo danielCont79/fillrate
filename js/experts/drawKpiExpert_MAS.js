@@ -108,6 +108,11 @@ kpiExpert_MAS.DrawTooltipDetail_GenericaMas=function(entity, agrupador ,catlog){
                         continue;
                       }
 
+                      if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Gerencia" ){ // Gerencia
+                        params+="&Gerencia="+entity.key;
+                        continue;
+                    }
+
                       if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
                               params+="&vc50_UN_Tact="+entity.key;
                               continue;
