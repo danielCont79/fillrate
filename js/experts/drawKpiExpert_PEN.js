@@ -1231,7 +1231,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Tipo=function(entity){
 
     var dataElement=entity.pendientes.values[0];
 
-    var campos=["Entregado:","Libre_Retrasado","Libre_Pendiente_Hoy","Libre_Programado_Total","Total_Libre_Pendientes_siguientes_días","AutoFlete y Recogido:","Libre_RecAutf",];
+    var campos=["Entregado:","Libre_Retrasado","Libre_Pendiente_Hoy","Libre_Programado_Total","Total_Libre_Pendientes_siguientes_días","AutoEntrega y Recogido:","Libre_RecAutf",];
     var colores=["#00DEFF","#00DEFF","#00DEFF","#00DEFF","#00DEFF","#8BFF1A","#8BFF1A",];
 
     //Calcula total de pendientes entregados
