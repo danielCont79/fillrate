@@ -204,7 +204,6 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
     }
   }
 
-
   if(serviceName && apiURL){
 
         var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
@@ -223,25 +222,30 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
               }
 
               if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Gerencia
+
                 params+="&GerenciaUN="+entity.key;
                 continue;
             }
 
               if(  5 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="vc50_UN_Tact" ){ // UN
+
                       params+="&vc50_UN_Tact="+entity.key;
                       continue;
               }
 
               if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Cliente" ){ // Holding
 
-                var nombre=entity.key;
-                if(entity.key.indexOf("_")>-1){
-                  var nombrepSplit=entity.key.split("_");
-                  nombre=nombrepSplit[0];
-                }
+                  var nombre=entity.key;
+                  if(entity.key.indexOf("_")>-1){
+                    var nombrepSplit=entity.key.split("_");
+                    nombre=nombrepSplit[0];
+                  }
 
-                params+="&Cliente="+nombre;
+                  if(params.indexOf("&Cliente=") > -1)
                   continue;
+
+                  params+="&Cliente="+nombre;
+                    continue;
               }
               if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Zona_de_Entrega" ){ // ZT
                   params+="&Zona_de_Entrega="+entity.key;
@@ -571,17 +575,35 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
                 continue;
             }
 
-                  if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Holding" ){ // Holding
-                      params+="&Holding="+entity.key;
+                  if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Cliente" ){ // Holding
+
+                    var nombre=entity.key;
+                    if(entity.key.indexOf("_")>-1){
+                      var nombrepSplit=entity.key.split("_");
+                      nombre=nombrepSplit[0];
+                    }
+
+                    if(params.indexOf("&Cliente=") > -1)
+                    continue;
+    
+                    params+="&Cliente="+nombre;
                       continue;
+                      
                   }
                   if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZT" ){ // ZT
                       params+="&ZT="+entity.key;
                       continue;
                   } 
                   if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
-                      params+="&Obra="+entity.key;
-                      continue;
+
+                          var nombre=entity.key;
+                          if(entity.key.indexOf("_")>-1){
+                            var nombrepSplit=entity.key.split("_");
+                            nombre=nombrepSplit[0];
+                          }
+        
+                          params+="&Obra="+nombre;
+                          continue;
                   } 
                   if(  9 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="Frente"  ){ // Frente
                     params+="&Frente="+entity.key;

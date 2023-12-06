@@ -147,6 +147,9 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
                   nombre=nombrepSplit[0];
                 }
 
+                if(params.indexOf("&Cliente=") > -1)
+                continue;
+
                 params+="&Cliente="+nombre;
                   continue;
               }
@@ -470,6 +473,9 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,ca
                   var nombrepSplit=entity.key.split("_");
                   nombre=nombrepSplit[0];
                 }
+
+                if(params.indexOf("&Cliente=") > -1)
+                continue;
 
                 params+="&Cliente="+nombre;
                   continue;

@@ -125,6 +125,9 @@ kpiExpert_MAS.DrawTooltipDetail_GenericaMas=function(entity, agrupador ,catlog){
                           var nombrepSplit=entity.key.split("_");
                           nombre=nombrepSplit[0];
                         }
+
+                        if(params.indexOf("&Cliente=") > -1)
+                        continue;
         
                         params+="&Cliente="+nombre;
                           continue;
