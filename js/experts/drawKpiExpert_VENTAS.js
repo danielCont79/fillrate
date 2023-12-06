@@ -588,10 +588,10 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
     
                     params+="&Cliente="+nombre;
                       continue;
-                      
+
                   }
-                  if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="ZT" ){ // ZT
-                      params+="&ZT="+entity.key;
+                  if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Zona_de_Entrega" ){ // ZT
+                      params+="&ZonaTransporte="+entity.key;
                       continue;
                   } 
                   if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra

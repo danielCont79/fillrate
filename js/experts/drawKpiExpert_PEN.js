@@ -154,7 +154,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
                   continue;
               }
               if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Zona_de_Entrega" ){ // ZT
-                  params+="&Zona_de_Entrega="+entity.key;
+                  params+="&ZonaTransporte="+entity.key;
                   continue;
               } 
               if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
@@ -481,7 +481,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,ca
                   continue;
               }
               if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Zona_de_Entrega" ){ // ZT
-                  params+="&Zona_de_Entrega="+entity.key;
+                  params+="&ZonaTransporte="+entity.key;
                   continue;
               } 
               if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra

@@ -260,7 +260,7 @@ kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){
                                   continue;
                               }
                               if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Zona_de_Entrega" ){ // ZT
-                                  params+="&Zona_de_Entrega="+entity.key;
+                                  params+="&ZonaTransporte="+entity.key;
                                   continue;
                               } 
                               if(  8 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Obra" && params.indexOf("Obra") < 0  ){ // Obra
@@ -608,12 +608,17 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                 var params="";
                        
                 for(var j=0; j < store.catlogsForFilters.length; j++){
+
+                        if(  7 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Zona_de_Entrega" ){ // ZT
+                                params+="&ZonaTransporte="+entity.key;
+                                continue;
+                        } 
      
-                     if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
+                        if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
      
-                         params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+                                params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
      
-                     }
+                        }
      
                 }
 
