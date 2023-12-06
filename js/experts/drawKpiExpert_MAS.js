@@ -109,7 +109,7 @@ kpiExpert_MAS.DrawTooltipDetail_GenericaMas=function(entity, agrupador ,catlog){
                       }
 
                       if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Gerencia
-                        params+="&Gerencia="+entity.key;
+                        params+="&GerenciaUN="+entity.key;
                         continue;
                     }
 

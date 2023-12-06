@@ -130,7 +130,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
               }
 
               if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Gerencia
-                params+="&Gerencia="+entity.key;
+                params+="&GerenciaUN="+entity.key;
                 continue;
               }
 
@@ -454,7 +454,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,ca
               }
 
               if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Gerencia
-                params+="&Gerencia="+entity.key;
+                params+="&GerenciaUN="+entity.key;
                 continue;
             }
 
