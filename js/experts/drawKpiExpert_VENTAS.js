@@ -222,7 +222,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                 continue;
               }
 
-              if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Gerencia" ){ // Gerencia
+              if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Gerencia
                 params+="&Gerencia="+entity.key;
                 continue;
             }

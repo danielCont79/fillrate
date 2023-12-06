@@ -129,7 +129,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
                 continue;
               }
 
-              if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Gerencia" ){ // Gerencia
+              if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Gerencia
                 params+="&Gerencia="+entity.key;
                 continue;
               }
@@ -453,7 +453,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,ca
                 continue;
               }
 
-              if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Gerencia" ){ // Gerencia
+              if( 4 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="GerenciaUN" ){ // Gerencia
                 params+="&Gerencia="+entity.key;
                 continue;
             }
