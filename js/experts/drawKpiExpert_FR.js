@@ -162,13 +162,17 @@ kpiExpert_FR.DrawTooltipDetail=function(entity){
         }
         
         if($("#nivel_cb").val() == 3 ){// estado 
-                kpiExpert_FR.registredWindows.push("#toolTip6");
-                kpiExpert_FR.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
+                //kpiExpert_FR.registredWindows.push("#toolTip6");
+                //kpiExpert_FR.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
         }
         
         if($("#nivel_cb").val() == 5  ){//  UN 
-                kpiExpert_FR.registredWindows.push("#toolTip6");
-                kpiExpert_FR.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
+
+                kpiExpert_FR.registredWindows.push("toolTip3");
+                kpiExpert_FR.DrawTooltipDetail_Estado(entity);
+
+                //kpiExpert_FR.registredWindows.push("#toolTip6");
+                //kpiExpert_FR.DrawTooltipDetail_GenericFr(entity,"Holding","cat_cliente_estado");
         }
         
         if($("#nivel_cb").val() == 7 ){// ZT debe ver holding
@@ -553,7 +557,7 @@ kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){
                                 
                                 vix_tt_transitionRectWidth("toolTip5"); 
 
-                                drawKpiExpert_VENTAS.sortRegistredWindows();
+                                kpiExpert_FR.sortRegistredWindows();
 
                     });
 
@@ -904,7 +908,20 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                                 
                                 vix_tt_transitionRectWidth("toolTip4"); 
 
-                                drawKpiExpert_VENTAS.sortRegistredWindows();
+                                kpiExpert_FR.sortRegistredWindows();
+
+                                 //Agrega boton para abrir detalle por Cliente
+                                 $("#toolTip4").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_FR.registredWindows.push('#toolTip6');
+                                 kpiExpert_FR.DrawTooltipDetail_GenericFr(kpiExpert_FR.lastEntity,'Holding','cat_cliente_estado');$('#toolTip4').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
+ 
+                                 //HAce mas alto
+                                 $("#toolTip4").css("height",(Number($("#toolTip4").css("height").replaceAll("px",""))+80)+"px");
+ 
+                                 //Alinea elementos nuevos
+                                 $("#toolTip4").find(".content").css("display","flex");
+                                 $("#toolTip4").find(".content").css("align-items","center");
+                                 $("#toolTip4").find(".content").css("flex-direction","column");
+
                         });
 
                 }
@@ -1152,7 +1169,21 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity,extraData){
         });
         
         // APLICA TRANSICIONES         
-        vix_tt_transitionRectWidth("toolTip3");     
+        vix_tt_transitionRectWidth("toolTip3");
+
+         //Agrega boton para abrir detalle por Cliente
+         $("#toolTip3").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_FR.registredWindows.push('#toolTip6');
+         kpiExpert_FR.DrawTooltipDetail_GenericFr(kpiExpert_FR.lastEntity,'Holding','cat_cliente_estado');$('#toolTip3').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
+
+         //HAce mas alto
+         $("#toolTip3").css("height",(Number($("#toolTip3").css("height").replaceAll("px",""))+80)+"px");
+
+         //Alinea elementos nuevos
+         $("#toolTip3").find(".content").css("display","flex");
+         $("#toolTip3").find(".content").css("align-items","center");
+         $("#toolTip3").find(".content").css("flex-direction","column");
+        
+        
 
 }               
 
