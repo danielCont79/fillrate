@@ -94,7 +94,7 @@ Stage.initStage=function(resolve, reject){
 		    {
 		    	$("#toolTip").css("visibility","hidden");
 				
-				if($('.loginContainer').css('visibility')!="visible" &&   $('#toolTipLoader').css('visibility')!="visible")
+				if($('#fechasMain').css('visibility')!="visible" &&   $('#toolTipLoader').css('visibility')!="visible")
 				radar.CleanWindows();
 
 				$('#Controls').css("visibility","hidden");
@@ -168,8 +168,8 @@ Stage.initStage=function(resolve, reject){
 		    {
 		    	$("#toolTip").css("visibility","hidden");
 
-				if($('.loginContainer').css('visibility')!="visible" &&  $('#toolTipLoader').css('visibility')!="visible")
-				radar.CleanWindows();
+				if($('#fechasMain').css('visibility')!="visible" &&  $('#toolTipLoader').css('visibility')!="visible")
+					radar.CleanWindows();
 
 				$('#Controls').css("visibility","hidden");
 				$('#Controls2').css("visibility","hidden");
