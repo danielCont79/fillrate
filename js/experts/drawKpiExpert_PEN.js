@@ -1,5 +1,7 @@
 var kpiExpert_PENDIENTES={};
 
+kpiExpert_PENDIENTES.lastEntity;
+
 kpiExpert_PENDIENTES.eraseChart=function(){ 
 
     d3.select("#svgTooltip").selectAll(".prodDetail").data([]).exit().remove();   
@@ -17,6 +19,8 @@ kpiExpert_PENDIENTES.eraseChart=function(){
 
 
 kpiExpert_PENDIENTES.DrawTooltipDetail=function(entity){   
+
+    kpiExpert_PENDIENTES.lastEntity=entity;
     
     d3.select("#svgTooltip").selectAll(".penDetail").data([]).exit().remove();
     d3.select("#svgTooltip3").selectAll(".penDetail").data([]).exit().remove();
@@ -51,13 +55,12 @@ kpiExpert_PENDIENTES.DrawTooltipDetail=function(entity){
     }
 
     if($("#nivel_cb").val() == 3 ){// estado 
-        kpiExpert_PENDIENTES.registredWindows.push("#toolTip7");
-        kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(entity,"Holding","cat_cliente_estado");
+       
     }
 
     if($("#nivel_cb").val() == 5  ){//  UN 
-        kpiExpert_PENDIENTES.registredWindows.push("#toolTip7");
-            kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(entity,"Holding","cat_cliente_estado");
+        kpiExpert_PENDIENTES.registredWindows.push("toolTip4");
+        kpiExpert_PENDIENTES.DrawTooltipDetail_Estado(entity);
     }
 
     if($("#nivel_cb").val() == 7 ){// ZT debe ver holding
@@ -75,10 +78,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail=function(entity){
             kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(entity,"Frente","cat_frente");
     }
 
-    //********************************************************************** */   
-
-
-   
+    //********************************************************************** */     
 
     opacidadCesium=30;
       $("#cesiumContainer").css("opacity",opacidadCesium/100); 
@@ -385,7 +385,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
                 };
 
                 // FORMATEA DIV :
-                vix_tt_formatToolTip("#toolTip6","Pendientes por "+agrupador+" de "+dataManager.getNameFromId(entity.key)+" (TM)",480,svgTooltipHeight+110,dataManager.GetTooltipInfoData("toolTip6","Pendientes"));
+                vix_tt_formatToolTip("#toolTip6","Pendientes por "+agrupador+" de "+dataManager.getNameFromId(entity.key)+" (TM)",480,svgTooltipHeight+130,dataManager.GetTooltipInfoData("toolTip6","Pendientes"));
 
                 // COLUMNAS CON TOTALES :
                 var columnsWithTotals = ['Libre_Pendiente_Hoy','Libre_Retrasado']; 
@@ -412,7 +412,20 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
                 vix_tt_transitionRectWidth("toolTip6");
 
                  // DISTRIBUYE 
-                 drawKpiExpert_VENTAS.sortRegistredWindows(); 
+                 kpiExpert_PENDIENTES.sortRegistredWindows(); 
+
+                 //Agrega boton para abrir detalle por Cliente
+                $("#toolTip6").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_PENDIENTES.registredWindows.push('#toolTip7');
+                kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(kpiExpert_PENDIENTES.lastEntity,'Holding','cat_cliente_estado');$('#toolTip6').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
+
+                //HAce mas alto
+                $("#toolTip6").css("height",(Number($("#toolTip6").css("height").replaceAll("px",""))+80)+"px");
+
+                //Alinea elementos nuevos
+                $("#toolTip6").find(".content").css("display","flex");
+                $("#toolTip6").find(".content").css("align-items","center");
+                $("#toolTip6").find(".content").css("flex-direction","column");
+      
 
             });
 
@@ -709,7 +722,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,ca
                 };
 
                 // FORMATEA DIV :
-                vix_tt_formatToolTip("#toolTip7","Pendientes por "+agrupador+" de "+dataManager.getNameFromId(entity.key)+" (TM)",480,svgTooltipHeight+110,dataManager.GetTooltipInfoData("toolTip7","Pendientes"));
+                vix_tt_formatToolTip("#toolTip7","Pendientes por "+agrupador+" de "+dataManager.getNameFromId(entity.key)+" (TM)",480,svgTooltipHeight+250,dataManager.GetTooltipInfoData("toolTip7","Pendientes"));
 
                 // COLUMNAS CON TOTALES :
                 var columnsWithTotals = ['Libre_Pendiente_Hoy','Libre_Retrasado']; 
@@ -736,7 +749,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,ca
                 vix_tt_transitionRectWidth("toolTip7");
 
                  // DISTRIBUYE 
-                 drawKpiExpert_VENTAS.sortRegistredWindows(); 
+                 kpiExpert_PENDIENTES.sortRegistredWindows(); 
 
             });
 
@@ -984,6 +997,19 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Estado=function(entity){
 
                                      // DISTRIBUYE 
                                     vix_tt_distributeDivs(["#toolTip4","#toolTip2","#toolTip3"]); 
+
+
+                                    //Agrega boton para abrir detalle por Cliente
+                                    $("#toolTip4").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_PENDIENTES.registredWindows.push('#toolTip7');
+                                    kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(kpiExpert_PENDIENTES.lastEntity,'Holding','cat_cliente_estado');$('#toolTip4').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
+
+                                    //HAce mas alto
+                                    $("#toolTip4").css("height",(Number($("#toolTip4").css("height").replaceAll("px",""))+80)+"px");
+
+                                    //Alinea elementos nuevos
+                                    $("#toolTip4").find(".content").css("display","flex");
+                                    $("#toolTip4").find(".content").css("align-items","center");
+                                    $("#toolTip4").find(".content").css("flex-direction","column");
 
 
                     });
