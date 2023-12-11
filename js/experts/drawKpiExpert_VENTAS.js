@@ -146,13 +146,17 @@ drawKpiExpert_VENTAS.DrawTooltipDetail=function(entity){
     }
 
     if($("#nivel_cb").val() == 3 ){// estado 
-      drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
-      drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas(entity,"Holding","cat_cliente_estado");
+      //drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
+      //drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas(entity,"Holding","cat_cliente_estado");
     }
 
     if($("#nivel_cb").val() == 5  ){//  UN 
+      drawKpiExpert_VENTAS.registredWindows.push("toolTip2");
+      drawKpiExpert_VENTAS.DrawTooltipDetail_Estado(entity);
+      /*
       drawKpiExpert_VENTAS.registredWindows.push("#toolTip6");
       drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas(entity,"Holding","cat_cliente_estado");
+      */
     }
 
     if($("#nivel_cb").val() == 7 ){// ZT debe ver holding
@@ -874,7 +878,20 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
                               
                                 vix_tt_transitionRectWidth("toolTip5");   
 
-                                drawKpiExpert_VENTAS.sortRegistredWindows();  
+                                drawKpiExpert_VENTAS.sortRegistredWindows(); 
+                                
+                                //Agrega boton para abrir detalle por Cliente
+                                $("#toolTip5").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="drawKpiExpert_VENTAS.registredWindows.push('#toolTip6');
+                                drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas(drawKpiExpert_VENTAS.lastEntity,'Holding','cat_cliente_estado');$('#toolTip5').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
+
+                                //HAce mas alto
+                                $("#toolTip5").css("height",(Number($("#toolTip5").css("height").replaceAll("px",""))+80)+"px");
+
+                                //Alinea elementos nuevos
+                                $("#toolTip5").find(".content").css("display","flex");
+                                $("#toolTip5").find(".content").css("align-items","center");
+                                $("#toolTip5").find(".content").css("flex-direction","column");
+
                 });
 
             }
@@ -2017,7 +2034,19 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_Estado=function(entity){
 
       // APLICA TRANSICIONES 
     
-      vix_tt_transitionRectWidth("toolTip2");   
+      vix_tt_transitionRectWidth("toolTip2");
+      
+      //Agrega boton para abrir detalle por Cliente
+      $("#toolTip2").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="drawKpiExpert_VENTAS.registredWindows.push('#toolTip6');
+      drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas(drawKpiExpert_VENTAS.lastEntity,'Holding','cat_cliente_estado');$('#toolTip2').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
+
+      //HAce mas alto
+      $("#toolTip2").css("height",(Number($("#toolTip2").css("height").replaceAll("px",""))+80)+"px");
+
+      //Alinea elementos nuevos
+      $("#toolTip2").find(".content").css("display","flex");
+      $("#toolTip2").find(".content").css("align-items","center");
+      $("#toolTip2").find(".content").css("flex-direction","column");
     
     
 }
