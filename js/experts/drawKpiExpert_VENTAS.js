@@ -393,7 +393,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                             svgTooltipHeight=windowHeight*.8;
                       
                       
-                          var svgTooltipWidth=640;
+                          var svgTooltipWidth=740;
                           var marginLeft=svgTooltipWidth*.2;
                           var tamanioFuente=altura*.4;
                           var marginTop=35;
@@ -428,7 +428,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                               // DEFINE COLUMNAS
                             
                             var columns = [
-                              { key: "key", header: agrupador, sortable: true, width: "100px" },
+                              { key: "key", header: agrupador, sortable: true, width: "200px" },
                               { key: "VolumenPlan", header: "Vol Plan", sortable: true, width: "100px" },
                               { key: "VolumenReal", header: "Vol Real", sortable: true, width: "100px" },
                               { key: "DifK", header: "Dif", sortable: true, width: "100px" },
@@ -441,7 +441,13 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                           
                             var columnVisitors = {
                               key: function(value) {
-                                  return `<div class="key-selector" onclick=" backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','${catlog}','${entity.key}')">${dataManager.getNameFromIdFromCatlog(value , catlog)}
+
+                                  var nombre=dataManager.getNameFromIdFromCatlog(value , catlog);
+
+                                  if(nombre.length > 31)
+                                    nombre=nombre.substr(0,31)+"...";
+
+                                  return `<div class="key-selector" onclick=" backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','${catlog}','${entity.key}')">${nombre}
                                   </div>`;
                                 },
                           
@@ -791,6 +797,8 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
                               
                                 var columnVisitors = {
                                   key: function(value) {
+
+                                    
                                       return `<div class="key-selector" onclick=" backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_un','${entity.key}')">${value}
                                       </div>`;
                                     },
@@ -843,20 +851,20 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
                                 };
                           
                           
-                                     // COLUMNAS CON TOTALES :
-                          
-                                     var columnsWithTotals = ['VolumenPlan','VolumenReal','DifK']; 
-                                     var totalsColumnVisitors = {
-                                               'VolumenPlan': function(value) { 
-                                                 return vix_tt_formatNumber(value) ;
-                                               },
-                                               'VolumenReal': function(value) { 
-                                                 return vix_tt_formatNumber(value) ; 
-                                               },
-                                               'DifK': function(value) { 
-                                                 return vix_tt_formatNumber(value) ; 
-                                               }
-                                               };
+                                  // COLUMNAS CON TOTALES :
+                      
+                                  var columnsWithTotals = ['VolumenPlan','VolumenReal','DifK']; 
+                                  var totalsColumnVisitors = {
+                                            'VolumenPlan': function(value) { 
+                                              return vix_tt_formatNumber(value) ;
+                                            },
+                                            'VolumenReal': function(value) { 
+                                              return vix_tt_formatNumber(value) ; 
+                                            },
+                                            'DifK': function(value) { 
+                                              return vix_tt_formatNumber(value) ; 
+                                            }
+                                            };
                           
                                 // FORMATEA DIV :
                              

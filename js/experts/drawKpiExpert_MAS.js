@@ -269,7 +269,7 @@ kpiExpert_MAS.DrawTooltipDetail_GenericaMas=function(entity, agrupador ,catlog){
                                     if(svgTooltipHeight>windowHeight*.8)
                                       svgTooltipHeight=windowHeight*.8;
                                 
-                                    var svgTooltipWidth=600;
+                                    var svgTooltipWidth=700;
                                     var marginLeft=svgTooltipWidth*.3;
                                     var tamanioFuente=altura*.5;
                                     if(tamanioFuente < 12)
@@ -294,7 +294,7 @@ kpiExpert_MAS.DrawTooltipDetail_GenericaMas=function(entity, agrupador ,catlog){
                                   // DEFINE COLUMNAS
                                     
                                   var columns = [
-                                      { key: "key", header: agrupador, sortable: true, width: "130px" },
+                                      { key: "key", header: agrupador, sortable: true, width: "230px" },
                                       { key: "MasivosVol", header: "Volumen Masivos", sortable: true, width: "150px" },    
                                       { key: "totalSolicitado", header: "Vol. Solicitado", sortable: true, width: "150px" },
                                       { key: "DifP", header: "Procentaje", sortable: true, width: "150px" },
@@ -304,7 +304,13 @@ kpiExpert_MAS.DrawTooltipDetail_GenericaMas=function(entity, agrupador ,catlog){
 
                                   var columnVisitors = {
                                     key: function(value,i) {
-                                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_estado','${entity.key}')">${dataManager.getNameFromIdFromCatlog(value , catlog)}
+
+                                      var nombre=dataManager.getNameFromIdFromCatlog(value , catlog);
+
+                                      if(nombre.length > 31)
+                                        nombre=nombre.substr(0,31)+"...";
+
+                                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_estado','${entity.key}')">${nombre}
                                         </div>`;
                                       },
                                 

@@ -321,7 +321,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
                 if(svgTooltipHeight>windowHeight*.7)
                     svgTooltipHeight=windowHeight*.7;
 
-                var svgTooltipWidth=430;
+                var svgTooltipWidth=530;
                 var marginLeft=svgTooltipWidth*.2;
                 var tamanioFuente=altura*.4;
                 var marginTop=35;                                    
@@ -349,7 +349,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
 
                 // DEFINE COLUMNAS      
                 var columns = [
-                    { key: "key", header:agrupador, sortable: true, width: "130px" },
+                    { key: "key", header:agrupador, sortable: true, width: "230px" },
                     { key: "Libre_Pendiente_Hoy", header: "Libre Pendiente Hoy", sortable: true, width: "160px" },
                     { key: "Libre_Retrasado", header: "Libre Retrasado", sortable: true, width: "160px" },
                   
@@ -358,7 +358,13 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
                 // DEFINE VISITORS PARA CADA COLUMNA   
                 var columnVisitors = {
                     key: function(value) {
-                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','${catlog}','${entity.key}')">${dataManager.getNameFromIdFromCatlog(value , catlog)}
+
+                        var nombre=dataManager.getNameFromIdFromCatlog(value , catlog);
+
+                        if(nombre.length > 31)
+                                    nombre=nombre.substr(0,31)+"...";
+
+                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','${catlog}','${entity.key}')">${nombre}
                         </div>`;
                     },                                   
                    
@@ -659,7 +665,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,ca
                 if(svgTooltipHeight>windowHeight*.7)
                     svgTooltipHeight=windowHeight*.7;
 
-                var svgTooltipWidth=430;
+                var svgTooltipWidth=530;
                 var marginLeft=svgTooltipWidth*.2;
                 var tamanioFuente=altura*.4;
                 var marginTop=35;                                    
@@ -687,7 +693,7 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,ca
 
                 // DEFINE COLUMNAS      
                 var columns = [
-                    { key: "key", header:agrupador, sortable: true, width: "130px" },
+                    { key: "key", header:agrupador, sortable: true, width: "230px" },
                     { key: "Libre_Pendiente_Hoy", header: "Libre Pendiente Hoy", sortable: true, width: "160px" },
                     { key: "Libre_Retrasado", header: "Libre Retrasado", sortable: true, width: "160px" },
                   
@@ -696,7 +702,13 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2=function(entity, agrupador ,ca
                 // DEFINE VISITORS PARA CADA COLUMNA   
                 var columnVisitors = {
                     key: function(value) {
-                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','${catlog}','${entity.key}')">${dataManager.getNameFromIdFromCatlog(value , catlog)}
+
+                        var nombre=dataManager.getNameFromIdFromCatlog(value , catlog);
+
+                        if(nombre.length > 31)
+                                    nombre=nombre.substr(0,31)+"...";
+
+                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','${catlog}','${entity.key}')">${nombre}
                         </div>`;
                     },                                   
                    
