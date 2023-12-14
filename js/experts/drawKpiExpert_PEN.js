@@ -415,7 +415,8 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr=function(entity, agrupador ,cat
                  kpiExpert_PENDIENTES.sortRegistredWindows(); 
 
                  //Agrega boton para abrir detalle por Cliente
-                $("#toolTip6").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_PENDIENTES.registredWindows.push('#toolTip7');
+                 $("#toolTip6").find(".content").css("align-items","");
+                $("#toolTip6").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;left:0px;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_PENDIENTES.registredWindows.push('#toolTip7');
                 kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(kpiExpert_PENDIENTES.lastEntity,'Holding','cat_cliente_estado');$('#toolTip6').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
 
                 //HAce mas alto
@@ -1000,7 +1001,8 @@ kpiExpert_PENDIENTES.DrawTooltipDetail_Estado=function(entity){
 
 
                                     //Agrega boton para abrir detalle por Cliente
-                                    $("#toolTip4").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_PENDIENTES.registredWindows.push('#toolTip7');
+                                    $("#toolTip4").find(".content").css("align-items","");
+                                    $("#toolTip4").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;left: 0px;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_PENDIENTES.registredWindows.push('#toolTip7');
                                     kpiExpert_PENDIENTES.DrawTooltipDetail_GenericFr2(kpiExpert_PENDIENTES.lastEntity,'Holding','cat_cliente_estado');$('#toolTip4').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
 
                                     //HAce mas alto

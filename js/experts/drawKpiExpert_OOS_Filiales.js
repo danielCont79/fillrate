@@ -85,24 +85,310 @@ kpiExpert_OOS_Filiales.eraseChart=function(){
 
     d3.select("#svgTooltip").selectAll(".ossFilialesDetail").data([]).exit().remove();
     d3.select("#svgTooltip3").selectAll(".ossFilialesDetail").data([]).exit().remove();
+    d3.select("#svgTooltip4").selectAll(".ossFilialesDetail").data([]).exit().remove();
     
     $("#toolTip2").css("visibility","hidden");	
     $("#toolTip3").css("visibility","hidden");
 
 }
 
-kpiExpert_OOS_Filiales.DrawTooltipDetail=function(entity){    
+kpiExpert_OOS_Filiales.DrawTooltipDetail=function(entity){   
+    
+    d3.select("#svgTooltip").selectAll(".ossDetail").data([]).exit().remove();
+    d3.select("#svgTooltip3").selectAll(".ossDetail").data([]).exit().remove();
+    d3.select("#svgTooltip4").selectAll(".ossDetail").data([]).exit().remove();
  
     d3.select("#svgTooltip").selectAll(".ossFilialesDetail").data([]).exit().remove();
     d3.select("#svgTooltip3").selectAll(".ossFilialesDetail").data([]).exit().remove();
     
-    kpiExpert_OOS_Filiales.DrawTooltipDetail_UN(entity);
+   
     kpiExpert_OOS_Filiales.DrawTooltipDetail_Dia(entity);
 
-    opacidadCesium=30;
-    $("#cesiumContainer").css("opacity",opacidadCesium/100); 
 
-    vix_tt_distributeDivs(["#toolTip2","#toolTip3"]); 
+    if($("#nivel_cb").val() > 2 ){
+        kpiExpert_OOS_Filiales.DrawTooltipDetail_UN(entity);
+        vix_tt_distributeDivs(["#toolTip2","#toolTip3"]); 
+    }else{
+        kpiExpert_OOS_Filiales.DrawTooltipDetail_Estado(entity);
+        vix_tt_distributeDivs(["#toolTip4","#toolTip3"]); 
+       
+    }    
+
+    opacidadCesium=30;
+    $("#cesiumContainer").css("opacity",opacidadCesium/100);    
+
+}
+
+
+kpiExpert_OOS_Filiales.DrawTooltipDetail_Estado=function(entity){  
+
+    $("#cargando").css("visibility","visible");
+
+    var serviceName;
+    var apiURL;
+    var agrupador="";
+   
+
+    agrupador="Estado";
+
+    for(var i=0; i < store.apiDataSources.length; i++){          
+        if(store.apiDataSources[i].varName=="oosFiliales"){                
+                serviceName=store.apiDataSources[i].serviceName;
+                apiURL=store.apiDataSources[i].apiURL;
+        }
+    }
+
+    if(serviceName && apiURL){
+
+                var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
+                var dateEnd_=dateEnd.getFullYear()+"-"+String(Number(dateEnd.getMonth())+1)+"-"+dateEnd.getDate();
+            
+                // FILTROS****
+                var params="";
+            
+                for(var j=0; j < store.catlogsForFilters.length; j++){
+
+                    if( store.catlogsForFilters[j].storeProcedureField=="Presentacion" && entity.key=="Sacos" ){
+                        params+="&Presentacion=Sacos";
+                        continue;
+                    }
+
+                    if( store.catlogsForFilters[j].storeProcedureField=="Presentacion" && entity.key=="Granel" ){
+                        params+="&Presentacion=Granel";
+                        continue;
+                    }
+
+                    if(  1 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="RegionZTDem" ){
+                        params+="&RegionZTDem="+entity.key;
+                        continue;
+                    }
+
+                    if(  2 == $("#nivel_cb").val() &&  store.catlogsForFilters[j].storeProcedureField=="vc50_Region_UN" ){
+                        params+="&vc50_Region_UN="+entity.key;
+                        continue;
+                    }
+
+                    if($("#"+store.catlogsForFilters[j].id).val() != "" && $("#"+store.catlogsForFilters[j].id).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos"){
+
+                        params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
+
+                    }
+
+                }
+
+                //FILTRO DE MASIVO
+                if($("#masivos_cb").val() == "Todos" || $("#masivos_cb").val() == ""){
+
+                        params+="&masivos=Todos";               
+
+                }else if($("#masivos_cb").val() == "SinMasivos"){
+
+                        params+="&masivos=Sin Masivos"; 
+
+                }else if($("#masivos_cb").val() == "SoloMasivos"){
+
+                        params+="&masivos=Solo Masivos"; 
+                        
+                }
+
+                var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+                console.log(URL);  
+
+               if(URL.indexOf("undefined" < 0)){
+
+                        dataLoader.AddLoadingTitle("OOS Filiales por Estado");
+
+                        d3.json(URL, function (error, data) {
+
+                            dataLoader.DeleteLoadingTitle("OOS por Estado"); 
+
+                            dataLoader.HideLoadings();
+
+                                $("#cargando").css("visibility","hidden");
+                                
+                                if(error){
+                                    alert("Error API OOS",error);
+                                    resolve();
+                                    return;
+                                }
+
+                                if(data.error){
+                                    alert("Error API OOS",data.error);
+                                    resolve();
+                                    return;
+                                }
+
+                                console.log("oos filiales",data.recordset);
+
+                                var maximo=0;
+                                var maximoVolumen=0;                                  
+
+                                var arr=d3.nest()
+                                    .key(function(d) { return d.Agrupador; })
+                                    .entries(data.recordset);  
+
+                                    for(var i=0; i < arr.length; i++ ){
+
+                                        arr[i].Numerador=0;
+                                        arr[i].Denominador=0;
+                                        arr[i].CantEntFinal=0;
+                                
+                                        for(var j=0; j < arr[i].values.length; j++ ){
+                                            
+                                            arr[i].Numerador+=Number(arr[i].values[j].Numerador);
+                                            arr[i].Denominador+=Number(arr[i].values[j].Denominador);
+                                            arr[i].CantEntFinal+=Number(arr[i].values[j].Fisico);            
+                                
+                                            if(maximoVolumen < arr[i].CantEntFinal){
+                                                maximoVolumen=arr[i].CantEntFinal;
+                                            }
+                                
+                                        }
+                                
+                                    }
+                                
+                                    for(var i=0; i < arr.length; i++ ){
+                                        arr[i].OOS=Math.round(  (arr[i].Numerador/arr[i].Denominador)*10000)/100;
+                                        if(maximo < arr[i].OOS*1000){
+                                            maximo=arr[i].OOS*1000;
+                                        }
+                                    }
+                                
+                                    arr = arr.sort((a, b) => b.OOS*1000 - a.OOS*1000);
+                                
+                                    var altura=30;
+                                    //var caso=0;
+                                   
+                                    var svgTooltipHeight=arr.length*altura;
+                                
+                                    if(svgTooltipHeight<80)
+                                        svgTooltipHeight=80;
+                                
+                                    if(svgTooltipHeight>windowHeight*.8)
+                                        svgTooltipHeight=windowHeight*.8;
+                                
+                                
+                                    var svgTooltipWidth=500;
+                                   // var marginLeft=svgTooltipWidth*.3;
+                                    var tamanioFuente=altura*.5;
+                                    if(tamanioFuente < 12)
+                                    tamanioFuente=12;
+                                
+                                   // var marginTop=30;
+                                
+                                
+                                   
+                                   $("#toolTip4").css("visibility","visible");            
+                                   $("#toolTip4").css("left",1+"%"); 
+                                   $("#toolTip4").css("top",80+"px");
+                                   /* 
+                                
+                                        VIX_TT  : Prepara datos para el tool tip
+                                
+                                    */
+                                
+                                
+                                    // DATOS 
+                                
+                                    var data = arr.map(function(item) {
+                                        return {
+                                          key: item.key,
+                                          "Numero": item.Numerador,
+                                          "OOS": item.OOS,
+                                          "Numera": item.CantEntFinal,
+                                        };
+                                        });
+                                    
+                                    
+                                    
+                                        // DEFINE COLUMNAS
+                                      
+                                        var columns = [
+                                            { key: "key", header: "Filiales", sortable: true, width: "200px" },
+                                            { key: "Numero", header: "# OOS F.", sortable: true, width: "150px"},           
+                                            { key: "OOS", header: "% OOS F.", sortable: true, width: "150px"},
+                                           
+                                          
+                                          ];
+                                        
+                                 // DEFINE VISITORS PARA CADA COLUMNA
+                                    
+                                    
+                                 var columnVisitors = {
+                                    key: function(value) {
+                                        return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','cat_un','${entity.key}')">${value}
+                                        </div>`;
+                                      },
+                                
+                                      Numero: function(value) {
+                                        var barWidth = (value/maximoVolumen)*100 + '%';
+                                        var barValue = vix_tt_formatNumber(value);
+                                      
+                                    
+                                        return '<div class="bar-container">' +
+                                        '<span class="bar-value">' + barValue + '</span>' + '<svg width="100%" height="10">'  
+                                        + '<rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: white;"></rect></svg>' +        
+                                        '</div>';
+                                    },
+                                   
+                                        OOS: function(value){
+                                  
+                                        var barWidth = value + '%';
+                                        var barValue = vix_tt_formatNumber(value)+'%   ';
+                                    
+                                        return '<div class="bar-container">' +
+                                        '<span class="bar-value">' + barValue + '</span>' + '<svg width="100%" height="10">'  
+                                        + '<rect class="bar-rect" width="' + barWidth + '" height="10" style="fill: white;"></rect></svg>' +        
+                                        '</div>';
+                                    },
+                                      
+                                     
+                                   
+                                    };
+                                  
+
+                                      // FORMATEA DIV :
+                                    
+                                        vix_tt_formatToolTip("#toolTip4","OOS Filiales por Origen y Producto de "+dataManager.getNameFromId(entity.key),svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","OOS Cedis"));
+                                      
+                                            // COLUMNAS CON TOTALES :
+                                    
+                                            var columnsWithTotals = ['Numera','','Numero']; 
+                                            var totalsColumnVisitors = {
+                                                        'Numera': function(value) { 
+                                                        return vix_tt_formatNumber(value/1000) + " TM"; 
+                                                        },
+                                                        'Numero': function(value) { 
+                                                        return vix_tt_formatNumber(value);
+                                                        },
+                                                      
+                                                      
+                                                      };
+                                      
+                                        // CREA TABLA USANDO DATOS
+                                            
+                                        vix_tt_table_extended(data, columns, columnVisitors, totalsColumnVisitors, "toolTip4", columnsWithTotals );        
+                                
+                                        // Crea una barra inferior y pasa una funcion de exportacion de datos
+                                        vix_tt_formatBottomBar("#toolTip4", function () {
+                                        var dataToExport = formatDataForExport(data, columns);
+                                        var filename = "exported_data";
+                                        exportToExcel(dataToExport, filename);
+                                        });
+                                            
+                                            
+                                        // APLICA TRANSICIONES 
+                                
+                                        vix_tt_transitionRectWidth("toolTip4"); 
+
+                                        vix_tt_distributeDivs(["#toolTip4","#toolTip3"]);
+
+                        });
+
+
+               }
+
+    }
 
 }
 
@@ -242,9 +528,6 @@ kpiExpert_OOS_Filiales.DrawTooltipDetail_UN=function(entity){
    
     };
   
-
-
-
       // FORMATEA DIV :
     
         vix_tt_formatToolTip("#toolTip2","OOS Filiales por Origen y Producto de "+dataManager.getNameFromId(entity.key),svgTooltipWidth,svgTooltipHeight+100,dataManager.GetTooltipInfoData("toolTip4","OOS Cedis"));

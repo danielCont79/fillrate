@@ -41,7 +41,7 @@ var store={
         {apiURL:_bkserver ,serviceName:"getSP/VIS_Calcular_FillRate_conParams",tableName:"d",varName:"fillRate",dateField:"dtOnSiteFinal",onInitLoad:false,useDateFilters:true,useGroup:true},
         {apiURL:_bkserver ,serviceName:"getSP/VIS_Calcular_KPI_Abasto_FillRate",varName:"abasto",onInitLoad:false,useDateFilters:true},
 
-        {apiURL:_bkserver ,serviceName:"getSP/VIS_Calcular_OOSFilial",varName:"oosFiliales",onInitLoad:false,useDateFilters:true},
+        {apiURL:_bkserver ,serviceName:"getSP/Generico?spname=VIS_Calcular_OOSFilial",varName:"oosFiliales",onInitLoad:false,useDateFilters:true},
         {apiURL:_bkserver ,serviceName:"getSP/VIS_Calcular_KPI_Produccion_FillRate",varName:"produccion",onInitLoad:false,useDateFilters:true},
         {apiURL:_bkserver ,serviceName:"getSP/Generico?spname=VIS_Calcular_KPI_OOS_FillRate",varName:"oos",onInitLoad:false,useDateFilters:true},
         {apiURL:_bkserver ,serviceName:"getSP/Generico?spname=VIS_Calcular_KPI_Flota_FillRate",varName:"flota",onInitLoad:false,useDateFilters:true},

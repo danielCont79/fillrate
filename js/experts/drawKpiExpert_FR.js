@@ -467,7 +467,7 @@ kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){
                                         { key: "key", header: agrupador, sortable: true, width: "100px" },
                                         { key: "por1", header: "Fill Rate", sortable: true, width: "180px" },    
                                         { key: "cant", header: "Volumen Entregado", sortable: true, width: "180px" },
-                                        { key: "porRetrasado", header: "Retrasado (%)", sortable: true, width: "180px" },
+                                        { key: "porRetrasado", header: "Impacto Sobre Total (%)", sortable: true, width: "180px" },
                                         ];
                         
                                
@@ -807,7 +807,7 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                                                 { key: "key", header: "Estado", sortable: true, width: "100px" },
                                                 { key: "por1", header: "Fill Rate", sortable: true, width: "180px" },    
                                                 { key: "cant", header: "Volumen Entregado", sortable: true, width: "180px" },
-                                                { key: "porRetrasado", header: "Retrasado (%)", sortable: true, width: "180px" },
+                                                { key: "porRetrasado", header: "Impacto Sobre Total (%)", sortable: true, width: "180px" },
                                                 ];
                         
                                 }else{
@@ -911,7 +911,8 @@ kpiExpert_FR.DrawTooltipDetail_UN=function(entity,extraData){
                                 kpiExpert_FR.sortRegistredWindows();
 
                                  //Agrega boton para abrir detalle por Cliente
-                                 $("#toolTip4").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_FR.registredWindows.push('#toolTip5');
+                                 $("#toolTip4").find(".content").css("align-items","");
+                                 $("#toolTip4").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;left: 0px;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_FR.registredWindows.push('#toolTip5');
                                  kpiExpert_FR.DrawTooltipDetail_GenericFr(kpiExpert_FR.lastEntity,'Holding','cat_cliente_estado');$('#toolTip4').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
  
                                  //HAce mas alto
@@ -1071,7 +1072,7 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity,extraData){
                         { key: "key", header: "Estado", sortable: true, width: "100px" },
                         { key: "por1", header: "Fill Rate", sortable: true, width: "180px" },    
                         { key: "cant", header: "Volumen Entregado", sortable: true, width: "180px" },
-                        { key: "porRetrasado", header: "Retrasado (%)", sortable: true, width: "180px" },
+                        { key: "porRetrasado", header: "Impacto Sobre Total (%)", sortable: true, width: "180px" },
                         ];
 
         }else{
@@ -1172,7 +1173,8 @@ kpiExpert_FR.DrawTooltipDetail_Estado=function(entity,extraData){
         vix_tt_transitionRectWidth("toolTip3");
 
          //Agrega boton para abrir detalle por Cliente
-         $("#toolTip3").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_FR.registredWindows.push('#toolTip5');
+         $("#toolTip3").find(".content").css("align-items","");
+         $("#toolTip3").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;left: 0px;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_FR.registredWindows.push('#toolTip5');
          kpiExpert_FR.DrawTooltipDetail_GenericFr(kpiExpert_FR.lastEntity,'Holding','cat_cliente_estado');$('#toolTip3').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
 
          //HAce mas alto

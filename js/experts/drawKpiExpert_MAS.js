@@ -648,7 +648,8 @@ kpiExpert_MAS.DrawTooltipDetail_UN=function(entity){
                 kpiExpert_MAS.sortRegistredWindows(); 
 
                  //Agrega boton para abrir detalle por Cliente
-                $("#toolTip3").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_MAS.registredWindows.push('#toolTip4');
+                 $("#toolTip3").find(".content").css("align-items","");
+                $("#toolTip3").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;left: 0px;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_MAS.registredWindows.push('#toolTip4');
                 kpiExpert_MAS.DrawTooltipDetail_GenericaMas(kpiExpert_MAS.lastEntity,'Holding','cat_cliente_estado');$('#toolTip3').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
 
                 //HAce mas alto
@@ -854,7 +855,8 @@ kpiExpert_MAS.DrawTooltipDetail_Estado=function(entity){
       vix_tt_transitionRectWidth("toolTip2");
 
        //Agrega boton para abrir detalle por Cliente
-       $("#toolTip2").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;right: auto;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_MAS.registredWindows.push('#toolTip4');
+       $("#toolTip2").find(".content").css("align-items","");
+       $("#toolTip2").find(".content").append(`<div class="item2 loginContainer login-page form " style="background-color: rgba(0,0,0,0);position:relative;margin:0px;left: 0px;padding:3px;z-index:9999;visibility:visible;"><button id="getdata" style="margin:10px;width:90%" class="loginBtn" onclick="kpiExpert_MAS.registredWindows.push('#toolTip4');
        kpiExpert_MAS.DrawTooltipDetail_GenericaMas(kpiExpert_MAS.lastEntity,'Holding','cat_cliente_estado');$('#toolTip2').find('.content').find('#getdata').css('visibility','hidden')">Mostrar Detalle por CLiente</button>   </div>`);
 
        //HAce mas alto

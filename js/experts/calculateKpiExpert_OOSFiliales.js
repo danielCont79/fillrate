@@ -73,7 +73,7 @@ calculateKpiExpert_OOSFiliales.calculateKPI=function(cb){
                         
                         
                        
-                         var URL=apiURL+"/"+serviceName+"?fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+                         var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
                          console.log(URL);  
 
                         if(URL.indexOf("undefined" < 0)){
