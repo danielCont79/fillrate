@@ -77,19 +77,22 @@ calculateKpiExpert_Ventas.calculateKPI=function(entities){
             if(store.map_var==kpiExpert_FR){
 
                     serviceName ="getSP/Generico?spname=VIS_Calcular_KPI_Venta_FillRate";
+                    var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
         
             }else if(store.map_var==kpiExpert_OOS_Filiales){               
-            
-                    serviceName ="getSP/Generico?spname=VIS_Calcular_KPI_Venta_OOSFiliales";
+                
+                    serviceName ="getSP/VIS_Calcular_KPI_Venta_OOSFiliales";
+                    var URL=apiURL+"/"+serviceName+"?fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
     
             }else if(store.map_var==drawKpiExpert_VENTAS){               
             
                     serviceName ="getSP/Generico?spname=VIS_Calcular_KPI_Venta_FillRate_TMP";
+                    var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
     
             }
                         
 
-            var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+           
             console.log(URL);
 
             if(URL.indexOf("undefined" < 0)){
