@@ -144,14 +144,15 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
         arr[i].DifPesos=0;
         arr[i].Dif=0;
 
-        if(arr[i].VolumenPlan>0){
-            arr[i].Dif=arr[i].VolumenReal-arr[i].VolumenPlan;
+        arr[i].Dif=arr[i].VolumenReal-arr[i].VolumenPlan;
+
+        if(arr[i].VolumenPlan>0){           
             arr[i].DifPer=arr[i].VolumenReal/arr[i].VolumenPlan;
         }
         
-        if(arr[i].PesoPlan>0){
-          arr[i].DifPesos=arr[i].PesoReal-arr[i].PesoPlan;
-        }
+       
+        arr[i].DifPesos=arr[i].PesoReal-arr[i].PesoPlan;
+        
         
         if(maximo < arr[i].DifPesos*1000){
           maximo = arr[i].DifPesos*1000;
@@ -416,15 +417,16 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
         arr[i].DifPer=0;
         arr[i].DifPesos=0;
         arr[i].Dif=0;
+
+        arr[i].Dif=arr[i].VolumenReal-arr[i].VolumenPlan;
         
         if(arr[i].VolumenReal>0){
-            arr[i].Dif=arr[i].VolumenReal-arr[i].VolumenPlan;
+           
             arr[i].DifPer=arr[i].VolumenReal/arr[i].VolumenPlan;
         }
-
-        if(arr[i].PesoPlan>0){
-          arr[i].DifPesos=arr[i].PesoReal-arr[i].PesoPlan;
-        }
+        
+        arr[i].DifPesos=arr[i].PesoReal-arr[i].PesoPlan;
+        
         
         if(maximo < arr[i].DifPesos*1000){
           maximo = arr[i].DifPesos*1000;
@@ -1418,12 +1420,13 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
             arr[i].DifPesos=0;
             arr[i].Dif=0;
 
-            if(arr[i].PesoPlan>0){
-              arr[i].DifPesos=arr[i].PesoReal-arr[i].PesoPlan;
-            }
+           
+            arr[i].DifPesos=arr[i].PesoReal-arr[i].PesoPlan;
+
+            arr[i].Dif=arr[i].VolumenReal-arr[i].VolumenPlan;
 
             if(arr[i].VolumenPlan>0){
-                arr[i].Dif=arr[i].VolumenReal-arr[i].VolumenPlan;
+               
                 arr[i].DifPer=arr[i].VolumenReal/arr[i].VolumenPlan;
             } 
             
@@ -1830,14 +1833,14 @@ kpiExpert_ABAS.ProcessData_Origen=function(entity,arr,extraData){
             arr[i].DifPesos=0;
             arr[i].Dif=0;
           
-            if(arr[i].VolumenPlan>0){
-                arr[i].Dif=arr[i].VolumenReal-arr[i].VolumenPlan;
+            arr[i].Dif=arr[i].VolumenReal-arr[i].VolumenPlan;
+
+            if(arr[i].VolumenPlan>0){               
                 arr[i].DifPer=arr[i].VolumenReal/arr[i].VolumenPlan;
             } 
-
-            if(arr[i].PesoPlan>0){
-              arr[i].DifPesos=arr[i].PesoReal-arr[i].PesoPlan;
-            }
+           
+            arr[i].DifPesos=arr[i].PesoReal-arr[i].PesoPlan;
+            
             
             if(maximo < arr[i].DifPesos*1000){
               maximo = arr[i].DifPesos*1000;
