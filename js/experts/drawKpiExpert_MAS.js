@@ -686,6 +686,8 @@ kpiExpert_MAS.DrawTooltipDetail_Estado=function(entity){
             .key(function(d) { return d.EstadoZTDem; })
             .entries(entity.masivos.values);
 
+            
+
 
     for(var i=0; i < arr.length; i++ ){
 
@@ -695,7 +697,7 @@ kpiExpert_MAS.DrawTooltipDetail_Estado=function(entity){
 
         for(var j=0; j < arr[i].values.length; j++ ){
             
-            if( arr[i].values[j].TipoPedido == "Masivo" ){
+            if( arr[i].values[j].TipoPedido == "Masivo" || arr[i].values[j].TipoPedido == "Camino Rural"){
 
                 arr[i].MasivosVol+=Number(arr[i].values[j].CantSolFinal);
           

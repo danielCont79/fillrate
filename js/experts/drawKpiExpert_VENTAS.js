@@ -652,7 +652,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
             }
 
             var URL=apiURL+"/"+serviceName+"&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
-            console.log(URL);
+            console.log("*****",URL);
 
             if(URL.indexOf("undefined" < 0)){
 

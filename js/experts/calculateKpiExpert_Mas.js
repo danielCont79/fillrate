@@ -17,9 +17,13 @@ calculateKpiExpert_Mas.calculateKPI=function(entities,cb){
      
         entities[i].masivos={masivos:0,cantidad:0,values:[],totalSolicitado:0  };
 
+        console.log("tipos de masivos", d3.nest()
+            .key(function(d) { return d.TipoPedido; })
+            .entries(entities[i].values));
+
         for(var j=0;  j < entities[i].values.length; j++){ 
             
-                if( entities[i].values[j].TipoPedido == "Masivo" ){    
+                if( entities[i].values[j].TipoPedido == "Masivo" || entities[i].values[j].TipoPedido == "Camino Rural" ){    
 
                     cuantos++;
                     entities[i].masivos.cantidad+=Number(entities[i].values[j].CantSolFinal);                    
