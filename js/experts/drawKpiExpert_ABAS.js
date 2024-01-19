@@ -249,7 +249,7 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
         
         var columns = [
           { key: "icon_day", header: "", sortable: false, width: "50px" },
-          { key: "icon_plus", header: "", sortable: false, width: "50px" },
+         
           { key: "key", header: "Destino", sortable: true, width: "80px" }, 
           { key: "transporte", header: "Transporte", sortable: true, width: "80px" },        
           { key: "PesoPlan", header: "Peso Plan", sortable: true,  width: "100px" },
@@ -268,17 +268,14 @@ kpiExpert_ABAS.DrawTooltipDetail_UNComoOrigen=function(entity,extraData){
     
       var columnVisitors = {
         icon_day: function(value) {
-          console.log("value",value);
+          
           var nombreEntidad=value.split("_");
               nombreEntidad_=nombreEntidad[0];
           return `<img src="images/days.png" style="width:22px;heght:22px; " onclick="  kpiExpert_ABAS.DrawTooltipDetail_ByDay('${nombreEntidad_}','${entity.key}','${nombreEntidad[1]}')">
           </img>`;
 
         },
-        icon_plus: function(value) {
-          return `<img src="images/plus_icon2.png" style="width:15px;heght:15px; " onclick="console.log('${value}')">
-          </img>`;
-        },
+       
         key: function(value) {
 
           var nombreEntidad=value.split("_");
@@ -1388,6 +1385,8 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
 
   kpiExpert_ABAS.DrawTooltipDetail_UN=function(entity,extraData){  
 
+    console.log("DrawTooltipDetail_UN **********************");
+
         var maximo=0;    
         var maximoVolumen=0;   
     
@@ -1540,7 +1539,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
           </img>`;
         },
         icon_plus: function(value) {
-          return `<img src="images/plus_icon2.png" style="width:15px;heght:15px; " onclick="kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0('${value}')">
+          return `<img src="images/plus_icon2.png" style="width:15px;heght:15px; " onclick="console.log("aaaa");kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0('${value}')">
           </img>`;
         },
         key: function(value) {
@@ -1684,7 +1683,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0=function(entity){
                 
         }
 
-        agrupador="UnidadNegocio"; 
+        agrupador="Estado"; 
 
         for(var i=0; i < store.catlogsForFilters.length; i++){    
             if(store.catlogsForFilters[i].data==nombreCatalogoParaDiccionario){
@@ -1938,7 +1937,7 @@ kpiExpert_ABAS.ProcessData_Origen=function(entity,arr,extraData){
     
         var columnVisitors = {
         icon_day: function(value) {
-          console.log("value",value);
+         
           var nombreEntidad=value.split("_");
               nombreEntidad_=nombreEntidad[0];
           return `<img src="images/days.png" style="width:22px;heght:22px; " onclick="  kpiExpert_ABAS.DrawTooltipDetail_ByDay('${entity.key }','${nombreEntidad_}','${nombreEntidad[1]}')">
