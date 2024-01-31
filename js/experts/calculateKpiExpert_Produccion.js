@@ -41,7 +41,7 @@ calculateKpiExpert_Produccion.calculateKPI=function(entities){
 
         if(store.map_var==kpiExpert_OOS_Filiales){               
            
-            serviceName ="Generico?spname=VIS_Calcular_KPI_Produccion_OOSFiliales&";            
+            serviceName ="getSP/Generico?spname=VIS_Calcular_KPI_Produccion_OOSFiliales&";
             
 
         }
