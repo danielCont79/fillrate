@@ -39,6 +39,12 @@ calculateKpiExpert_OOS.calculateKPI=function(entities,cb){
         
                 }
 
+                if(store.map_var==kpiExpert_OOS_Filiales){               
+                        
+                        serviceName ="getSP/Generico?spname=VIS_Calcular_KPI_OOS_Filiales";                      
+        
+                }
+
                 if(serviceName && apiURL){
 
                         var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();

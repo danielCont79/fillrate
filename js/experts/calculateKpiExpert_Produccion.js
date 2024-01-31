@@ -39,6 +39,12 @@ calculateKpiExpert_Produccion.calculateKPI=function(entities){
 
         }
 
+        if(store.map_var==kpiExpert_OOS_Filiales){               
+           
+            serviceName ="getSP/VIS_Calcular_KPI_Produccion_OOSFiliales";                      
+
+        }
+
         if(serviceName && apiURL){
 
             var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
