@@ -33,7 +33,7 @@ calculateKpiExpert_Produccion.calculateKPI=function(entities){
           
             if(store.apiDataSources[i].varName=="produccion"){
                
-                serviceName=store.apiDataSources[i].serviceName;
+                serviceName=store.apiDataSources[i].serviceName+"?";
                 apiURL=store.apiDataSources[i].apiURL;
             }
 
@@ -41,7 +41,8 @@ calculateKpiExpert_Produccion.calculateKPI=function(entities){
 
         if(store.map_var==kpiExpert_OOS_Filiales){               
            
-            serviceName ="getSP/VIS_Calcular_KPI_Produccion_OOSFiliales";                      
+            serviceName ="Generico?spname=VIS_Calcular_KPI_Produccion_OOSFiliales&";            
+            
 
         }
 
@@ -80,7 +81,7 @@ calculateKpiExpert_Produccion.calculateKPI=function(entities){
 
             //**** */
 
-            var URL=apiURL+"/"+serviceName+"?fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
+            var URL=apiURL+"/"+serviceName+"fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"&agrupador="+agrupador+""+params;
             console.log(URL);
             if(URL.indexOf("undefined" < 0)){
                 d3.json(URL, function (error, data) {
