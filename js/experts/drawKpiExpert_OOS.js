@@ -631,9 +631,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
         
             d3.select("#svgTooltip3")                     
                 .style("width", svgTooltipWidth )
-                .style("height", (svgTooltipHeight)+50 )
-                
-                            ;
+                .style("height", (svgTooltipHeight)+50 );
 
 
             for(var i=0; i < arr.length; i++ ){   
@@ -804,7 +802,7 @@ kpiExpert_OOS.DrawTooltipDetail_Dia=function(entity){
                                 .attr("transform"," translate("+String( (ancho*i)+tamanioFuente-2  )+","+String( (svgTooltipHeight*.75)-altura3-marginBottom-3   )+")  rotate("+(-90)+") ")
                                 .text(function(){
                                 
-                                    return  arr[i].Numerador ;
+                                    return  formatNumber(arr[i].Numerador) ;
                 
                                 });                
 
