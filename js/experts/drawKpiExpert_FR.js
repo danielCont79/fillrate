@@ -293,8 +293,14 @@ kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){
                  
                 if(String($("#nivel_cb").val()) == "0"){
                         if(entity.key.toLowerCase()=="sacos"){
+                                if(params.indexOf("&Presentacion=Sacos")>-1){
+                                        params=params.replaceAll("&Presentacion=Sacos","");   
+                                }
                                 params+="&Presentacion=Sacos";
                         }else if(entity.key.toLowerCase()=="granel"){
+                                if(params.indexOf("&Presentacion=Granel")>-1){
+                                        params=params.replaceAll("&Presentacion=Granel","");   
+                                }
                                 params+="&Presentacion=Granel";
                         }
                 }
