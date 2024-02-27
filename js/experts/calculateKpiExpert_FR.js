@@ -68,15 +68,19 @@ calculateKpiExpert_FR.calculateKPI=function(){
         for(var j=0; j < store.catlogsForFilters.length; j++){
 
             if($("#"+store.catlogsForFilters[j].id).siblings().first()[0]){
+
+                
           
                 if($($("#"+store.catlogsForFilters[j].id).siblings().first()[0].firstChild).val() != "" && $($("#"+store.catlogsForFilters[j].id).siblings().first()[0].firstChild).val() != undefined && $("#"+store.catlogsForFilters[j].id).val() != "Todos" ){
                     
-                    if($($("#"+store.catlogsForFilters[j].id).siblings().first()[0].firstChild).val().includes(",")){
+                    if($($("#"+store.catlogsForFilters[j].id).siblings().first()[0].firstChild).val().includes(",") && store.catlogsForFilters[j].id=="cat_estado"){
+                      
                         params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+ $($("#"+store.catlogsForFilters[j].id).siblings().first()[0].firstChild).val()  ;
-                    }else if(!$($("#"+store.catlogsForFilters[j].id).siblings().first()[0].firstChild).val().includes("Todos")){                        
+                    }else if(!$($("#"+store.catlogsForFilters[j].id).siblings().first()[0].firstChild).val().includes("Todos")){ 
+                                            
                         params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $($("#"+store.catlogsForFilters[j].id).siblings().first()[0].firstChild).val()  ];
                     }            
-
+                    
                     cuentaFiltros++;
 
                 }
@@ -87,11 +91,13 @@ calculateKpiExpert_FR.calculateKPI=function(){
                 
                     params+="&"+store.catlogsForFilters[j].storeProcedureField+"="+store.catlogsForFilters[j].diccNames[ $("#"+store.catlogsForFilters[j].id).val() ];
                     cuentaFiltros++;
+
                 }
     
             }
 
         }
+
         console.log(params);
 
 
