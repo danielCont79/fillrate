@@ -109,7 +109,7 @@ calculateKpiExpert_Abasto.calculateKPI=function(entities){
                     
                     for(var i=0;  i < entities.length; i++){ 
 
-                        entities[i].abasto={VolumenPlan:0,VolumenReal:0, abasto:undefined,Pct_Radar:0, values:[]};
+                        entities[i].abasto={VolumenPlan:0,VolumenReal:0,VolPlan_Peso:0,VolReal_Peso:0, abasto:undefined,Pct_Radar:0, values:[]};
                         entities_coll[entities[i].key]=entities[i];                       
 
                     }   
@@ -130,13 +130,13 @@ calculateKpiExpert_Abasto.calculateKPI=function(entities){
 
                             entidad.abasto.VolumenPlan+=Number(data.recordset[j].VolumenPlan);
                             entidad.abasto.VolumenReal+=Number(data.recordset[j].VolumenReal);
+                            entidad.abasto.VolPlan_Peso+=Number(data.recordset[j].VolPlan_Peso);
+                            entidad.abasto.VolReal_Peso+=Number(data.recordset[j].VolReal_Peso);
                             entidad.abasto.Pct_Radar+=Number(data.recordset[j].Pct_Radar);                                              
 
                             entidad.abasto.values.push(data.recordset[j]);  
-
                             
-                            entidad.abasto.abasto=Math.round((entidad.abasto.Pct_Radar/entidad.abasto.values.length)*1000)/10; 
-                                                          
+                            entidad.abasto.abasto=Math.round((entidad.abasto.Pct_Radar/entidad.abasto.values.length)*1000)/10;                                                           
 
                         }else{
                             if(data.recordset[j].Agrupador!=null)
@@ -182,7 +182,7 @@ calculateKpiExpert_Abasto.getTooltipDetail=function(entityId){
                 
                 var text=`<div class="tooltipDetailElement"><img id="" src="images/cump_abasto.png" style=""></img>
                 <span style='color:#ffffff;font-size:${15*escalaTextos}px;'>Cumplimiento de Abasto: </span><br>
-                <span style='color:#fff600;font-size:${15*escalaTextos}px;'></span> <span style='color:#ffffff'>${abastoPer} <span style='color:#ffffff;font-size:${12*escalaTextos}px;'> (Plan: ${formatNumber(entities[i].abasto.VolumenPlan)} TM , Real:${formatNumber(entities[i].abasto.VolumenReal)} TM)</span>
+                <span style='color:#fff600;font-size:${15*escalaTextos}px;'></span> <span style='color:#ffffff'>${abastoPer} <span style='color:#ffffff;font-size:${12*escalaTextos}px;'> (Plan: ${formatNumber(entities[i].abasto.VolPlan_Peso)} TM , Real:${formatNumber(entities[i].abasto.VolReal_Peso)} TM)</span>
                 </div>`
 
                 return text;
