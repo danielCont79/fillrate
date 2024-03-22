@@ -483,10 +483,7 @@ kpiExpert_FR.DrawTooltipDetail_GenericFr=function(entity, agrupador ,catlog){
                                 var columnVisitors = {
                                         key: function(value,i) {
 
-                                        var nombre=dataManager.getNameFromIdFromCatlog(value , catlog);
-
-                                        if(nombre.length > 31)
-                                                nombre=nombre.substr(0,31)+"...";
+                                        var nombre=dataManager.getNameFromIdFromCatlog(value , catlog);                                        
 
                                         return `<div class="key-selector" onclick="backInfoNav.push({entity:'${entity.key}' , catlog:'${dataManager.getCurrentCatlog()}'});filterControls.arrowUpdate();filterControls.lookForEntity('${value}','${catlog}','${entity.key}')">${nombre}
 

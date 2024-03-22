@@ -1539,7 +1539,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Transporte=function(entity,extraData){
           </img>`;
         },
         icon_plus: function(value) {
-          return `<img src="images/plus_icon2.png" style="width:15px;heght:15px; " onclick="console.log("aaaa");kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0('${value}')">
+          return `<img src="images/plus_icon2.png" style="width:15px;heght:15px; " onclick="kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0('${value}')">
           </img>`;
         },
         key: function(value) {
