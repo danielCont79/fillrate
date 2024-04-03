@@ -237,7 +237,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_GenericaVentas=function(entity, agrupador
                       continue;
               }
 
-              if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Cliente" ){ // Holding
+              if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Cliente"  && !params.includes("&Cliente=") ){ // Holding
 
                   var nombre=entity.key;
                   if(entity.key.indexOf("_")>-1){
@@ -585,7 +585,7 @@ drawKpiExpert_VENTAS.DrawTooltipDetail_UN=function(entity){
                 continue;
             }
 
-                  if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Cliente" ){ // Holding
+                  if(  6 == $("#nivel_cb").val()  &&  store.catlogsForFilters[j].storeProcedureField=="Cliente"  && !params.includes("&Cliente=")){ // Holding
 
                     var nombre=entity.key;
                     if(entity.key.indexOf("_")>-1){
