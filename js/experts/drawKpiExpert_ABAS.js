@@ -1683,7 +1683,15 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0=function(entity){
                 
         }
 
-        agrupador="Estado"; 
+        if($("#nivel_cb").val() < 3){
+
+            agrupador="Estado"; 
+  
+        }else{
+    
+            agrupador="UnidadNegocio"; 
+    
+        } 
 
         for(var i=0; i < store.catlogsForFilters.length; i++){    
             if(store.catlogsForFilters[i].data==nombreCatalogoParaDiccionario){
@@ -1767,6 +1775,8 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0=function(entity){
 
                             var dataEntity=[];
 
+                            console.log(" entity ", entity);
+
                             for(var j=0;  j < data.recordset.length; j++){
 
                                 if(data.recordset[j].Agrupador == entity){
@@ -1775,6 +1785,8 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0=function(entity){
                             }
 
                             data.recordset=dataEntity;
+
+                            console.log(" data.recordset", data.recordset);
 
                             for(var i=0; i < data.recordset.length; i++ ){
 
@@ -1786,7 +1798,7 @@ kpiExpert_ABAS.DrawTooltipDetail_Origen_Nivel0=function(entity){
                                   .key(function(d) { return d.OrigenTrans; })
                                   .entries(data.recordset);
 
-                           
+                          
 
                             kpiExpert_ABAS.ProcessData_Origen({key:entity},arr);
 
