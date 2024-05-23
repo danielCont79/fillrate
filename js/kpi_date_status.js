@@ -10,8 +10,8 @@ kpi_date_status.loadData = function(muestra ){
     var dateInit=new Date($('#datepicker').val());
     var dateEnd=new Date($('#datepicker2').val());
 
-    alert("Date picker value",$('#datepicker').val());
-    alert("date object",dateInit);
+    alert($('#datepicker').val().toString());
+    alert(dateInit.toString());
 
     var dateInit_=dateInit.getFullYear()+"-"+String(Number(dateInit.getMonth())+1)+"-"+dateInit.getDate();
     var dateEnd_=dateEnd.getFullYear()+"-"+String(Number(dateEnd.getMonth())+1)+"-"+dateEnd.getDate();
