@@ -7,8 +7,11 @@ kpi_date_status.loadData = function(muestra ){
 
     var serviceName;
 
-    var dateInit=new Date($('#datepicker').val());
-    var dateEnd=new Date($('#datepicker2').val());
+    var dateStr_Init=$('#datepicker').val().split("-");
+    var dateStr_End=$('#datepicker2').val().split("-");
+
+    var dateInit=new Date(dateStr_Init[2],Number(dateStr_Init[0])-1,dateStr_Init[1]);
+    var dateEnd=new Date(dateStr_End[2],Number(dateStr_End[0])-1,dateStr_End[1]);
 
     //alert($('#datepicker').val().toString());
     //alert(dateInit.toString());
