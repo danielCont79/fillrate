@@ -704,8 +704,11 @@ color: yellow;
                
                 if( $('#datepicker').val() && $('#datepicker2').val() ){
 
-                    dateInit=new Date($('#datepicker').val());
-                    dateEnd=new Date($('#datepicker2').val());
+                    var dateStr_Init=$('#datepicker').val().split("-");
+                    var dateStr_End=$('#datepicker2').val().split("-");
+    
+                    dateInit=new Date(dateStr_Init[2],Number(dateStr_Init[0])-1,dateStr_Init[1]);
+                    dateEnd=new Date(dateStr_End[2],Number(dateStr_End[0])-1,dateStr_End[1]);
 
                     if(dateInit.getTime() > dateEnd.getTime()){
 
@@ -740,8 +743,11 @@ color: yellow;
 
                     if( $('#datepicker').val() && $('#datepicker2').val() ){
 
-                            dateInit=new Date($('#datepicker').val());
-                            dateEnd=new Date($('#datepicker2').val());
+                        var dateStr_Init=$('#datepicker').val().split("-");
+                        var dateStr_End=$('#datepicker2').val().split("-");
+        
+                        dateInit=new Date(dateStr_Init[2],Number(dateStr_Init[0])-1,dateStr_Init[1]);
+                        dateEnd=new Date(dateStr_End[2],Number(dateStr_End[0])-1,dateStr_End[1]);
 
                             if(dateInit.getTime() > dateEnd.getTime()){
 
@@ -772,8 +778,11 @@ color: yellow;
 
                 if( $('#datepicker').val() && $('#datepicker2').val() ){
 
-                        dateInit=new Date($('#datepicker').val());
-                        dateEnd=new Date($('#datepicker2').val());
+                    var dateStr_Init=$('#datepicker').val().split("-");
+                    var dateStr_End=$('#datepicker2').val().split("-");
+    
+                    dateInit=new Date(dateStr_Init[2],Number(dateStr_Init[0])-1,dateStr_Init[1]);
+                    dateEnd=new Date(dateStr_End[2],Number(dateStr_End[0])-1,dateStr_End[1]);
 
                         if(dateInit.getTime() > dateEnd.getTime()){
 
