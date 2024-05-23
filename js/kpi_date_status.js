@@ -16,6 +16,8 @@ kpi_date_status.loadData = function(muestra ){
     var apiURL= _bkserver+"/getSP/VIS_ObtenerFechas?Pantalla=Fillrate&fechaInicio="+dateInit_+"&fechaFin="+dateEnd_+"";
     console.log(apiURL);
 
+    $("#version").html(apiURL);
+
     d3.json(apiURL, function (error, data) {
 
         $("#cargando").css("visibility","hidden");
