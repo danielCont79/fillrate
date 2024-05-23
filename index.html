@@ -649,10 +649,13 @@ color: yellow;
             $(".datepicker").css("z-index",99999);
               
 
-            $(function() {              
+            $(function() {     
+                
+                var dateStr_Init=$('#datepicker').val().split("-");
+                var dateStr_End=$('#datepicker2').val().split("-");
 
-                dateInit=new Date($('#datepicker').val());
-                dateEnd=new Date($('#datepicker2').val());
+                dateInit=new Date(dateStr_Init[2],Number(dateStr_Init[0])-1,dateStr_Init[1]);
+                dateEnd=new Date(dateStr_End[2],Number(dateStr_End[0])-1,dateStr_End[1]);
 
                 var dataSources=[];
 
